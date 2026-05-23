@@ -1,39 +1,72 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 
 import '../monetization/ad_service.dart';
 import '../monetization/premium_provider.dart';
 
-/// Reserves space for a banner ad at the bottom of any screen. Renders nothing
-/// when ads are disabled or the user is Pro. When AdMob is wired and a unit ID
-/// is available, the inner placeholder will be replaced by `AdWidget` driven
-/// by `google_mobile_ads`.
-class BannerAdSlot extends StatelessWidget {
+/// 50dp banner ad anchored above the bottom nav. Uses the real google_mobile_ads
+/// SDK with Google's TEST ad unit IDs by default — these serve test ads safely
+/// without a real AdMob account.
+///
+/// Renders nothing when:
+///   - on web (AdMob not supported on web)
+///   - the user is Pro
+///   - ads are disabled in MonetizationConfig and no test ID present
+///   - the ad failed to load (graceful degrade — slot collapses)
+class BannerAdSlot extends StatefulWidget {
   const BannerAdSlot({super.key});
 
-  static const _bannerHeight = 50.0;
+  static const double bannerHeight = 50.0;
+
+  @override
+  State<BannerAdSlot> createState() => _BannerAdSlotState();
+}
+
+class _BannerAdSlotState extends State<BannerAdSlot> {
+  BannerAd? _ad;
+  bool _loaded = false;
+  bool _failed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (!kIsWeb) {
+      _loadAd();
+    }
+  }
+
+  void _loadAd() {
+    final ad = AdService.instance.createBannerAd(
+      onAdLoaded: (_) {
+        if (mounted) setState(() => _loaded = true);
+      },
+      onAdFailed: () {
+        if (mounted) setState(() => _failed = true);
+      },
+    );
+    if (ad == null) return;
+    _ad = ad;
+    ad.load();
+  }
+
+  @override
+  void dispose() {
+    _ad?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final isPro = context.watch<PremiumProvider>().isPro;
-    final unitId = AdService.instance.bannerUnitId();
-    final shouldRender = !isPro && AdService.instance.enabled && unitId != null;
-    if (!shouldRender) return const SizedBox.shrink();
-    // Placeholder until google_mobile_ads is wired. Reserves space and visually
-    // indicates that an ad would render here in production.
-    return Container(
-      height: _bannerHeight,
-      color: Colors.black.withValues(alpha: 0.2),
-      alignment: Alignment.center,
-      child: const Text(
-        'AD',
-        style: TextStyle(
-          color: Colors.white54,
-          fontSize: 11,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 1.2,
-        ),
-      ),
+    if (kIsWeb || isPro || _failed || _ad == null || !_loaded) {
+      return const SizedBox.shrink();
+    }
+    return SizedBox(
+      width: _ad!.size.width.toDouble(),
+      height: _ad!.size.height.toDouble(),
+      child: Center(child: AdWidget(ad: _ad!)),
     );
   }
 }
