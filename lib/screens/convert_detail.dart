@@ -3,6 +3,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../i18n_helpers.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../lib_units.dart';
 import '../theme/tokens.dart';
 
@@ -59,6 +61,7 @@ class _ConvertDetailState extends State<ConvertDetail> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     final accent = _cat.accent;
     final value = double.tryParse(_controller.text) ?? 0;
     final fromObj = _cat.unitById(_fromUnit) ?? _cat.units.first;
@@ -99,7 +102,7 @@ class _ConvertDetailState extends State<ConvertDetail> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          _cat.label,
+                          localizedCategoryLabel(context, _cat.id),
                           style: const TextStyle(
                             color: AppColors.text,
                             fontSize: 26,
@@ -107,7 +110,7 @@ class _ConvertDetailState extends State<ConvertDetail> {
                           ),
                         ),
                         Text(
-                          '${_cat.units.length} units available',
+                          loc.labelUnitsAvailable(_cat.units.length),
                           style: const TextStyle(color: AppColors.textMuted, fontSize: 13),
                         ),
                       ],
@@ -128,8 +131,8 @@ class _ConvertDetailState extends State<ConvertDetail> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('FROM',
-                        style: TextStyle(
+                    Text(loc.labelFrom,
+                        style: const TextStyle(
                           color: AppColors.textMuted,
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
@@ -189,8 +192,8 @@ class _ConvertDetailState extends State<ConvertDetail> {
                     ),
                     const SizedBox(height: Spacing.lg),
 
-                    Text('TO',
-                        style: TextStyle(
+                    Text(loc.labelTo,
+                        style: const TextStyle(
                           color: AppColors.textMuted,
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
@@ -229,9 +232,9 @@ class _ConvertDetailState extends State<ConvertDetail> {
               ),
 
               const SizedBox(height: Spacing.xl),
-              const Text(
-                'ALL CONVERSIONS',
-                style: TextStyle(
+              Text(
+                loc.labelAllConversions,
+                style: const TextStyle(
                   color: AppColors.textMuted,
                   fontSize: 11,
                   fontWeight: FontWeight.w700,

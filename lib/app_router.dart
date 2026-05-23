@@ -12,6 +12,7 @@ import 'screens/notes_screen.dart';
 import 'screens/paywall_screen.dart';
 import 'screens/privacy_policy_screen.dart';
 import 'screens/settings_screen.dart';
+import 'screens/splash_screen.dart';
 import 'screens/tools/tools_home.dart';
 import 'screens/tools/tools_screens.dart';
 import 'widgets/tab_scaffold.dart';
@@ -23,8 +24,9 @@ final _toolsNavKey = GlobalKey<NavigatorState>();
 final _notesNavKey = GlobalKey<NavigatorState>();
 
 final appRouter = GoRouter(
-  initialLocation: '/convert',
+  initialLocation: '/splash',
   routes: [
+    GoRoute(path: '/splash', builder: (_, __) => const SplashScreen()),
     StatefulShellRoute.indexedStack(
       builder: (context, state, shell) => TabScaffold(shell: shell),
       branches: [

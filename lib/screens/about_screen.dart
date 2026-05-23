@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../l10n/generated/app_localizations.dart';
 import '../theme/tokens.dart';
 
 class AboutScreen extends StatelessWidget {
@@ -8,6 +9,7 @@ class AboutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: AppBar(
@@ -17,30 +19,28 @@ class AboutScreen extends StatelessWidget {
           icon: const Icon(Icons.close, color: AppColors.text),
           onPressed: () => context.pop(),
         ),
-        title: const Text('About', style: TextStyle(color: AppColors.text)),
+        title: Text(loc.settingsAbout, style: const TextStyle(color: AppColors.text)),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(Spacing.lg, 0, Spacing.lg, Spacing.xxl),
         children: [
           const SizedBox(height: Spacing.lg),
-          const Center(
-            child: Text('CalcMaster',
-                style: TextStyle(color: AppColors.text, fontSize: 32, fontWeight: FontWeight.w800)),
+          Center(
+            child: Text(loc.appTitle,
+                style: const TextStyle(color: AppColors.text, fontSize: 32, fontWeight: FontWeight.w800)),
           ),
-          const Center(
-            child: Text('World calculator & converter',
-                style: TextStyle(color: AppColors.textMuted, fontSize: 14)),
+          Center(
+            child: Text(loc.appTagline,
+                style: const TextStyle(color: AppColors.textMuted, fontSize: 14)),
           ),
           const SizedBox(height: Spacing.lg),
-          const _Row(label: 'Version', value: '4.0.0'),
-          const _Row(label: 'Build', value: 'flutter'),
-          const _Row(label: 'Made with', value: 'Flutter + ❤'),
+          _Row(label: loc.aboutVersion, value: '4.0.0'),
+          _Row(label: loc.aboutBuild, value: 'flutter'),
+          _Row(label: loc.aboutMadeWith, value: 'Flutter + ❤'),
           const SizedBox(height: Spacing.xxl),
-          const Text(
-            'CalcMaster bundles the calculators most people actually use — unit conversions, '
-            'percentages, scientific math, tax + finance, electronics, and a notes pad — '
-            'in one polished app that respects your privacy and your battery.',
-            style: TextStyle(color: AppColors.textMuted, fontSize: 14, height: 1.5),
+          Text(
+            loc.aboutBlurb,
+            style: const TextStyle(color: AppColors.textMuted, fontSize: 14, height: 1.5),
           ),
         ],
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../l10n/generated/app_localizations.dart';
 import '../lib_units.dart';
 import '../theme/tokens.dart';
 import '../widgets/convert_card.dart';
@@ -12,8 +13,9 @@ class ConvertHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(Spacing.lg, Spacing.sm, Spacing.lg, Spacing.xxl),
@@ -27,11 +29,11 @@ class ConvertHome extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('CalcMaster', style: Theme.of(context).textTheme.displayLarge),
+                        Text(loc.appTitle, style: Theme.of(context).textTheme.displayLarge),
                         const SizedBox(height: 2),
-                        const Text(
-                          'World calculator & converter',
-                          style: TextStyle(color: AppColors.textMuted, fontSize: 16),
+                        Text(
+                          loc.appTagline,
+                          style: const TextStyle(color: AppColors.textMuted, fontSize: 16),
                         ),
                       ],
                     ),
@@ -49,18 +51,19 @@ class ConvertHome extends StatelessWidget {
                   const SizedBox(width: 8),
                   IconButton(
                     icon: const Icon(Icons.settings_outlined, color: AppColors.text),
-                    tooltip: 'Settings',
+                    tooltip: loc.settingsTitle,
                     onPressed: () => context.push('/settings'),
                   ),
                 ],
               ),
               const SizedBox(height: Spacing.xl),
-              const PillBadge(label: 'Unit Conversion', color: AppColors.accentPrimary),
+              PillBadge(label: loc.pillUnitConversion, color: AppColors.accentPrimary),
               const SizedBox(height: Spacing.md),
-              const Text('Convert', style: TextStyle(color: AppColors.text, fontSize: 32, fontWeight: FontWeight.w700, letterSpacing: -0.5)),
+              Text(loc.convertHubHeading,
+                  style: const TextStyle(color: AppColors.text, fontSize: 32, fontWeight: FontWeight.w700, letterSpacing: -0.5)),
               const SizedBox(height: 4),
-              const Text('Tap any unit to convert instantly',
-                  style: TextStyle(color: AppColors.textMuted, fontSize: 16)),
+              Text(loc.convertHubSubheading,
+                  style: const TextStyle(color: AppColors.textMuted, fontSize: 16)),
               const SizedBox(height: Spacing.lg),
               GridView.builder(
                 shrinkWrap: true,
@@ -68,7 +71,7 @@ class ConvertHome extends StatelessWidget {
                 itemCount: categories.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: 1.05,
+                  childAspectRatio: 1.4,
                   crossAxisSpacing: Spacing.md,
                   mainAxisSpacing: Spacing.md,
                 ),

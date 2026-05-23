@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../l10n/generated/app_localizations.dart';
 import '../monetization/analytics_service.dart';
 import '../monetization/monetization_config.dart';
 import '../monetization/premium_provider.dart';
@@ -26,11 +27,12 @@ class _PaywallScreenState extends State<PaywallScreen> {
     if (ok) {
       Navigator.of(context).pop();
     } else {
+      final loc = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(MonetizationConfig.subscriptionsEnabled
               ? 'Could not complete purchase.'
-              : 'Subscriptions are not yet enabled in this build.'),
+              : loc.paywallSubscriptionsDisabled),
         ),
       );
     }
@@ -38,6 +40,7 @@ class _PaywallScreenState extends State<PaywallScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: AppBar(
@@ -57,44 +60,44 @@ class _PaywallScreenState extends State<PaywallScreen> {
               const Icon(Icons.workspace_premium, size: 56, color: AppColors.warning),
               const SizedBox(height: Spacing.md),
               Text(
-                'Unlock CalcMaster Pro',
+                loc.paywallTitle,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headlineLarge,
               ),
               const SizedBox(height: 6),
-              const Text(
-                'Remove ads, get advanced insights, refresh currency rates instantly, and support indie development.',
+              Text(
+                loc.paywallSubtitle,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: AppColors.textMuted, fontSize: 14),
+                style: const TextStyle(color: AppColors.textMuted, fontSize: 14),
               ),
               const SizedBox(height: Spacing.lg),
-              _Benefit(label: 'Ad-free experience'),
-              _Benefit(label: 'Advanced tax + finance insights'),
-              _Benefit(label: 'Real-time currency refresh'),
-              _Benefit(label: 'Priority email support'),
+              _Benefit(label: loc.paywallBenefitAdFree),
+              _Benefit(label: loc.paywallBenefitAdvanced),
+              _Benefit(label: loc.paywallBenefitRealtime),
+              _Benefit(label: loc.paywallBenefitSupport),
               const SizedBox(height: Spacing.lg),
               _TierCard(
                 tier: SubscriptionTier.monthly,
-                title: 'Monthly',
+                title: loc.paywallTierMonthly,
                 priceLine: MonetizationConfig.priceMonthly,
-                detail: 'Cancel anytime',
+                detail: loc.paywallCancelAnytime,
                 selected: _selected == SubscriptionTier.monthly,
                 onTap: () => setState(() => _selected = SubscriptionTier.monthly),
               ),
               _TierCard(
                 tier: SubscriptionTier.annual,
-                title: 'Annual',
+                title: loc.paywallTierAnnual,
                 priceLine: MonetizationConfig.priceAnnual,
-                detail: MonetizationConfig.annualSavingsLabel,
-                badge: 'BEST VALUE',
+                detail: loc.paywallAnnualSavings,
+                badge: loc.paywallBadgeBestValue,
                 selected: _selected == SubscriptionTier.annual,
                 onTap: () => setState(() => _selected = SubscriptionTier.annual),
               ),
               _TierCard(
                 tier: SubscriptionTier.lifetime,
-                title: 'Lifetime',
+                title: loc.paywallTierLifetime,
                 priceLine: MonetizationConfig.priceLifetime,
-                detail: 'Pay once, own it forever',
+                detail: loc.paywallLifetimeForever,
                 selected: _selected == SubscriptionTier.lifetime,
                 onTap: () => setState(() => _selected = SubscriptionTier.lifetime),
               ),
@@ -109,7 +112,7 @@ class _PaywallScreenState extends State<PaywallScreen> {
                   ),
                   onPressed: _busy ? null : _purchase,
                   child: Text(
-                    _busy ? 'Processing…' : 'Continue',
+                    _busy ? loc.paywallProcessing : loc.paywallContinue,
                     style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                   ),
                 ),
@@ -121,13 +124,13 @@ class _PaywallScreenState extends State<PaywallScreen> {
                     AnalyticsService.instance.logPurchaseRestored();
                     await context.read<PremiumProvider>().restore();
                   },
-                  child: const Text('Restore purchases',
-                      style: TextStyle(color: AppColors.textMuted)),
+                  child: Text(loc.paywallRestore,
+                      style: const TextStyle(color: AppColors.textMuted)),
                 ),
               ),
               Center(
                 child: Text(
-                  'By continuing you agree to our Terms and Privacy Policy.',
+                  loc.paywallTermsFooter,
                   textAlign: TextAlign.center,
                   style: const TextStyle(color: AppColors.textDim, fontSize: 11),
                 ),

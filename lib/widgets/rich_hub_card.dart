@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../theme/tokens.dart';
+import 'glass_card.dart';
 
-/// Rich card with a left accent stripe, line-art SVG icon, title, and subtitle.
-/// Used by Calculate / Finance / Tools hub screens.
+/// Rich card with a left accent stripe + tinted icon square + title + subtitle.
+/// Wrapped in GlassCard for the futuristic frosted look.
 class RichHubCard extends StatelessWidget {
   final String title;
   final String subtitle;
@@ -23,66 +24,75 @@ class RichHubCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: AppColors.surface,
-      borderRadius: BorderRadius.circular(Radii.card),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(Radii.card),
-        onTap: onTap,
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: accent.withValues(alpha: 0.18)),
-            borderRadius: BorderRadius.circular(Radii.card),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                accent.withValues(alpha: 0.04),
-                Colors.transparent,
-              ],
+    return GlassCard(
+      accent: accent,
+      onTap: onTap,
+      padding: const EdgeInsets.fromLTRB(Spacing.md, Spacing.md, Spacing.md, Spacing.md),
+      glowRim: false,
+      child: Stack(
+        children: [
+          // Left accent stripe with rim glow
+          Positioned(
+            left: -Spacing.md + 2,
+            top: 4,
+            bottom: 4,
+            child: Container(
+              width: 3,
+              decoration: BoxDecoration(
+                color: accent,
+                borderRadius: BorderRadius.circular(2),
+                boxShadow: [
+                  BoxShadow(
+                    color: accent.withValues(alpha: 0.6),
+                    blurRadius: 8,
+                    spreadRadius: -1,
+                  ),
+                ],
+              ),
             ),
           ),
-          child: Stack(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Positioned(
-                left: 0,
-                top: 12,
-                bottom: 12,
-                child: Container(
-                  width: 3,
-                  decoration: BoxDecoration(
-                    color: accent,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(Spacing.lg, Spacing.md, Spacing.lg, Spacing.md),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SvgPicture.asset(
-                      svgPath,
-                      width: 28,
-                      height: 28,
-                      colorFilter: ColorFilter.mode(accent, BlendMode.srcIn),
-                    ),
-                    const SizedBox(height: Spacing.sm),
-                    Text(
-                      title,
-                      style: const TextStyle(color: AppColors.text, fontSize: 17, fontWeight: FontWeight.w700),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      subtitle,
-                      style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: accent.withValues(alpha: 0.18),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: accent.withValues(alpha: 0.5)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: accent.withValues(alpha: 0.2),
+                      blurRadius: 10,
+                      spreadRadius: -2,
                     ),
                   ],
                 ),
+                child: Center(
+                  child: SvgPicture.asset(
+                    svgPath,
+                    width: 18,
+                    height: 18,
+                    colorFilter: ColorFilter.mode(accent, BlendMode.srcIn),
+                  ),
+                ),
+              ),
+              const SizedBox(height: Spacing.sm),
+              Text(
+                title,
+                style: const TextStyle(color: AppColors.text, fontSize: 15, fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                subtitle,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(color: AppColors.textMuted, fontSize: 11),
               ),
             ],
           ),
-        ),
+        ],
       ),
     );
   }

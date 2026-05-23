@@ -54,3 +54,4 @@ legacy-react-native/android/build/
 # Android signing — DO NOT COMMIT
 android/key.properties
 *.jks
+dist/

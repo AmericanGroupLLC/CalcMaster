@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../l10n/generated/app_localizations.dart';
 import '../monetization/monetization_config.dart';
 import '../theme/tokens.dart';
 
@@ -10,6 +11,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: AppBar(
@@ -19,7 +21,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
           icon: const Icon(Icons.close, color: AppColors.text),
           onPressed: () => context.pop(),
         ),
-        title: const Text('Privacy', style: TextStyle(color: AppColors.text)),
+        title: Text(loc.settingsPrivacyPolicy, style: const TextStyle(color: AppColors.text)),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(Spacing.lg, 0, Spacing.lg, Spacing.xxl),

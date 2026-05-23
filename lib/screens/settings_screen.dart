@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../l10n/generated/app_localizations.dart';
 import '../monetization/analytics_service.dart';
 import '../monetization/monetization_config.dart';
 import '../monetization/notification_service.dart';
@@ -66,6 +67,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     final isPro = context.watch<PremiumProvider>().isPro;
     return Scaffold(
       backgroundColor: AppColors.bg,
@@ -76,16 +78,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
           icon: const Icon(Icons.close, color: AppColors.text),
           onPressed: () => context.pop(),
         ),
-        title: const Text('Settings', style: TextStyle(color: AppColors.text, fontWeight: FontWeight.w700)),
+        title: Text(loc.settingsTitle, style: const TextStyle(color: AppColors.text, fontWeight: FontWeight.w700)),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(Spacing.lg, 0, Spacing.lg, Spacing.xxl),
         children: [
-          _SectionHeader(label: 'Subscription'),
+          _SectionHeader(label: loc.settingsSubscription),
           _Tile(
             icon: Icons.workspace_premium,
             iconColor: AppColors.warning,
-            title: isPro ? 'CalcMaster Pro' : 'Subscribe to Pro',
+            title: isPro ? loc.settingsCalcMasterPro : loc.settingsSubscribePro,
             subtitle: isPro ? 'Active subscription · thanks!' : 'Remove ads + advanced features',
             trailing: isPro ? const ProBadge() : const Icon(Icons.chevron_right, color: AppColors.textDim),
             onTap: isPro
@@ -98,7 +100,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _Tile(
             icon: Icons.restore,
             iconColor: AppColors.text,
-            title: 'Restore purchases',
+            title: loc.settingsRestorePurchases,
             subtitle: 'Already paid on another device?',
             onTap: () async {
               final ok = await context.read<PremiumProvider>().restore();
@@ -109,11 +111,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           const SizedBox(height: Spacing.lg),
-          _SectionHeader(label: 'Preferences'),
+          _SectionHeader(label: loc.settingsPreferences),
           _Tile(
             icon: Icons.notifications_outlined,
             iconColor: AppColors.accentPrimary,
-            title: 'Notifications',
+            title: loc.settingsNotifications,
             subtitle: _loaded
                 ? (_notificationsEnabled ? 'Reminders & rate alerts on' : 'Off')
                 : 'Loading…',
@@ -124,24 +126,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
           const SizedBox(height: Spacing.lg),
-          _SectionHeader(label: 'Help'),
+          _SectionHeader(label: loc.settingsHelp),
           _Tile(
             icon: Icons.email_outlined,
             iconColor: AppColors.text,
-            title: 'Send feedback',
+            title: loc.settingsSendFeedback,
             subtitle: MonetizationConfig.supportEmail,
             onTap: _sendFeedback,
           ),
           _Tile(
             icon: Icons.lock_outline,
             iconColor: AppColors.text,
-            title: 'Privacy policy',
+            title: loc.settingsPrivacyPolicy,
             onTap: () => context.push('/privacy'),
           ),
           _Tile(
             icon: Icons.info_outline,
             iconColor: AppColors.text,
-            title: 'About CalcMaster',
+            title: loc.settingsAbout,
             onTap: () => context.push('/about'),
           ),
         ],

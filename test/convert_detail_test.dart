@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:calcmaster/l10n/generated/app_localizations.dart';
 import 'package:calcmaster/screens/convert_detail.dart';
+
+MaterialApp _wrap(Widget child) => MaterialApp(
+      home: child,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+    );
 
 void main() {
   group('ConvertDetail · swap button', () {
     testWidgets('initial state shows mm → cm conversion', (tester) async {
-      await tester.pumpWidget(const MaterialApp(home: ConvertDetail(categoryId: 'distance')));
+      await tester.pumpWidget(_wrap(const ConvertDetail(categoryId: 'distance')));
       await tester.pumpAndSettle();
 
       // Header
@@ -23,7 +30,7 @@ void main() {
     });
 
     testWidgets('typing 1 mm with TO=cm shows 0.1', (tester) async {
-      await tester.pumpWidget(const MaterialApp(home: ConvertDetail(categoryId: 'distance')));
+      await tester.pumpWidget(_wrap(const ConvertDetail(categoryId: 'distance')));
       await tester.pumpAndSettle();
 
       final inputFinder = find.byType(TextField);
@@ -36,7 +43,7 @@ void main() {
     });
 
     testWidgets('tapping swap button reverses FROM/TO units', (tester) async {
-      await tester.pumpWidget(const MaterialApp(home: ConvertDetail(categoryId: 'distance')));
+      await tester.pumpWidget(_wrap(const ConvertDetail(categoryId: 'distance')));
       await tester.pumpAndSettle();
 
       // Default state: FROM=mm, TO=cm. ALL CONVERSIONS for 1 mm shows cm row highlighted.
@@ -55,7 +62,7 @@ void main() {
     });
 
     testWidgets('volume: 1 L → mL after typing', (tester) async {
-      await tester.pumpWidget(const MaterialApp(home: ConvertDetail(categoryId: 'volume')));
+      await tester.pumpWidget(_wrap(const ConvertDetail(categoryId: 'volume')));
       await tester.pumpAndSettle();
       // Default first units. Just confirm 1 of base unit produces nonzero output.
       await tester.enterText(find.byType(TextField), '1');

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../l10n/generated/app_localizations.dart';
 import '../lib_currency.dart';
 import '../state/region_provider.dart';
 import '../theme/tokens.dart';
@@ -56,6 +57,7 @@ class RegionPickerSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     final current = context.watch<RegionProvider>().regionId;
     return Container(
       padding: const EdgeInsets.fromLTRB(Spacing.lg, Spacing.lg, Spacing.lg, Spacing.xxxl),
@@ -78,8 +80,8 @@ class RegionPickerSheet extends StatelessWidget {
               ),
             ),
           ),
-          const Text('Select region',
-              style: TextStyle(
+          Text(loc.regionPickerTitle,
+              style: const TextStyle(
                   color: AppColors.text,
                   fontSize: 18,
                   fontWeight: FontWeight.w700)),

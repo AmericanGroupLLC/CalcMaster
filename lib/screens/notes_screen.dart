@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../l10n/generated/app_localizations.dart';
 import '../state/notes_provider.dart';
 import '../theme/tokens.dart';
 import '../widgets/pill_badge.dart';
@@ -58,6 +59,7 @@ class _NotesScreenState extends State<NotesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     const accent = AppColors.accentPrimary;
     final all = context.watch<NotesProvider>().notes;
     final q = _searchC.text.trim().toLowerCase();
@@ -66,19 +68,19 @@ class _NotesScreenState extends State<NotesScreen> {
         : all.where((n) => n.title.toLowerCase().contains(q) || n.body.toLowerCase().contains(q)).toList();
 
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(Spacing.lg, Spacing.lg, Spacing.lg, Spacing.xxl),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const PillBadge(label: 'Saved Notes', color: accent),
+              PillBadge(label: loc.pillSavedNotes, color: accent),
               const SizedBox(height: Spacing.md),
-              Text('Notes', style: Theme.of(context).textTheme.displayLarge),
+              Text(loc.notesHubHeading, style: Theme.of(context).textTheme.displayLarge),
               const SizedBox(height: 4),
-              const Text('Save calculations, formulas, and reminders',
-                  style: TextStyle(color: AppColors.textMuted, fontSize: 14)),
+              Text(loc.notesHubSubheading,
+                  style: const TextStyle(color: AppColors.textMuted, fontSize: 14)),
               const SizedBox(height: Spacing.lg),
 
               // Search
@@ -96,12 +98,12 @@ class _NotesScreenState extends State<NotesScreen> {
                     child: TextField(
                       controller: _searchC,
                       style: const TextStyle(color: AppColors.text, fontSize: 15),
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         isCollapsed: true,
-                        contentPadding: EdgeInsets.symmetric(vertical: 14),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 14),
                         border: InputBorder.none,
-                        hintText: 'Search notes',
-                        hintStyle: TextStyle(color: AppColors.textDim),
+                        hintText: loc.notesSearch,
+                        hintStyle: const TextStyle(color: AppColors.textDim),
                       ),
                     ),
                   ),
@@ -125,7 +127,7 @@ class _NotesScreenState extends State<NotesScreen> {
                       isCollapsed: true,
                       contentPadding: const EdgeInsets.symmetric(vertical: 6),
                       border: InputBorder.none,
-                      hintText: _editingId != null ? 'Title' : 'New note title',
+                      hintText: _editingId != null ? loc.notesTitleHint : loc.notesNewTitleHint,
                       hintStyle: const TextStyle(color: AppColors.textDim),
                     ),
                   ),
@@ -134,12 +136,12 @@ class _NotesScreenState extends State<NotesScreen> {
                     style: const TextStyle(color: AppColors.text, fontSize: 15),
                     minLines: 2,
                     maxLines: 6,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       isCollapsed: true,
-                      contentPadding: EdgeInsets.only(top: 8, bottom: 8),
+                      contentPadding: const EdgeInsets.only(top: 8, bottom: 8),
                       border: InputBorder.none,
-                      hintText: 'Body',
-                      hintStyle: TextStyle(color: AppColors.textDim),
+                      hintText: loc.notesBodyHint,
+                      hintStyle: const TextStyle(color: AppColors.textDim),
                     ),
                   ),
                   Align(
@@ -151,7 +153,7 @@ class _NotesScreenState extends State<NotesScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
                       ),
                       onPressed: _save,
-                      child: Text(_editingId != null ? 'Save changes' : 'Add note'),
+                      child: Text(_editingId != null ? loc.notesSaveChanges : loc.notesAddNote),
                     ),
                   ),
                 ]),
@@ -159,11 +161,11 @@ class _NotesScreenState extends State<NotesScreen> {
 
               const SizedBox(height: Spacing.lg),
               if (filtered.isEmpty)
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: Spacing.lg),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: Spacing.lg),
                   child: Text(
-                    'No notes yet. Add your first one above.',
-                    style: TextStyle(color: AppColors.textMuted, fontSize: 14),
+                    loc.notesEmpty,
+                    style: const TextStyle(color: AppColors.textMuted, fontSize: 14),
                   ),
                 ),
               for (final n in filtered)
@@ -214,11 +216,11 @@ class _NotesScreenState extends State<NotesScreen> {
                   ),
                 ),
               if (filtered.isNotEmpty)
-                const Padding(
-                  padding: EdgeInsets.only(top: Spacing.sm),
+                Padding(
+                  padding: const EdgeInsets.only(top: Spacing.sm),
                   child: Text(
-                    'Tip: long-press a note to delete.',
-                    style: TextStyle(color: AppColors.textDim, fontSize: 12),
+                    loc.notesDeleteHint,
+                    style: const TextStyle(color: AppColors.textDim, fontSize: 12),
                   ),
                 ),
             ],

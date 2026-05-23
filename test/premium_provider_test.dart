@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:calcmaster/l10n/generated/app_localizations.dart';
 import 'package:calcmaster/monetization/premium_provider.dart';
 import 'package:calcmaster/screens/paywall_screen.dart';
 
@@ -52,7 +53,11 @@ void main() {
       await tester.pumpWidget(
         ChangeNotifierProvider(
           create: (_) => PremiumProvider(),
-          child: const MaterialApp(home: PaywallScreen()),
+          child: MaterialApp(
+            home: const PaywallScreen(),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+          ),
         ),
       );
       await tester.pumpAndSettle();

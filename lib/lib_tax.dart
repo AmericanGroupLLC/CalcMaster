@@ -16,6 +16,10 @@ const Map<RegionId, double> salesTaxRate = {
   RegionId.AU: 0.10,
   RegionId.IN: 0.18,
   RegionId.JP: 0.10,
+  RegionId.BR: 0.17,
+  RegionId.MX: 0.16,
+  RegionId.KR: 0.10,
+  RegionId.AE: 0.05,
 };
 
 const Map<RegionId, Map<FilingStatus, double>> standardDeduction = {
@@ -26,6 +30,10 @@ const Map<RegionId, Map<FilingStatus, double>> standardDeduction = {
   RegionId.AU: {FilingStatus.single: 18200, FilingStatus.joint: 18200, FilingStatus.head: 18200},
   RegionId.IN: {FilingStatus.single: 75000, FilingStatus.joint: 75000, FilingStatus.head: 75000},
   RegionId.JP: {FilingStatus.single: 480000, FilingStatus.joint: 480000, FilingStatus.head: 480000},
+  RegionId.BR: {FilingStatus.single: 28560, FilingStatus.joint: 28560, FilingStatus.head: 28560},
+  RegionId.MX: {FilingStatus.single: 0, FilingStatus.joint: 0, FilingStatus.head: 0},
+  RegionId.KR: {FilingStatus.single: 1500000, FilingStatus.joint: 1500000, FilingStatus.head: 1500000},
+  RegionId.AE: {FilingStatus.single: 0, FilingStatus.joint: 0, FilingStatus.head: 0},
 };
 
 const inf = double.infinity;
@@ -111,7 +119,53 @@ const Map<RegionId, Map<FilingStatus, List<Bracket>>> incomeTaxBrackets = {
   RegionId.AU: {FilingStatus.single: _auAll, FilingStatus.joint: _auAll, FilingStatus.head: _auAll},
   RegionId.IN: {FilingStatus.single: _inAll, FilingStatus.joint: _inAll, FilingStatus.head: _inAll},
   RegionId.JP: {FilingStatus.single: _jpAll, FilingStatus.joint: _jpAll, FilingStatus.head: _jpAll},
+  RegionId.BR: {FilingStatus.single: _brAll, FilingStatus.joint: _brAll, FilingStatus.head: _brAll},
+  RegionId.MX: {FilingStatus.single: _mxAll, FilingStatus.joint: _mxAll, FilingStatus.head: _mxAll},
+  RegionId.KR: {FilingStatus.single: _krAll, FilingStatus.joint: _krAll, FilingStatus.head: _krAll},
+  RegionId.AE: {FilingStatus.single: _aeAll, FilingStatus.joint: _aeAll, FilingStatus.head: _aeAll},
 };
+
+// Brazil: progressive 2024-26 (BRL)
+const _brAll = [
+  Bracket(28560, 0),
+  Bracket(33920, 0.075),
+  Bracket(45012, 0.15),
+  Bracket(55976, 0.225),
+  Bracket(inf, 0.275),
+];
+
+// Mexico: progressive ISR 2025 (MXN). Simplified — uses key brackets.
+const _mxAll = [
+  Bracket(8952, 0.0192),
+  Bracket(75984, 0.0640),
+  Bracket(133536, 0.1088),
+  Bracket(155224, 0.16),
+  Bracket(185852, 0.1792),
+  Bracket(374838, 0.2136),
+  Bracket(590796, 0.2352),
+  Bracket(1127926, 0.30),
+  Bracket(1503902, 0.32),
+  Bracket(4511707, 0.34),
+  Bracket(inf, 0.35),
+];
+
+// South Korea: progressive 2024-25 (KRW)
+const _krAll = [
+  Bracket(14000000, 0.06),
+  Bracket(50000000, 0.15),
+  Bracket(88000000, 0.24),
+  Bracket(150000000, 0.35),
+  Bracket(300000000, 0.38),
+  Bracket(500000000, 0.40),
+  Bracket(1000000000, 0.42),
+  Bracket(inf, 0.45),
+];
+
+// UAE: 0% personal income tax (corporate tax exists at 9% above AED 375k profit,
+// but personal earnings are not federally taxed).
+const _aeAll = [
+  Bracket(inf, 0),
+];
 
 class TaxResult {
   final double taxableIncome;

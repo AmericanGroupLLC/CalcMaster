@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-enum RegionId { US, UK, EU, CA, AU, IN, JP }
+enum RegionId { US, UK, EU, CA, AU, IN, JP, BR, MX, KR, AE }
 
 class Region {
   final RegionId id;
@@ -29,6 +29,10 @@ const List<Region> regions = [
   Region(id: RegionId.AU, label: 'AU', flag: '🇦🇺', currency: 'AUD', symbol: 'A\$', locale: 'en_AU'),
   Region(id: RegionId.IN, label: 'IN', flag: '🇮🇳', currency: 'INR', symbol: '₹', locale: 'en_IN'),
   Region(id: RegionId.JP, label: 'JP', flag: '🇯🇵', currency: 'JPY', symbol: '¥', locale: 'ja_JP'),
+  Region(id: RegionId.BR, label: 'BR', flag: '🇧🇷', currency: 'BRL', symbol: 'R\$', locale: 'pt_BR'),
+  Region(id: RegionId.MX, label: 'MX', flag: '🇲🇽', currency: 'MXN', symbol: 'Mex\$', locale: 'es_MX'),
+  Region(id: RegionId.KR, label: 'KR', flag: '🇰🇷', currency: 'KRW', symbol: '₩', locale: 'ko_KR'),
+  Region(id: RegionId.AE, label: 'AE', flag: '🇦🇪', currency: 'AED', symbol: 'د.إ', locale: 'en_AE'),
 ];
 
 Region regionById(RegionId id) =>
