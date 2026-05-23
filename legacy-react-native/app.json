@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "name": "CalcMaster",
+    "slug": "calcmaster",
+    "version": "4.0.0",
+    "orientation": "portrait",
+    "scheme": "calcmaster",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.calcmaster.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "CalcMaster uses your location only when you tap \"Use my location\" in the GPS Coordinates tool, to convert your current coordinates."
+      }
+    },
+    "android": {
+      "package": "com.calcmaster.app",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ]
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-localization",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "CalcMaster uses your location only when you tap \"Use my location\" in the GPS Coordinates tool."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

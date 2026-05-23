@@ -1,0 +1,34 @@
+{
+  "hosting": [
+    {
+      "target": "marketing",
+      "public": "marketing/site",
+      "ignore": ["**/.*", "**/node_modules/**"],
+      "rewrites": [],
+      "headers": [
+        {
+          "source": "**/*.@(css|html)",
+          "headers": [
+            { "key": "Cache-Control", "value": "max-age=3600" }
+          ]
+        }
+      ]
+    },
+    {
+      "target": "webapp",
+      "public": "build/web",
+      "ignore": ["**/.*", "**/node_modules/**"],
+      "rewrites": [
+        { "source": "**", "destination": "/index.html" }
+      ],
+      "headers": [
+        {
+          "source": "**/*.@(js|css)",
+          "headers": [
+            { "key": "Cache-Control", "value": "max-age=31536000, immutable" }
+          ]
+        }
+      ]
+    }
+  ]
+}
