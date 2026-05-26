@@ -1,16 +1,16 @@
 # Default reviewers
-* @{{OWNER}}
+* @AmericanGroupLLC
 
 # Stack-specific
-*.swift @{{IOS_OWNER}}
-*.kt @{{ANDROID_OWNER}}
-*.dart @{{FLUTTER_OWNER}}
-*.ts *.tsx @{{WEB_OWNER}}
+*.swift @AmericanGroupLLC
+*.kt @AmericanGroupLLC
+*.dart @AmericanGroupLLC
+*.ts *.tsx @AmericanGroupLLC
 
 # Docs
-docs/** @{{OWNER}}
-*.md @{{OWNER}}
+docs/** @AmericanGroupLLC
+*.md @AmericanGroupLLC
 
 # CI
-.github/** @{{OWNER}}
-fastlane/** @{{OWNER}}
+.github/** @AmericanGroupLLC
+fastlane/** @AmericanGroupLLC

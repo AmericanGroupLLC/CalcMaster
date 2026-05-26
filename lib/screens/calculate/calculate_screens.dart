@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/generated/app_localizations.dart';
 
 import '../../lib_calc.dart';
 import '../../lib_format.dart';
@@ -98,7 +99,7 @@ class _StandardCalcState extends State<StandardCalc> {
   @override
   Widget build(BuildContext context) {
     return InnerScaffold(
-      title: 'Standard',
+      title: AppLocalizations.of(context)!.calcStandard,
       subtitle: 'Live result updates as you type',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -207,7 +208,7 @@ class _ScientificCalcState extends State<ScientificCalc> {
   @override
   Widget build(BuildContext context) {
     return InnerScaffold(
-      title: 'Scientific',
+      title: AppLocalizations.of(context)!.calcScientific,
       subtitle: 'Trig, logs, powers, factorial',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -281,7 +282,7 @@ class _PercentageCalcState extends State<PercentageCalc> {
     final isPct = B == 0 ? double.nan : A / B;
     final change = A == 0 ? double.nan : (B - A) / A;
     return InnerScaffold(
-      title: 'Percentage',
+      title: AppLocalizations.of(context)!.calcPercentage,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           Expanded(child: NumberInput(label: 'X', controller: aC)),
@@ -344,7 +345,7 @@ class _BaseCalcState extends State<BaseCalc> {
   @override
   Widget build(BuildContext context) {
     return InnerScaffold(
-      title: 'Base Converter',
+      title: AppLocalizations.of(context)!.calcBase,
       subtitle: 'Bin · Oct · Dec · Hex',
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         const Text('Input base', style: TextStyle(color: AppColors.textMuted, fontSize: 13)),
@@ -430,7 +431,7 @@ class _FractionCalcState extends State<FractionCalc> {
     final r = _compute();
     final dec = r.d == 0 ? double.nan : r.n / r.d;
     return InnerScaffold(
-      title: 'Fraction',
+      title: AppLocalizations.of(context)!.calcFraction,
       subtitle: 'Add, subtract, multiply, divide',
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [

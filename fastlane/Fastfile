@@ -8,9 +8,9 @@ platform :ios do
   lane :beta do
     sh("cd .. && flutter build ipa --release")
     upload_to_testflight(
-      ipa: "../build/ios/ipa/{{APP_NAME}}.ipa",
+      ipa: "../build/ios/ipa/CalcMaster.ipa",
       skip_waiting_for_build_processing: true,
-      groups: ["{{TESTFLIGHT_GROUP}}"]
+      groups: ["Internal Beta"]
     )
     upload_symbols_to_crashlytics(
       dsym_path: "../build/ios/archive/Runner.xcarchive/dSYMs"

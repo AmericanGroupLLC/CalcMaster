@@ -1,4 +1,4 @@
-# Testing — {{APP_NAME}}
+# Testing — CalcMaster
 
 ## Coverage target
 - **≥90% line, ≥85% branch** (enforced in CI)
@@ -8,31 +8,31 @@
 
 | Layer | Tooling | Where | What |
 | --- | --- | --- | --- |
-| **Unit** | {{UNIT_TOOL}} | `__tests__/` / `test/` / `*Tests/` | Pure functions, view-models, reducers, services, mappers |
-| **Component / Widget** | {{COMPONENT_TOOL}} | `src/__tests__/components/` etc. | Render + interaction; no real network |
-| **Integration** | {{INTEGRATION_TOOL}} | `test/integration/` | Module-to-module, navigation, persistence, API client w/ fake server |
-| **E2E** | {{E2E_TOOL}} | `e2e/` / `integration_test/` | Real device/sim, real bundle, critical paths only |
+| **Unit** | flutter_test | `__tests__/` / `test/` / `*Tests/` | Pure functions, view-models, reducers, services, mappers |
+| **Component / Widget** | flutter_test (Widget tests) | `src/__tests__/components/` etc. | Render + interaction; no real network |
+| **Integration** | integration_test package | `test/integration/` | Module-to-module, navigation, persistence, API client w/ fake server |
+| **E2E** | integration_test package | `e2e/` / `integration_test/` | Real device/sim, real bundle, critical paths only |
 
 ## Run
 
 ```bash
 # All unit + component + integration with coverage
-{{TEST_CMD}}
+flutter test --coverage
 
 # E2E — iOS sim
-{{E2E_IOS_CMD}}
+flutter drive --driver=test_driver/integration_test.dart --target=integration_test/app_test.dart -d iPhone
 
 # E2E — Android emu
-{{E2E_ANDROID_CMD}}
+flutter drive --driver=test_driver/integration_test.dart --target=integration_test/app_test.dart -d android
 
 # E2E — web
-{{E2E_WEB_CMD}}
+flutter drive --driver=test_driver/integration_test.dart --target=integration_test/app_test.dart -d chrome
 ```
 
 ## Coverage report
 
 ```bash
-{{COVERAGE_CMD}}
+flutter test --coverage && lcov --summary coverage/lcov.info
 # HTML report at ./coverage/index.html (or coverage/lcov-report/)
 ```
 
@@ -48,8 +48,8 @@ CI fails the build if coverage drops below the threshold for any committed file.
 - **E2E only for critical user journeys** — keep small, parallelize, retry once on infra flake
 
 ## Mock / fake strategy
-- Network: {{NETWORK_FAKE}} (msw / mockwebserver / URLProtocol stub)
-- Time: {{TIME_FAKE}} (fakeTimers / Clock injection)
+- Network: http.MockClient / nock (msw / mockwebserver / URLProtocol stub)
+- Time: FakeAsync (fakeTimers / Clock injection)
 - Random: seeded RNG injected via DI
 - Storage: in-memory implementation behind the production interface
 
@@ -71,7 +71,7 @@ Each carve-out must be tagged with a justification comment:
 - Owner has 5 working days to fix or delete
 
 ## Local debugging tips
-{{LOCAL_DEBUG_TIPS}}
+Use flutter run -d chrome for fast web debugging.
 
 ## CI behavior
 - PR: lint + unit + component + coverage gate (must pass to merge)

@@ -7,7 +7,7 @@ import 'package:calcmaster/screens/convert_home.dart';
 import 'package:calcmaster/state/notes_provider.dart';
 import 'package:calcmaster/state/region_provider.dart';
 
-/// Boot the Convert hub in each of the 9 supported locales and assert that
+/// Boot the Convert hub in each of the 12 supported locales and assert that
 /// the locale's translated heading is rendered. Detects regressions where
 /// an ARB key is missing or a widget bypasses AppLocalizations.
 Widget wrap(Locale locale) {
@@ -38,6 +38,9 @@ void main() {
     'de': 'Umrechnen',
     'ja': '変換',
     'pt': 'Converter',
+    'it': 'Converti',
+    'ko': '변환',
+    'ru': 'Конвертер',
   };
 
   for (final entry in headings.entries) {

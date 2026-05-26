@@ -1,4 +1,4 @@
-# Contributing to {{APP_NAME}}
+# Contributing to CalcMaster
 
 ## Branching
 - `main` — protected; releases tagged from here
@@ -21,7 +21,7 @@
 
 ## Code style
 - Lint config in repo root is the source of truth
-- Run `{{LINT_CMD}}` and `{{FORMAT_CMD}}` before pushing
+- Run `flutter analyze` and `flutter format` before pushing
 - Pre-commit hook recommended (Husky / pre-commit)
 
 ## Tests required

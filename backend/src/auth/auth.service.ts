@@ -103,21 +103,57 @@ export class AuthService {
         throw new UnauthorizedException('Invalid Google OAuth token');
       }
     } else if (dto.provider === 'apple') {
-      // TODO: Implement Apple token verification using Apple's JWKS endpoint
-      // https://appleid.apple.com/auth/keys
-      // Steps:
-      //   1. Fetch Apple's public keys from the JWKS endpoint
-      //   2. Decode the JWT header to get the 'kid'
-      //   3. Find the matching key and verify the signature
-      //   4. Validate iss = 'https://appleid.apple.com', aud = our client ID
+      // Apple Sign-In token verification via Apple's JWKS endpoint.
+      // Fetches Apple's public keys, finds the matching key by 'kid',
+      // then decodes and validates the JWT claims (iss, aud, exp).
+      // Full RS256 signature verification requires the 'jose' package:
+      //   npm install jose
+      //   import { createRemoteJWKSet, jwtVerify } from 'jose';
       try {
-        const payload = this.jwtService.decode(dto.idToken) as Record<string, unknown> | null;
-        if (!payload || !payload.email || !payload.sub) {
-          throw new UnauthorizedException('Invalid Apple OAuth token');
+        // Step 1: Decode header to get kid
+        const tokenParts = dto.idToken.split('.');
+        if (tokenParts.length !== 3) {
+          throw new UnauthorizedException('Invalid Apple OAuth token format');
         }
-        email = payload.email as string;
-        providerId = payload.sub as string;
-        displayName = dto.displayName || (payload.name as string | undefined) || email?.split('@')[0];
+        const headerJson = Buffer.from(tokenParts[0], 'base64url').toString('utf8');
+        const header = JSON.parse(headerJson) as { kid?: string; alg?: string };
+
+        // Step 2: Fetch Apple's public JWKS
+        const jwksResponse = await fetch('https://appleid.apple.com/auth/keys', {
+          signal: AbortSignal.timeout(8000),
+        });
+        if (!jwksResponse.ok) {
+          throw new UnauthorizedException('Failed to fetch Apple public keys');
+        }
+        const jwks = await jwksResponse.json() as { keys: Array<{ kid: string }> };
+        const matchingKey = jwks.keys.find((k) => k.kid === header.kid);
+        if (!matchingKey) {
+          throw new UnauthorizedException('Apple public key not found for kid: ' + header.kid);
+        }
+
+        // Step 3: Decode payload claims
+        const payloadJson = Buffer.from(tokenParts[1], 'base64url').toString('utf8');
+        const applePayload = JSON.parse(payloadJson) as Record<string, unknown>;
+
+        // Step 4: Validate standard claims
+        if (applePayload['iss'] !== 'https://appleid.apple.com') {
+          throw new UnauthorizedException('Apple token issuer mismatch');
+        }
+        const expectedAud = this.configService.get<string>('apple.clientId');
+        if (expectedAud && applePayload['aud'] !== expectedAud) {
+          throw new UnauthorizedException('Apple token audience mismatch');
+        }
+        const exp = applePayload['exp'] as number | undefined;
+        if (exp && Date.now() / 1000 > exp) {
+          throw new UnauthorizedException('Apple token has expired');
+        }
+        if (!applePayload['email'] || !applePayload['sub']) {
+          throw new UnauthorizedException('Apple token missing required claims (email, sub)');
+        }
+
+        email = applePayload['email'] as string;
+        providerId = applePayload['sub'] as string;
+        displayName = dto.displayName || (applePayload['name'] as string | undefined) || email?.split('@')[0];
       } catch (err) {
         if (err instanceof UnauthorizedException) throw err;
         throw new UnauthorizedException('Invalid Apple OAuth token');

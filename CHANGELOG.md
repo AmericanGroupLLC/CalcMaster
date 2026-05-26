@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to {{APP_NAME}} are documented here.
+All notable changes to CalcMaster are documented here.
 
 This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
@@ -18,7 +18,7 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
 ### Security
 -
 
-## [0.1.0] - {{DATE}}
+## [0.1.0] - May 26, 2026
 
 ### Added
 - Initial repository scaffold

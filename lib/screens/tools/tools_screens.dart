@@ -1,4 +1,5 @@
 import 'dart:async';
+import '../../l10n/generated/app_localizations.dart';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -44,7 +45,7 @@ class _GpsCalcState extends State<GpsCalc> {
         perm = await Geolocator.requestPermission();
       }
       if (perm == LocationPermission.deniedForever || perm == LocationPermission.denied) {
-        if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Location permission denied')));
+        if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.actionPermissionDenied)));
         return;
       }
       final pos = await Geolocator.getCurrentPosition();
@@ -60,7 +61,7 @@ class _GpsCalcState extends State<GpsCalc> {
   @override
   Widget build(BuildContext context) {
     return InnerScaffold(
-      title: 'GPS Coordinates',
+      title: AppLocalizations.of(context)!.toolGps,
       subtitle: 'Decimal ↔ DMS',
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         NumberInput(label: 'Latitude (decimal)', controller: lat),
@@ -72,7 +73,7 @@ class _GpsCalcState extends State<GpsCalc> {
             style: FilledButton.styleFrom(backgroundColor: AppColors.text, foregroundColor: AppColors.bg, padding: const EdgeInsets.symmetric(vertical: 14)),
             onPressed: loading ? null : _useMyLoc,
             icon: const Icon(Icons.navigation, size: 18),
-            label: Text(loading ? 'Locating...' : 'Use my location'),
+            label: Text(loading ? AppLocalizations.of(context)!.actionLocating : AppLocalizations.of(context)!.actionUseMyLocation),
           ),
         ),
         const SizedBox(height: Spacing.lg),
@@ -121,7 +122,7 @@ class _OhmCalcState extends State<OhmCalc> {
     final s = _solve();
     String f(double? x, String unit) => (x == null || !x.isFinite) ? '—' : '${formatNumber(x)} $unit';
     return InnerScaffold(
-      title: "Ohm's Law",
+      title: AppLocalizations.of(context)!.toolOhm,
       subtitle: 'Enter any two values',
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         NumberInput(label: 'Voltage (V)', controller: v),
@@ -175,7 +176,7 @@ class _BmiCalcState extends State<BmiCalc> {
     }
     final cat = _category(bmi);
     return InnerScaffold(
-      title: 'BMI',
+      title: AppLocalizations.of(context)!.toolBmi,
       subtitle: 'Body Mass Index',
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         const Text('Units', style: TextStyle(color: AppColors.textMuted, fontSize: 13)),
@@ -267,7 +268,7 @@ class _DateDiffCalcState extends State<DateDiffCalc> {
       hours = '${diff.inHours}';
     }
     return InnerScaffold(
-      title: 'Date Difference',
+      title: AppLocalizations.of(context)!.toolDateDiff,
       subtitle: 'YYYY-MM-DD format',
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         NumberInput(label: 'From', controller: from, keyboardType: TextInputType.text),
@@ -312,7 +313,7 @@ class _TimeZonesScreenState extends State<TimeZonesScreen> {
   Widget build(BuildContext context) {
     final nowUtc = DateTime.now().toUtc();
     return InnerScaffold(
-      title: 'Time Zones',
+      title: AppLocalizations.of(context)!.toolTimeZones,
       subtitle: 'Live world clocks',
       child: Column(children: [
         for (final z in zones)
@@ -378,7 +379,7 @@ class _AdcDacCalcState extends State<AdcDacCalc> {
       code = c;
     }
     return InnerScaffold(
-      title: 'ADC / DAC',
+      title: AppLocalizations.of(context)!.toolAdcDac,
       subtitle: mode == 'adc' ? 'Analog → Digital' : 'Digital → Analog',
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         ChipPicker<String>(options: const [(id: 'adc', label: 'ADC'), (id: 'dac', label: 'DAC')], value: mode, onChange: (v) => setState(() => mode = v)),
@@ -439,7 +440,7 @@ class _AgeCalcState extends State<AgeCalc> {
       next = '${_isoDate(nb)} · in $daysToNext days';
     }
     return InnerScaffold(
-      title: 'Age Calculator',
+      title: AppLocalizations.of(context)!.toolAge,
       subtitle: 'YYYY-MM-DD',
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         NumberInput(label: 'Date of birth', controller: dob, keyboardType: TextInputType.text),
@@ -500,7 +501,7 @@ class _AspectRatioCalcState extends State<AspectRatioCalc> {
       }
     }
     return InnerScaffold(
-      title: 'Aspect Ratio',
+      title: AppLocalizations.of(context)!.toolAspectRatio,
       subtitle: 'Solve missing W or H',
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [

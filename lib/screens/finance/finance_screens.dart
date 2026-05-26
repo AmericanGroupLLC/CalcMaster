@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import '../../l10n/generated/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import '../../lib_currency.dart';
@@ -64,7 +65,7 @@ class _TaxCalcState extends State<TaxCalc> {
     final salesTotal = p + salesTax;
 
     return InnerScaffold(
-      title: 'Tax',
+      title: AppLocalizations.of(context)!.financeTax,
       subtitle: '${region.flag} ${region.label} · ${region.currency}',
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
@@ -161,7 +162,7 @@ class _TipCalcState extends State<TipCalc> {
     final tip = b * t;
     final total = b + tip;
     return InnerScaffold(
-      title: 'Tip & Split',
+      title: AppLocalizations.of(context)!.financeTip,
       subtitle: '${region.flag} ${region.currency}',
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         NumberInput(label: 'Bill (${region.currency})', controller: bill),
@@ -198,7 +199,7 @@ class _DiscountCalcState extends State<DiscountCalc> {
     final savings = o * p;
     final fin = o - savings;
     return InnerScaffold(
-      title: 'Discount',
+      title: AppLocalizations.of(context)!.financeDiscount,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         NumberInput(label: 'Original (${region.currency})', controller: original),
         NumberInput(label: 'Discount %', controller: pct),
@@ -242,7 +243,7 @@ class _CompoundCalcState extends State<CompoundCalc> {
     final contributed = P + PMT * n * t;
     final interest = future - contributed;
     return InnerScaffold(
-      title: 'Compound Interest',
+      title: AppLocalizations.of(context)!.financeCompound,
       subtitle: 'Future value of an investment',
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         NumberInput(label: 'Principal (${region.currency})', controller: principal),
@@ -299,7 +300,7 @@ class _EmiCalcState extends State<EmiCalc> {
       }
     }
     return InnerScaffold(
-      title: 'EMI / Loan',
+      title: AppLocalizations.of(context)!.financeEMI,
       subtitle: 'Equated monthly installment',
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         NumberInput(label: 'Loan amount (${region.currency})', controller: principal),
@@ -338,7 +339,7 @@ class _CurrencyCalcState extends State<CurrencyCalc> {
     }.toList();
     final num = safeNumber(amount.text);
     return InnerScaffold(
-      title: 'Currency',
+      title: AppLocalizations.of(context)!.financeCurrency,
       subtitle: regionState.ratesLive ? 'Live rates' : 'Offline rates',
       actions: [
         IconButton(
@@ -414,7 +415,7 @@ class _UnitPriceCalcState extends State<UnitPriceCalc> {
       );
     }
     return InnerScaffold(
-      title: 'Unit Price',
+      title: AppLocalizations.of(context)!.financeUnitPrice,
       subtitle: 'Which pack is cheaper?',
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(crossAxisAlignment: CrossAxisAlignment.start, children: [

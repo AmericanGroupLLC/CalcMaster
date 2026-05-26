@@ -1,14 +1,14 @@
-# Design — {{APP_NAME}}
+# Design — CalcMaster
 
 ## Goal
-{{GOAL_PARAGRAPH}}
+CalcMaster is a comprehensive, region-aware world calculator and converter designed to replace multiple utility apps with a single, fast, and privacy-first solution.
 
 ## Architecture overview
 
 ```mermaid
 flowchart LR
-    User((User)) --> Client[{{CLIENT_NAME}}]
-    Client -->|HTTPS / tRPC / GraphQL| API[{{API_NAME}}]
+    User((User)) --> Client[CalcMaster Flutter App]
+    Client -->|HTTPS / tRPC / GraphQL| API[CalcMaster Backend API]
     API --> DB[(Database)]
     API --> Cache[(Cache)]
     Client --> NativeBridge[Native Modules]
@@ -19,8 +19,8 @@ flowchart LR
 
 | Module | Responsibility | Tech | Path |
 | --- | --- | --- | --- |
-| {{MODULE_1}} | {{RESP_1}} | {{TECH_1}} | {{PATH_1}} |
-| {{MODULE_2}} | {{RESP_2}} | {{TECH_2}} | {{PATH_2}} |
+| Convert | Unit conversion across 10 categories | Dart / Flutter | lib/lib_units.dart |
+| Calculate | 5 calculation modes (standard, scientific, etc.) | Dart / Flutter | lib/lib_calc.dart |
 
 ## Data flow
 
@@ -41,17 +41,17 @@ sequenceDiagram
 ```
 
 ## State management
-- **Strategy:** {{STATE_STRATEGY}} (Redux / Riverpod / SwiftUI @State+@Observable / Zustand / etc.)
+- **Strategy:** Provider (ChangeNotifier) (Redux / Riverpod / SwiftUI @State+@Observable / Zustand / etc.)
 - **Boundaries:** UI ↔ ViewModel ↔ Repository ↔ API
-- **Persistence:** {{PERSISTENCE}}
+- **Persistence:** SharedPreferences (local) and PostgreSQL (backend)
 
 ## Native bridges (mobile only)
 | Capability | iOS API | Android API | Bridge module |
 | --- | --- | --- | --- |
-| {{CAP_1}} | {{IOS_1}} | {{ANDROID_1}} | {{BRIDGE_1}} |
+| GPS Coordinates | CoreLocation | Google Play Services Location | geolocator package |
 
 ## Concurrency model
-{{CONCURRENCY_NOTES}}
+Concurrency is handled using Dart Async/Await and Future.wait for parallel requests.
 
 ## Error & failure model
 - All `Result<T, AppError>` boundaries documented in code
@@ -64,14 +64,14 @@ sequenceDiagram
 - Time-to-interactive (web): ≤ 3.0s on 4G
 
 ## Security & privacy
-- Auth: {{AUTH_SCHEME}}
-- Secrets: never committed; sourced from {{SECRETS_SOURCE}}
-- PII: {{PII_NOTES}}
+- Auth: JWT Bearer Token with MFA (TOTP)
+- Secrets: never committed; sourced from Environment variables (.env for backend, MonetizationConfig for Flutter)
+- PII: PII (emails, display names) is encrypted in transit and hashed in database where applicable.
 - Telemetry opt-out respected
 
 ## Out of scope
-{{OUT_OF_SCOPE}}
+Direct hardware integration beyond GPS, custom theme engines beyond dark/light modes.
 
 ## Open questions
-- {{Q_1}}
-- {{Q_2}}
+- How will currency rates be updated?
+- What is the fallback for offline usage?

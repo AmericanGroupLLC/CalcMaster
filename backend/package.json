@@ -1,3 +1,11 @@
+Removed: @apollo/server
+Removed: @nestjs/apollo
+Removed: @nestjs/graphql
+Removed: graphql
+Removed: @nestjs/websockets
+Removed: @nestjs/platform-socket.io
+Removed: @nestjs/serve-static
+Removed: ioredis
 {
   "name": "backend",
   "version": "0.0.1",
@@ -20,29 +28,21 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@apollo/server": "^5.5.1",
-    "@nestjs/apollo": "^13.4.2",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.0.1",
-    "@nestjs/graphql": "^13.4.2",
     "@nestjs/jwt": "^11.0.2",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
-    "@nestjs/platform-socket.io": "^11.1.23",
     "@nestjs/schedule": "^6.1.3",
-    "@nestjs/serve-static": "^5.0.5",
     "@nestjs/swagger": "^11.4.4",
     "@nestjs/throttler": "^6.5.0",
     "@nestjs/typeorm": "^11.0.1",
-    "@nestjs/websockets": "^11.1.23",
     "bcryptjs": "^3.0.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "firebase-admin": "^13.10.0",
-    "graphql": "^16.14.0",
     "helmet": "^8.2.0",
-    "ioredis": "^5.10.1",
     "otplib": "^13.4.0",
     "passport": "^0.7.0",
     "passport-apple": "^2.0.2",
