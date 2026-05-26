@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -9,6 +8,7 @@ import 'l10n/generated/app_localizations.dart';
 import 'monetization/ad_service.dart';
 import 'monetization/analytics_service.dart';
 import 'monetization/premium_provider.dart';
+import 'state/auth_provider.dart';
 import 'state/notes_provider.dart';
 import 'state/region_provider.dart';
 import 'theme/app_theme.dart';
@@ -45,13 +45,18 @@ class CalcMasterApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => RegionProvider()),
         ChangeNotifierProvider(create: (_) => NotesProvider()),
         ChangeNotifierProvider(create: (_) => PremiumProvider()),
+        ChangeNotifierProvider(create: (_) {
+          final auth = AuthProvider();
+          auth.init();
+          return auth;
+        }),
       ],
       child: MaterialApp.router(
         title: 'CalcMaster',
         theme: theme,
         debugShowCheckedModeBanner: false,
         routerConfig: appRouter,
-        // Internationalization: 9 locales supported. MaterialApp auto-flips
+        // Internationalization: 12 locales supported. MaterialApp auto-flips
         // direction for RTL locales (Arabic). When the device locale isn't in
         // the list, fall back to English.
         localizationsDelegates: AppLocalizations.localizationsDelegates,

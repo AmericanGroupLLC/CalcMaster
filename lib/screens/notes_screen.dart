@@ -177,7 +177,33 @@ class _NotesScreenState extends State<NotesScreen> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(Radii.button),
                       onTap: () => _startEdit(n),
-                      onLongPress: () => context.read<NotesProvider>().remove(n.id),
+                      onLongPress: () async {
+                        final confirmed = await showDialog<bool>(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            backgroundColor: AppColors.surface,
+                            title: const Text('Delete this note?',
+                                style: TextStyle(color: AppColors.text)),
+                            content: const Text(
+                                'This action cannot be undone.',
+                                style: TextStyle(color: AppColors.textMuted)),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(ctx, false),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(ctx, true),
+                                child: const Text('Delete',
+                                    style: TextStyle(color: AppColors.danger)),
+                              ),
+                            ],
+                          ),
+                        );
+                        if (confirmed == true && context.mounted) {
+                          context.read<NotesProvider>().remove(n.id);
+                        }
+                      },
                       child: Container(
                         padding: const EdgeInsets.all(Spacing.md),
                         decoration: BoxDecoration(

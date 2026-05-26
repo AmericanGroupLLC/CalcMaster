@@ -1,5 +1,6 @@
 import 'dart:io' show Platform;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -29,6 +30,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   late final Animation<double> _exitFade;
 
   String get _leadingLetter {
+    if (kIsWeb) return 'C';
     try {
       if (Platform.isIOS) return 'i';
       if (Platform.isAndroid) return 'a';

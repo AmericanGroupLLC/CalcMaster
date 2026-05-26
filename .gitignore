@@ -55,3 +55,9 @@ legacy-react-native/android/build/
 android/key.properties
 *.jks
 dist/
+
+# Backend
+backend/node_modules/
+backend/dist/
+backend/.env
+backend/coverage/

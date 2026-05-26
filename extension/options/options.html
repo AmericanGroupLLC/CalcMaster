@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CalcMaster Settings</title>
+  <style>
+    :root { --bg: #0B1020; --surface: #141A2E; --text: #fff; --muted: rgba(255,255,255,0.6); --accent: #7C5CFF; --border: rgba(255,255,255,0.08); }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; padding: 32px; max-width: 480px; margin: 0 auto; }
+    h1 { font-size: 22px; margin-bottom: 24px; }
+    .field { margin-bottom: 20px; }
+    label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+    select { width: 100%; padding: 10px; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 10px; font-size: 14px; }
+    .saved { color: #5CE0A8; font-size: 13px; margin-top: 12px; opacity: 0; transition: opacity 0.3s; }
+    .saved.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <h1>CalcMaster Settings</h1>
+  <div class="field">
+    <label for="default-tab">Default tab</label>
+    <select id="default-tab">
+      <option value="calc">Calculator</option>
+      <option value="convert">Converter</option>
+      <option value="finance">Finance</option>
+    </select>
+  </div>
+  <div class="field">
+    <label for="default-category">Default conversion category</label>
+    <select id="default-category">
+      <option value="distance">Distance</option>
+      <option value="weight">Weight</option>
+      <option value="temperature">Temperature</option>
+      <option value="volume">Volume</option>
+      <option value="speed">Speed</option>
+      <option value="area">Area</option>
+      <option value="data">Data Size</option>
+      <option value="pressure">Pressure</option>
+      <option value="energy">Energy</option>
+    </select>
+  </div>
+  <div class="saved" id="saved-msg">Settings saved</div>
+  <script>
+    const defaultTab = document.getElementById('default-tab');
+    const defaultCat = document.getElementById('default-category');
+    const savedMsg = document.getElementById('saved-msg');
+
+    chrome.storage.local.get(['defaultTab', 'defaultCategory'], (data) => {
+      if (data.defaultTab) defaultTab.value = data.defaultTab;
+      if (data.defaultCategory) defaultCat.value = data.defaultCategory;
+    });
+
+    function save() {
+      chrome.storage.local.set({
+        defaultTab: defaultTab.value,
+        defaultCategory: defaultCat.value
+      });
+      savedMsg.classList.add('show');
+      setTimeout(() => savedMsg.classList.remove('show'), 2000);
+    }
+
+    defaultTab.addEventListener('change', save);
+    defaultCat.addEventListener('change', save);
+  </script>
+</body>
+</html>

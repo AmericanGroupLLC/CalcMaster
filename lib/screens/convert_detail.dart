@@ -64,8 +64,6 @@ class _ConvertDetailState extends State<ConvertDetail> {
     final loc = AppLocalizations.of(context)!;
     final accent = _cat.accent;
     final value = double.tryParse(_controller.text) ?? 0;
-    final fromObj = _cat.unitById(_fromUnit) ?? _cat.units.first;
-    final toObj = _cat.unitById(_toUnit) ?? _cat.units.first;
     final result = convert(value, _fromUnit, _toUnit, _cat);
 
     return Scaffold(

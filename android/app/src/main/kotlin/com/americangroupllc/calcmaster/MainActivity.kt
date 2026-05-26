@@ -1,4 +1,4 @@
-package com.calcmaster.calcmaster
+package com.americangroupllc.calcmaster
 
 import io.flutter.embedding.android.FlutterActivity
 

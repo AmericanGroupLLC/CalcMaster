@@ -1,0 +1,38 @@
+default_platform(:ios)
+
+platform :ios do
+  lane :test do
+    sh("cd .. && flutter test --coverage")
+  end
+
+  lane :beta do
+    sh("cd .. && flutter build ipa --release")
+    upload_to_testflight(
+      ipa: "../build/ios/ipa/{{APP_NAME}}.ipa",
+      skip_waiting_for_build_processing: true,
+      groups: ["{{TESTFLIGHT_GROUP}}"]
+    )
+    upload_symbols_to_crashlytics(
+      dsym_path: "../build/ios/archive/Runner.xcarchive/dSYMs"
+    )
+  end
+
+  lane :release do
+    deliver(submit_for_review: true, automatic_release: true, force: true)
+  end
+end
+
+platform :android do
+  lane :beta do
+    sh("cd .. && flutter build appbundle --release")
+    upload_to_play_store(
+      track: "internal",
+      aab: "../build/app/outputs/bundle/release/app-release.aab"
+    )
+  end
+
+  lane :release do
+    upload_to_play_store(track: "production", track_promote_to: "production",
+                         skip_upload_apk: true, skip_upload_aab: true)
+  end
+end

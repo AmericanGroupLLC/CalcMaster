@@ -4,12 +4,19 @@
       "target": "marketing",
       "public": "marketing/site",
       "ignore": ["**/.*", "**/node_modules/**"],
-      "rewrites": [],
+      "rewrites": [
+        { "source": "/privacy", "destination": "/privacy.html" },
+        { "source": "/terms", "destination": "/terms.html" },
+        { "source": "/support", "destination": "/support.html" }
+      ],
       "headers": [
         {
           "source": "**/*.@(css|html)",
           "headers": [
-            { "key": "Cache-Control", "value": "max-age=3600" }
+            { "key": "Cache-Control", "value": "max-age=3600" },
+            { "key": "X-Content-Type-Options", "value": "nosniff" },
+            { "key": "X-Frame-Options", "value": "DENY" },
+            { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
           ]
         }
       ]

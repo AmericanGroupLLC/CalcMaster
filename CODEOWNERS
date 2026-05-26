@@ -1,0 +1,16 @@
+# Default reviewers
+* @{{OWNER}}
+
+# Stack-specific
+*.swift @{{IOS_OWNER}}
+*.kt @{{ANDROID_OWNER}}
+*.dart @{{FLUTTER_OWNER}}
+*.ts *.tsx @{{WEB_OWNER}}
+
+# Docs
+docs/** @{{OWNER}}
+*.md @{{OWNER}}
+
+# CI
+.github/** @{{OWNER}}
+fastlane/** @{{OWNER}}

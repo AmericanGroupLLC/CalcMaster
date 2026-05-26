@@ -2,11 +2,14 @@
     <!-- Internet for AdMob + currency rates -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Location for GPS Coordinates tool (only used when user taps "Use my location") -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <!-- Notifications: Android 13+ requires runtime POST_NOTIFICATIONS permission -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
-        android:label="calcmaster"
+        android:label="CalcMaster"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

@@ -1,0 +1,90 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    strategy:
+      matrix:
+        include:
+          - platform: android
+            os: ubuntu-latest
+          - platform: ios
+            os: macos-14
+          - platform: web
+            os: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with: { flutter-version: '3.24.x', channel: stable, cache: true }
+
+      - if: matrix.platform == 'android'
+        uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '17' }
+
+      - run: flutter pub get
+
+      - name: Build Android
+        if: matrix.platform == 'android'
+        run: |
+          flutter build apk --release
+          flutter build appbundle --release
+          cp build/app/outputs/flutter-apk/app-release.apk CalcMaster-${{ github.ref_name }}-android.apk
+          cp build/app/outputs/bundle/release/app-release.aab CalcMaster-${{ github.ref_name }}-android.aab
+
+      - name: Build iOS
+        if: matrix.platform == 'ios'
+        run: |
+          flutter build ios --release --no-codesign
+          cd build/ios/iphoneos && tar czf ../../../CalcMaster-${{ github.ref_name }}-ios-unsigned.tar.gz Runner.app
+
+      - name: Build Web
+        if: matrix.platform == 'web'
+        run: |
+          flutter build web --release --wasm
+          cd build/web && tar czf ../../CalcMaster-${{ github.ref_name }}-web.tar.gz .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ matrix.platform }}
+          path: CalcMaster-${{ github.ref_name }}-*
+
+  publish-release:
+    needs: build-release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Generate checksums
+        run: |
+          cd artifacts
+          shasum -a 256 CalcMaster-* > SHA256SUMS.txt
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            artifacts/CalcMaster-*
+            artifacts/SHA256SUMS.txt
+
+  build-backend-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and tag backend
+        working-directory: backend
+        run: |
+          docker build -t calcmaster-api:${{ github.ref_name }} .
+          docker build -t calcmaster-api:latest .

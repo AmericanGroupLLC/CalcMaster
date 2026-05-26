@@ -111,10 +111,8 @@ class MonetizationConfig {
 
   // Optional: meal-delivery / wellness affiliate URLs. Replace with real
   // tracking URLs from your partner dashboards.
-  static const String mealKitAffiliateUrl =
-      'https://example.com/affiliate/mealkit?ref=DUMMY'; // REPLACE
-  static const String wellnessSubscriptionUrl =
-      'https://example.com/affiliate/wellness?ref=DUMMY'; // REPLACE
+  static const String mealKitAffiliateUrl = ''; // REPLACE: set real meal-kit affiliate URL
+  static const String wellnessSubscriptionUrl = ''; // REPLACE: set real wellness affiliate URL
 
   // Per-slot Amazon search URLs — used by `AffiliateService.urlFor()`.
   // The `?tag=...` query param is appended automatically based on region.
@@ -140,7 +138,7 @@ class MonetizationConfig {
   static const String appStoreUrl =
       'https://apps.apple.com/app/calcmaster/id0000000000'; // REPLACE after listing
   static const String playStoreUrl =
-      'https://play.google.com/store/apps/details?id=com.calcmaster.calcmaster'; // REPLACE
+      'https://play.google.com/store/apps/details?id=com.americangroupllc.calcmaster'; // REPLACE
 
   // ───────────────────────────────────────────────────────────────────
   //  TUNING — safe to leave at defaults

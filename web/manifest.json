@@ -1,11 +1,13 @@
 {
   "name": "CalcMaster — World Calculator & Converter",
   "short_name": "CalcMaster",
+  "id": "/",
   "start_url": ".",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#0B1020",
   "theme_color": "#0B1020",
-  "description": "Convert units, calculate tax, split bills, and 30+ tools. Region-aware for 7 countries. Privacy-first, runs offline.",
+  "description": "Convert units, calculate tax, split bills, and 30+ tools. Region-aware for 11 regions. Privacy-first, runs offline.",
   "orientation": "portrait-primary",
   "prefer_related_applications": false,
   "icons": [

@@ -167,8 +167,6 @@ class _ScientificCalcState extends State<ScientificCalc> {
     }
   }
 
-  void _add(String s) => setState(() => expr += s);
-
   Widget _key(String label, String insert, {Color? bg, Color? fg, bool small = false}) {
     return Expanded(
       child: Padding(

@@ -31,6 +31,7 @@ class AdService {
   /// default — so we can still surface test ads in dev builds. Production
   /// builds should keep adsEnabled = false until real unit IDs land.
   bool _hasTestAds() {
+    if (kIsWeb) return false;
     if (Platform.isIOS) return MonetizationConfig.admobIosBanner.isNotEmpty;
     if (Platform.isAndroid) return MonetizationConfig.admobAndroidBanner.isNotEmpty;
     return false;

@@ -1,0 +1,79 @@
+# {{APP_NAME}}
+
+> {{ONE_LINE_DESCRIPTION}}
+
+[![CI](https://img.shields.io/github/actions/workflow/status/{{ORG}}/{{REPO}}/ci.yml?branch=main)](../../actions)
+[![codecov](https://img.shields.io/codecov/c/github/{{ORG}}/{{REPO}}.svg)](https://codecov.io/gh/{{ORG}}/{{REPO}})
+[![License](https://img.shields.io/badge/license-{{LICENSE}}-blue.svg)](LICENSE)
+
+## Stack
+- **Language(s):** {{LANGS}}
+- **Framework(s):** {{FRAMEWORKS}}
+- **Targets:** {{TARGETS}} (e.g. iOS 15+, Android 24+, modern browsers)
+- **Backend:** {{BACKEND}}
+
+## Documentation
+| Doc | Purpose |
+| --- | --- |
+| [docs/DESIGN.md](docs/DESIGN.md) | Architecture, modules, data flow |
+| [docs/SPEC.md](docs/SPEC.md) | Functional + non-functional spec |
+| [docs/TESTING.md](docs/TESTING.md) | How to run unit / integration / E2E |
+| [docs/RELEASE.md](docs/RELEASE.md) | Publishing endpoints + version-bump checklist |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Branching, commit style, PR flow |
+| [CHANGELOG.md](CHANGELOG.md) | Versioned change log |
+
+## Prerequisites
+- {{PREREQ_1}}
+- {{PREREQ_2}}
+- {{PREREQ_3}}
+
+## Install
+```bash
+{{INSTALL_CMD}}
+```
+
+## Run (development)
+```bash
+{{RUN_CMD}}
+```
+
+## Test
+```bash
+# unit + component
+{{TEST_CMD}}
+
+# coverage report (gate: ≥90% line / ≥85% branch)
+{{COVERAGE_CMD}}
+
+# E2E (critical paths)
+{{E2E_CMD}}
+```
+
+## Lint / format
+```bash
+{{LINT_CMD}}
+{{FORMAT_CMD}}
+```
+
+## Build (production)
+```bash
+{{BUILD_CMD}}
+```
+
+## Release
+See [docs/RELEASE.md](docs/RELEASE.md) for publishing endpoints (App Store, Play Store, npm, hosting), version-bump checklist, and rollback steps.
+
+## Troubleshooting
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| Crash on launch | Native module ABI mismatch | Run `{{CLEAN_CMD}}` then reinstall pods/gradle |
+| Install fails | Lockfile drift | Delete lockfile + node_modules, reinstall |
+| Build slow / stale | Stale caches | `{{CACHE_CLEAR_CMD}}` |
+
+## Project structure
+```
+{{PROJECT_TREE}}
+```
+
+## License
+{{LICENSE}}

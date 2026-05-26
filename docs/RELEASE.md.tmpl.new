@@ -1,0 +1,120 @@
+# Release — {{APP_NAME}}
+
+> Source of truth for **publishing endpoints** and the **release runbook**. Concrete IDs/keys live in 1Password and CI secrets — never plaintext here.
+
+## Publishing endpoints
+
+### iOS — App Store Connect
+- **Apple Team ID:** _stored in 1Password — `vault://AGL/{{REPO}}/AppleTeamID`_
+- **Bundle ID:** `{{IOS_BUNDLE_ID}}`
+- **App Store Connect API Key:** `vault://AGL/{{REPO}}/ASC-API-Key`
+- **TestFlight Group:** `{{TESTFLIGHT_GROUP}}`
+- **fastlane lane:** `bundle exec fastlane ios beta` (TestFlight) / `release` (App Store)
+- **Provisioning:** `fastlane match` repo `{{MATCH_REPO}}`
+
+### Android — Google Play Console
+- **Package name:** `{{ANDROID_PACKAGE}}`
+- **Service-account key:** `vault://AGL/{{REPO}}/GooglePlay-SA-Key`
+- **Track:** internal → closed → open → production
+- **fastlane lane:** `bundle exec fastlane android beta` / `release`
+- **Signing:** Play App Signing enabled; upload key in `vault://AGL/{{REPO}}/UploadKey`
+
+### Web — hosted client
+- **Domain:** `{{WEB_DOMAIN}}`
+- **Provider:** {{WEB_PROVIDER}} (Vercel / Netlify / Cloudflare Pages / S3+CF)
+- **Deploy command:** `{{WEB_DEPLOY_CMD}}`
+- **CDN purge:** `{{CDN_PURGE_CMD}}`
+
+### Backend service
+- **Image registry:** `{{REGISTRY}}/{{IMAGE_NAME}}`
+- **Deploy target:** {{DEPLOY_TARGET}} (Fly.io / Render / k8s / Cloud Run / etc.)
+- **Health check:** `{{HEALTH_URL}}`
+- **Migrations:** `{{MIGRATION_CMD}}`
+
+### npm/pnpm package (if published)
+- **Registry:** https://registry.npmjs.org
+- **Package:** `{{NPM_PACKAGE}}`
+- **Access:** {{NPM_ACCESS}} (public / restricted)
+- **2FA:** required on publish
+- **Publish lane:** `pnpm publish --access public`
+
+### Browser extension (if applicable)
+- **Chrome Web Store:** `{{CHROME_EXT_ID}}`
+- **Firefox Add-ons:** `{{FIREFOX_EXT_ID}}`
+- **Edge Add-ons:** `{{EDGE_EXT_ID}}`
+
+### Crashlytics / Sentry / observability
+- **Project:** `{{OBSERVABILITY_PROJECT}}`
+- **dSYM upload:** automated via fastlane `upload_symbols_to_crashlytics`
+
+### GitHub Releases
+- **Tag format:** `vX.Y.Z` (semver)
+- **Release notes:** auto-generated from `CHANGELOG.md`
+
+## Version bump (per release)
+
+### React Native / Expo
+- [ ] `package.json` → `version`
+- [ ] `app.json` or `app.config.ts` → `version`, `ios.buildNumber`, `android.versionCode`
+
+### Flutter
+- [ ] `pubspec.yaml` → `version: 1.2.3+45` (semver+build)
+
+### Native iOS
+- [ ] `Info.plist` (or `xcconfig`) → `CFBundleShortVersionString`, `CFBundleVersion`
+
+### Native Android
+- [ ] `app/build.gradle(.kts)` → `versionName`, `versionCode`
+
+### Node / web
+- [ ] `package.json` → `version`
+
+## Release runbook
+
+### 1. Pre-flight (on `main`)
+- [ ] CI green
+- [ ] Coverage gate passing (≥90% line / ≥85% branch)
+- [ ] CHANGELOG.md updated
+- [ ] Version bumped (above)
+- [ ] Tag pushed: `git tag vX.Y.Z && git push origin vX.Y.Z`
+
+### 2. iOS publish
+```bash
+bundle exec fastlane ios beta      # uploads to TestFlight
+# smoke test in TestFlight
+bundle exec fastlane ios release   # promotes to App Store review
+```
+
+### 3. Android publish
+```bash
+bundle exec fastlane android beta      # internal track
+# promote in Play Console: internal → closed → open → production
+```
+
+### 4. Web / server publish
+```bash
+{{WEB_DEPLOY_CMD}}
+{{SERVER_DEPLOY_CMD}}
+```
+
+### 5. Post-release
+- [ ] dSYM/mapping uploaded to crash reporter
+- [ ] Smoke test in production for 30 minutes
+- [ ] GitHub Release created with notes
+- [ ] Announce in `#{{SLACK_CHANNEL}}`
+
+## Rollback
+
+| Channel | Action |
+| --- | --- |
+| **iOS** | App Store: Phased Release pause; TestFlight: expire build. Cannot un-publish; ship hotfix `vX.Y.Z+1`. |
+| **Android** | Play Console → halt rollout (immediate). Roll back to previous version via "Rollout > Halt > Resume previous". |
+| **Web** | `{{WEB_PROVIDER}}` → revert to previous deployment (one-click). |
+| **Server** | Re-deploy previous image tag; run down-migration if schema changed. |
+| **npm** | `npm dist-tag rm` + `pnpm publish` of patched version (cannot unpublish after 72h). |
+
+## Owners / on-call
+- Release captain: {{OWNER}}
+- iOS contact: {{IOS_OWNER}}
+- Android contact: {{ANDROID_OWNER}}
+- Web/server contact: {{WEB_OWNER}}

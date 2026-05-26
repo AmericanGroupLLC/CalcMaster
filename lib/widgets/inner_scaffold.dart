@@ -29,6 +29,7 @@ class InnerScaffold extends StatelessWidget {
               Row(
                 children: [
                   IconButton(
+                    tooltip: 'Go back',
                     icon: const Icon(Icons.chevron_left, color: AppColors.text, size: 28),
                     onPressed: () => context.pop(),
                   ),

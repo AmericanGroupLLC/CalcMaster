@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:provider/provider.dart';
-
 import 'package:calcmaster/app_router.dart';
 import 'package:calcmaster/l10n/generated/app_localizations.dart';
 import 'package:calcmaster/monetization/premium_provider.dart';

@@ -121,7 +121,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 : 'Loading…',
             trailing: Switch(
               value: _notificationsEnabled,
-              activeColor: AppColors.accentPrimary,
+              activeTrackColor: AppColors.accentPrimary,
               onChanged: _loaded ? _toggleNotifications : null,
             ),
           ),
