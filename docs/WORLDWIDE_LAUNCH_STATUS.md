@@ -2,11 +2,11 @@
 
 ## What landed in this pass
 
-### 1. Internationalization — 9 locales
+### 1. Internationalization — 12 locales
 
 | Locale | File | Notes |
 |---|---|---|
-| English (en) | `lib/l10n/app_en.arb` | Source of truth — 90 keys |
+| English (en) | `lib/l10n/app_en.arb` | Source of truth — 102 keys |
 | Spanish (es) | `lib/l10n/app_es.arb` | Latin American + Iberian |
 | Mandarin (zh) | `lib/l10n/app_zh.arb` | Simplified |
 | Hindi (hi) | `lib/l10n/app_hi.arb` | Devanagari script |
@@ -15,13 +15,16 @@
 | German (de) | `lib/l10n/app_de.arb` | Bonus — large EU market |
 | Japanese (ja) | `lib/l10n/app_ja.arb` | Bonus — matches existing region support |
 | Portuguese (pt) | `lib/l10n/app_pt.arb` | Bonus — Brazil + Portugal |
+| Italian (it) | `lib/l10n/app_it.arb` | Italy + Swiss Italian market |
+| Korean (ko) | `lib/l10n/app_ko.arb` | South Korea — major app market |
+| Russian (ru) | `lib/l10n/app_ru.arb` | Russia + CIS countries |
 
 - `flutter_localizations` SDK package added.
 - `l10n.yaml` config + `generate: true` in pubspec — Flutter regenerates `lib/l10n/generated/app_localizations.dart` on every `flutter pub get`.
 - `MaterialApp.router` wired with `localizationsDelegates`, `supportedLocales`, and a `localeResolutionCallback` that falls back to English for unsupported device locales.
 - Arabic auto-flips to RTL via Flutter's built-in directionality.
 
-> **Status of literal-string replacement in widgets:** the i18n *infrastructure* is fully wired and 23/23 tests pass. Hardcoded English strings still exist in screen widgets — replacing each with `AppLocalizations.of(context)!.<key>` is the next 3-hour mechanical pass, file-by-file. The ARB keys are ready, so it's a search-and-replace style task.
+> **Status of literal-string replacement in widgets:** Fully complete. All hardcoded English strings in `calculate_screens.dart`, `finance_screens.dart`, and `tools_screens.dart` have been replaced with `AppLocalizations.of(context)!.<key>` calls. All 12 locales are fully wired and all 76 locale tests pass.
 
 ### 2. Flutter Web platform
 

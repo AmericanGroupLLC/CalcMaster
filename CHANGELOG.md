@@ -26,5 +26,5 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
 - CI pipeline with ≥90% line / ≥85% branch coverage gate
 - Documentation set: README, DESIGN, SPEC, RELEASE, TESTING, CONTRIBUTING
 
-[Unreleased]: https://github.com/{{ORG}}/{{REPO}}/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/{{ORG}}/{{REPO}}/releases/tag/v0.1.0
+[Unreleased]: https://github.com/AmericanGroupLLC/CalMaster/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/AmericanGroupLLC/CalMaster/releases/tag/v0.1.0

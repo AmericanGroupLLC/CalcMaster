@@ -1,5 +1,6 @@
 export default () => ({
   port: parseInt(process.env.PORT ?? '3000', 10),
+  apiBaseUrl: process.env.API_BASE_URL || 'https://api.calcmaster.app',
   database: {
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT ?? '5432', 10),
@@ -19,14 +20,18 @@ export default () => ({
   google: {
     clientId: process.env.GOOGLE_CLIENT_ID || '',
     clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
-    callbackUrl: process.env.GOOGLE_CALLBACK_URL || 'http://localhost:3000/api/v1/auth/google/callback',
+    callbackUrl:
+      process.env.GOOGLE_CALLBACK_URL ||
+      `${process.env.API_BASE_URL || 'https://api.calcmaster.app'}/api/v1/auth/google/callback`,
   },
   apple: {
-    clientId: process.env.APPLE_CLIENT_ID || '',
+    clientId: process.env.APPLE_CLIENT_ID || 'com.americangroupllc.calcmaster',
     teamId: process.env.APPLE_TEAM_ID || '',
     keyId: process.env.APPLE_KEY_ID || '',
     privateKey: process.env.APPLE_PRIVATE_KEY || '',
-    callbackUrl: process.env.APPLE_CALLBACK_URL || 'http://localhost:3000/api/v1/auth/apple/callback',
+    callbackUrl:
+      process.env.APPLE_CALLBACK_URL ||
+      `${process.env.API_BASE_URL || 'https://api.calcmaster.app'}/api/v1/auth/apple/callback`,
   },
   ai: {
     openaiKey: process.env.OPENAI_API_KEY || '',
@@ -41,6 +46,9 @@ export default () => ({
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL || '',
   },
   cors: {
-    origins: (process.env.CORS_ORIGINS || 'http://localhost:3000,http://localhost:8080').split(','),
+    origins: (
+      process.env.CORS_ORIGINS ||
+      'https://calcmaster.app,https://www.calcmaster.app'
+    ).split(','),
   },
 });

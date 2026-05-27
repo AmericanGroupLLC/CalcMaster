@@ -77,6 +77,8 @@ jobs:
           DB_USERNAME: calcmaster
           DB_PASSWORD: calcmaster_dev
           DB_NAME: calcmaster_test
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
           JWT_SECRET: ci_test_secret
           NODE_ENV: test
 

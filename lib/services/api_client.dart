@@ -8,7 +8,7 @@ class ApiClient {
 
   static const String _baseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://localhost:3000/api/v1',
+    defaultValue: 'https://api.calcmaster.app/api/v1',
   );
 
   String? _accessToken;
