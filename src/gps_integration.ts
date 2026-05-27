@@ -10,7 +10,6 @@ export interface GPSCoordinates {
 }
 
 export async function getCurrentLocation(): Promise<GPSCoordinates> {
-  // 1. Device GPS Check
   if (typeof navigator !== 'undefined' && navigator.geolocation) {
     try {
       const position = await new Promise<GeolocationPosition>((resolve, reject) => {
@@ -31,7 +30,6 @@ export async function getCurrentLocation(): Promise<GPSCoordinates> {
     }
   }
 
-  // 2. IP-Geolocation Fallback API
   try {
     const response = await fetch('https://ipapi.co/json/');
     if (response.ok) {
@@ -46,7 +44,6 @@ export async function getCurrentLocation(): Promise<GPSCoordinates> {
     console.error("IP Geolocation fallback failed:", e);
   }
 
-  // 3. Default fallback (San Francisco, CA)
   return {
     latitude: 37.7749,
     longitude: -122.4194,
