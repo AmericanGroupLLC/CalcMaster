@@ -1,0 +1,19 @@
+{
+  "name": "calmaster",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "jest --verbose",
+    "test:unit": "jest tests_suite/unit.test.ts",
+    "test:integration": "jest tests_suite/integration.test.ts",
+    "test:functional": "jest tests_suite/functional.test.ts",
+    "test:performance": "jest tests_suite/performance.test.ts",
+    "test:e2e": "jest tests_suite/e2e.test.ts"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.0.0",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.0.0"
+  }
+}
