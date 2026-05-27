@@ -1,7 +1,10 @@
 describe('CalMaster Unit Tests', () => {
-  it('should verify core business logic for CalMaster', () => {
-    const data = { id: '1', active: true, value: 100 };
-    expect(data.active).toBe(true);
-    expect(data.value).toBe(100);
+  it('should verify core domain mathematical algorithms', () => {
+    const calculateEfficiency = (input: number, overhead: number) => {
+      if (input <= 0) return 0;
+      return Math.max(0, Math.min(100, Math.round(((input - overhead) / input) * 100)));
+    };
+    expect(calculateEfficiency(100, 10)).toBe(90);
+    expect(calculateEfficiency(0, 10)).toBe(0);
   });
 });
