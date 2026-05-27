@@ -74,3 +74,23 @@ void main() {
     expect(dir, equals(TextDirection.ltr));
   });
 }
+
+  testWidgets('All locales have aiChatTitle key', (tester) async {
+    for (final code in headings.keys) {
+      await tester.pumpWidget(wrap(Locale(code)));
+      await tester.pumpAndSettle();
+      final loc = AppLocalizations.of(tester.element(find.byType(ConvertHome)))!;
+      expect(loc.aiChatTitle, isNotEmpty,
+          reason: 'aiChatTitle should be non-empty for locale $code');
+      expect(loc.aiChatHint, isNotEmpty,
+          reason: 'aiChatHint should be non-empty for locale $code');
+      expect(loc.authTwoFactor, isNotEmpty,
+          reason: 'authTwoFactor should be non-empty for locale $code');
+      expect(loc.deleteNoteTitle, isNotEmpty,
+          reason: 'deleteNoteTitle should be non-empty for locale $code');
+      expect(loc.privacyAtGlance, isNotEmpty,
+          reason: 'privacyAtGlance should be non-empty for locale $code');
+      expect(loc.labelFilingStatus, isNotEmpty,
+          reason: 'labelFilingStatus should be non-empty for locale $code');
+    }
+  });

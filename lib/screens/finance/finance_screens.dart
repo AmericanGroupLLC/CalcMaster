@@ -76,7 +76,7 @@ class _TaxCalcState extends State<TaxCalc> {
         if (mode == 'income') ...[
           NumberInput(label: 'Annual gross (${region.currency})', controller: income),
           const SizedBox(height: Spacing.md),
-          const Text('Filing status', style: TextStyle(color: AppColors.textMuted, fontSize: 13)),
+          Text(AppLocalizations.of(context)!.labelFilingStatus, style: const TextStyle(color: AppColors.textMuted, fontSize: 13)),
           const SizedBox(height: Spacing.sm),
           ChipPicker<FilingStatus>(
             options: const [
@@ -251,7 +251,7 @@ class _CompoundCalcState extends State<CompoundCalc> {
         NumberInput(label: 'Years', controller: years),
         NumberInput(label: 'Monthly contribution (optional, ${region.currency})', controller: pmt),
         const SizedBox(height: Spacing.md),
-        const Text('Compounding frequency', style: TextStyle(color: AppColors.textMuted, fontSize: 13)),
+        Text(AppLocalizations.of(context)!.labelCompoundFreq, style: const TextStyle(color: AppColors.textMuted, fontSize: 13)),
         const SizedBox(height: Spacing.sm),
         ChipPicker<String>(
           options: const [(id: '1', label: 'Annually'), (id: '4', label: 'Quarterly'), (id: '12', label: 'Monthly'), (id: '365', label: 'Daily')],
@@ -350,7 +350,7 @@ class _CurrencyCalcState extends State<CurrencyCalc> {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         NumberInput(label: 'Amount', controller: amount),
         const SizedBox(height: Spacing.md),
-        const Text('From', style: TextStyle(color: AppColors.textMuted, fontSize: 13)),
+        Text(AppLocalizations.of(context)!.labelFrom, style: const TextStyle(color: AppColors.textMuted, fontSize: 13)),
         const SizedBox(height: Spacing.sm),
         ChipPicker<String>(
           options: [for (final c in allCodes) (id: c, label: c)],
@@ -408,7 +408,7 @@ class _UnitPriceCalcState extends State<UnitPriceCalc> {
             NumberInput(label: 'Price (${region.currency})', controller: p),
             NumberInput(label: 'Quantity', controller: q),
             const SizedBox(height: Spacing.sm),
-            const Text('Per unit', style: TextStyle(color: AppColors.textMuted, fontSize: 13)),
+            Text(AppLocalizations.of(context)!.labelPerUnit, style: const TextStyle(color: AppColors.textMuted, fontSize: 13)),
             Text(up.isFinite ? cur(up) : '—', style: TextStyle(color: win ? AppColors.success : AppColors.text, fontSize: 22, fontWeight: FontWeight.w700)),
           ]),
         ),

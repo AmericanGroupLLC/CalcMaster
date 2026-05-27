@@ -182,20 +182,20 @@ class _NotesScreenState extends State<NotesScreen> {
                           context: context,
                           builder: (ctx) => AlertDialog(
                             backgroundColor: AppColors.surface,
-                            title: const Text('Delete this note?',
-                                style: TextStyle(color: AppColors.text)),
-                            content: const Text(
-                                'This action cannot be undone.',
-                                style: TextStyle(color: AppColors.textMuted)),
+                            title: Text(loc.deleteNoteTitle,
+                                style: const TextStyle(color: AppColors.text)),
+                            content: Text(
+                                loc.notesDeleteHint,
+                                style: const TextStyle(color: AppColors.textMuted)),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.pop(ctx, false),
-                                child: const Text('Cancel'),
+                                child: Text(loc.deleteNoteCancel),
                               ),
                               TextButton(
                                 onPressed: () => Navigator.pop(ctx, true),
-                                child: const Text('Delete',
-                                    style: TextStyle(color: AppColors.danger)),
+                                child: Text(loc.deleteNoteConfirm,
+                                    style: const TextStyle(color: AppColors.danger)),
                               ),
                             ],
                           ),

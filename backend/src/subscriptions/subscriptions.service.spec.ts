@@ -87,3 +87,39 @@ describe('SubscriptionsService', () => {
     });
   });
 });
+
+  describe('verifyReceipt', () => {
+    it('should return invalid for empty receipt', async () => {
+      const result = await service.verifyReceipt(PaymentProvider.APPLE, '');
+      expect(result.valid).toBe(false);
+    });
+
+    it('should return invalid for Apple when APPLE_SHARED_SECRET not set', async () => {
+      const original = process.env.APPLE_SHARED_SECRET;
+      delete process.env.APPLE_SHARED_SECRET;
+      const result = await service.verifyReceipt(PaymentProvider.APPLE, 'some-receipt');
+      expect(result.valid).toBe(false);
+      if (original) process.env.APPLE_SHARED_SECRET = original;
+    });
+
+    it('should return invalid for Google when GOOGLE_SERVICE_ACCOUNT_JSON not set', async () => {
+      const original = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+      delete process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+      const result = await service.verifyReceipt(PaymentProvider.GOOGLE, JSON.stringify({ packageName: 'com.test', productId: 'prod', purchaseToken: 'tok' }));
+      expect(result.valid).toBe(false);
+      if (original) process.env.GOOGLE_SERVICE_ACCOUNT_JSON = original;
+    });
+
+    it('should return invalid for Stripe when STRIPE_SECRET_KEY not set', async () => {
+      const original = process.env.STRIPE_SECRET_KEY;
+      delete process.env.STRIPE_SECRET_KEY;
+      const result = await service.verifyReceipt(PaymentProvider.STRIPE, 'sub_test');
+      expect(result.valid).toBe(false);
+      if (original) process.env.STRIPE_SECRET_KEY = original;
+    });
+
+    it('should return invalid for unsupported provider', async () => {
+      const result = await service.verifyReceipt('unknown' as PaymentProvider, 'receipt');
+      expect(result.valid).toBe(false);
+    });
+  });

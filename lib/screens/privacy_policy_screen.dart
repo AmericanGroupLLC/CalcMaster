@@ -26,8 +26,8 @@ class PrivacyPolicyScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(Spacing.lg, 0, Spacing.lg, Spacing.xxl),
         children: [
-          const Text('Privacy at a glance',
-              style: TextStyle(color: AppColors.text, fontSize: 22, fontWeight: FontWeight.w700)),
+          Text(loc.privacyAtGlance,
+              style: const TextStyle(color: AppColors.text, fontSize: 22, fontWeight: FontWeight.w700)),
           const SizedBox(height: Spacing.md),
           _para('CalcMaster runs almost entirely on your device. Your conversions, '
               'notes, and selected region are stored locally and never leave your phone unless you explicitly opt in.'),
@@ -45,7 +45,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 14),
             ),
             onPressed: () => launchUrl(Uri.parse(MonetizationConfig.privacyPolicyUrl)),
-            child: const Text('Open full privacy policy'),
+            child: Text(loc.settingsPrivacyPolicy),
           ),
           const SizedBox(height: Spacing.sm),
           OutlinedButton(
@@ -55,7 +55,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 14),
             ),
             onPressed: () => launchUrl(Uri.parse(MonetizationConfig.termsOfServiceUrl)),
-            child: const Text('Terms of service'),
+            child: Text(loc.settingsSubscription.contains('Terms') ? loc.settingsSubscription : 'Terms of Service'),
           ),
         ],
       ),

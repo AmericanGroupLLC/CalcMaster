@@ -7,6 +7,7 @@ import '../../theme/tokens.dart';
 import '../../widgets/animated_gradient_background.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/glow_text.dart';
+import '../../l10n/generated/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -83,22 +84,22 @@ class _LoginScreenState extends State<LoginScreen> {
       barrierDismissible: false,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: const Text('Two-Factor Authentication',
-            style: TextStyle(color: AppColors.text)),
+        title: Text(AppLocalizations.of(context)!.authTwoFactor,
+            style: const TextStyle(color: AppColors.text)),
         content: TextField(
           controller: codeCtrl,
           keyboardType: TextInputType.number,
           maxLength: 6,
           style: const TextStyle(color: AppColors.text, fontSize: 24, letterSpacing: 8),
-          decoration: const InputDecoration(
-            hintText: '000000',
-            hintStyle: TextStyle(color: AppColors.textDim),
+          decoration: InputDecoration(
+            hintText: AppLocalizations.of(context)!.authOtpHint,
+            hintStyle: const TextStyle(color: AppColors.textDim),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context)!.authCancel),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -114,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 router.go('/convert');
               }
             },
-            child: const Text('Verify'),
+            child: Text(AppLocalizations.of(context)!.authVerify),
           ),
         ],
       ),

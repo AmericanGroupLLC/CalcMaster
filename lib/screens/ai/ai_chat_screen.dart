@@ -6,6 +6,7 @@ import '../../state/ai_chat_provider.dart';
 import '../../theme/tokens.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/glow_text.dart';
+import '../../l10n/generated/app_localizations.dart';
 
 class AiChatScreen extends StatefulWidget {
   const AiChatScreen({super.key});
@@ -104,9 +105,9 @@ class _AiChatScreenState extends State<AiChatScreen> {
             icon: const Icon(Icons.chevron_left, color: AppColors.text, size: 28),
             onPressed: () => context.pop(),
           ),
-          const Expanded(
+          Expanded(
             child: Text(
-              'AI Assistant',
+              AppLocalizations.of(context)!.aiChatTitle,
               style: TextStyle(
                 color: AppColors.text,
                 fontSize: 22,
@@ -155,10 +156,10 @@ class _AiChatScreenState extends State<AiChatScreen> {
               style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: Spacing.sm),
-            const Text(
-              'Ask me about conversions, calculations,\nfinance, or anything else!',
+            Text(
+              AppLocalizations.of(context)!.aiChatEmpty,
               textAlign: TextAlign.center,
-              style: TextStyle(color: AppColors.textMuted, fontSize: 14),
+              style: const TextStyle(color: AppColors.textMuted, fontSize: 14),
             ),
             const SizedBox(height: Spacing.xxl),
             Wrap(
@@ -294,7 +295,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
               focusNode: _focusNode,
               style: const TextStyle(color: AppColors.text, fontSize: 15),
               decoration: InputDecoration(
-                hintText: 'Ask CalcMaster AI...',
+                hintText: AppLocalizations.of(context)!.aiChatHint,
                 hintStyle:
                     const TextStyle(color: AppColors.textDim, fontSize: 15),
                 border: OutlineInputBorder(

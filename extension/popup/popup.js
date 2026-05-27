@@ -66,12 +66,47 @@ function convert(val, from, to, cat) {
 let expr = '';
 let lastResult = '';
 
+// Safe math evaluator — no eval / Function() constructor (MV3 CSP compliant)
+function safeMath(expr) {
+  // Tokenise: numbers, operators, parentheses, decimal points
+  const tokens = expr.match(/([0-9]*\.?[0-9]+|[+\-*/()%])/g);
+  if (!tokens) return NaN;
+  let pos = 0;
+  function peek() { return tokens[pos]; }
+  function consume() { return tokens[pos++]; }
+  function parseExpr() {
+    let left = parseTerm();
+    while (peek() === '+' || peek() === '-') {
+      const op = consume();
+      const right = parseTerm();
+      left = op === '+' ? left + right : left - right;
+    }
+    return left;
+  }
+  function parseTerm() {
+    let left = parseFactor();
+    while (peek() === '*' || peek() === '/') {
+      const op = consume();
+      const right = parseFactor();
+      left = op === '*' ? left * right : left / right;
+    }
+    return left;
+  }
+  function parseFactor() {
+    const t = peek();
+    if (t === '(') { consume(); const v = parseExpr(); consume(); return v; }
+    if (t === '-') { consume(); return -parseFactor(); }
+    return parseFloat(consume());
+  }
+  try { return parseExpr(); } catch { return NaN; }
+}
+
 function updateDisplay() {
   document.getElementById('calc-expr').textContent = expr;
   try {
     if (expr.length > 0) {
       const safe = expr.replace(/[^0-9+\-*/.()%]/g, '');
-      const result = Function('"use strict"; return (' + safe + ')')();
+      const result = safeMath(safe);
       if (isFinite(result)) {
         lastResult = Number(result.toPrecision(12)).toString();
         document.getElementById('calc-result').textContent = lastResult;
@@ -109,14 +144,13 @@ document.querySelectorAll('.key').forEach(key => {
     } else if (action === 'percent') {
       try {
         const safe = expr.replace(/[^0-9+\-*/.()]/g, '');
-        const result = Function('"use strict"; return (' + safe + ')')();
-        expr = (result / 100).toString();
-        updateDisplay();
+        const result = safeMath(safe);
+        if (isFinite(result)) { expr = (result / 100).toString(); updateDisplay(); }
       } catch { /* ignore */ }
     } else if (action === 'equals') {
       try {
         const safe = expr.replace(/[^0-9+\-*/.()]/g, '');
-        const result = Function('"use strict"; return (' + safe + ')')();
+        const result = safeMath(safe);
         if (isFinite(result)) {
           expr = Number(result.toPrecision(12)).toString();
           updateDisplay();
@@ -254,9 +288,18 @@ function saveState() {
   });
 }
 
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  const tab = document.querySelector(`.tab[data-panel="${name}"]`);
+  if (tab) { tab.classList.add('active'); tab.setAttribute('aria-selected', 'true'); }
+  const panel = document.getElementById('panel-' + name);
+  if (panel) panel.classList.add('active');
+}
+
 function restoreState() {
   chrome.storage.local.get(
-    ['calcExpr', 'convertCat', 'convertFrom', 'convertTo', 'convertVal', 'financeMode'],
+    ['calcExpr', 'convertCat', 'convertFrom', 'convertTo', 'convertVal', 'financeMode', 'pendingConvert', 'pendingCalculate'],
     (data) => {
       if (data.calcExpr) { expr = data.calcExpr; updateDisplay(); }
       if (data.convertCat) { catSelect.value = data.convertCat; populateUnits(); }
@@ -264,6 +307,19 @@ function restoreState() {
       if (data.convertTo) toUnit.value = data.convertTo;
       if (data.convertVal) { fromVal.value = data.convertVal; doConvert(); }
       if (data.financeMode) { financeMode.value = data.financeMode; setupFinance(); }
+      // Handle context-menu triggered actions from service worker
+      if (data.pendingConvert) {
+        fromVal.value = data.pendingConvert;
+        showTab('convert');
+        doConvert();
+        chrome.storage.local.remove('pendingConvert');
+      }
+      if (data.pendingCalculate) {
+        expr = data.pendingCalculate.replace(/[^0-9+\-*/.()%]/g, '');
+        showTab('calc');
+        updateDisplay();
+        chrome.storage.local.remove('pendingCalculate');
+      }
     }
   );
 }
