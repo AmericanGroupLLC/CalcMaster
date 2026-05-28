@@ -1,10 +1,10 @@
 describe('CalMaster Unit Tests', () => {
-  describe('Basic arithmetic', () => {
-    it('addition', () => { expect(1 + 1).toBe(2); });
-    it('subtraction', () => { expect(10 - 3).toBe(7); });
-    it('multiplication', () => { expect(4 * 5).toBe(20); });
-    it('division', () => { expect(10 / 4).toBe(2.5); });
-    it('division by zero returns Infinity', () => { expect(1 / 0).toBe(Infinity); });
+  describe('Scientific calculator operations', () => {
+    it('square root of 144 = 12', () => { expect(Math.sqrt(144)).toBe(12); });
+    it('2^10 = 1024', () => { expect(Math.pow(2, 10)).toBe(1024); });
+    it('log10(1000) = 3', () => { expect(parseFloat(Math.log10(1000).toFixed(10))).toBe(3); });
+    it('sin(0) = 0', () => { expect(Math.sin(0)).toBe(0); });
+    it('cos(0) = 1', () => { expect(Math.cos(0)).toBe(1); });
   });
   describe('Unit conversion', () => {
     const kmToMi = (km: number) => parseFloat((km * 0.621371).toFixed(4));
