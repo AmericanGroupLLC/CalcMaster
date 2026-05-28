@@ -1,31 +1,69 @@
-describe('CalMaster Unit Tests', () => {
-  describe('Scientific calculator operations', () => {
-    it('square root of 144 = 12', () => { expect(Math.sqrt(144)).toBe(12); });
-    it('2^10 = 1024', () => { expect(Math.pow(2, 10)).toBe(1024); });
-    it('log10(1000) = 3', () => { expect(parseFloat(Math.log10(1000).toFixed(10))).toBe(3); });
-    it('sin(0) = 0', () => { expect(Math.sin(0)).toBe(0); });
-    it('cos(0) = 1', () => { expect(Math.cos(0)).toBe(1); });
+        // Shared domain helpers for CalMaster
+const isValidEmail = (e) => /^[\w.+-]+@[\w-]+\.[\w.]+$/.test(e);
+const isValidUrl = (u) => u.startsWith('http://') || u.startsWith('https://');
+const formatCurrency = (n, sym='$') => `${sym}${Number(n).toFixed(2)}`;
+const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
+const truncate = (s, max) => s.length <= max ? s : s.slice(0, max) + '...';
+const paginate = (arr, page, size) => arr.slice(page * size, (page + 1) * size);
+const toSlug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const daysBetween = (a, b) => Math.abs(Math.round((b - a) / 86400000));
+const isPastDate = (d) => d < new Date();
+const formatDate = (d) => d.toISOString().slice(0, 10);
+const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
+const deepEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
+
+describe('CalMaster — Unit Tests', () => {
+
+  describe('Input validation', () => {
+    test('valid email', () => expect(isValidEmail('user@example.com')).toBe(true));
+    test('invalid email', () => expect(isValidEmail('bad')).toBe(false));
+    test('empty string invalid', () => expect(isValidEmail('')).toBe(false));
+    test('valid https URL', () => expect(isValidUrl('https://api.americangroupllc.com')).toBe(true));
+    test('invalid URL', () => expect(isValidUrl('ftp://bad')).toBe(false));
   });
-  describe('Unit conversion', () => {
-    const kmToMi = (km: number) => parseFloat((km * 0.621371).toFixed(4));
-    const kgToLb = (kg: number) => parseFloat((kg * 2.20462).toFixed(4));
-    const celToFah = (c: number) => parseFloat(((c * 9/5) + 32).toFixed(2));
-    it('1 km = 0.6214 mi', () => { expect(kmToMi(1)).toBe(0.6214); });
-    it('1 kg = 2.2046 lb', () => { expect(kgToLb(1)).toBe(2.2046); });
-    it('0°C = 32°F', () => { expect(celToFah(0)).toBe(32); });
-    it('100°C = 212°F', () => { expect(celToFah(100)).toBe(212); });
-    it('-40°C = -40°F', () => { expect(celToFah(-40)).toBe(-40); });
+
+  describe('Currency formatting', () => {
+    test('USD format', () => expect(formatCurrency(9.99)).toBe('$9.99'));
+    test('rounds to 2dp', () => expect(formatCurrency(1.999)).toBe('$2.00'));
+    test('zero', () => expect(formatCurrency(0)).toBe('$0.00'));
+    test('custom symbol', () => expect(formatCurrency(5, '€')).toBe('€5.00'));
+    test('large amount', () => expect(formatCurrency(99999.99)).toBe('$99999.99'));
   });
-  describe('Tax calculation', () => {
-    const calcTax = (income: number, rate: number) => parseFloat((income * rate / 100).toFixed(2));
-    it('10% tax on 50000', () => { expect(calcTax(50000, 10)).toBe(5000); });
-    it('22% tax on 89075', () => { expect(calcTax(89075, 22)).toBe(19596.5); });
-    it('zero income', () => { expect(calcTax(0, 22)).toBe(0); });
+
+  describe('Clamp', () => {
+    test('within range', () => expect(clamp(5, 0, 10)).toBe(5));
+    test('below min', () => expect(clamp(-1, 0, 10)).toBe(0));
+    test('above max', () => expect(clamp(15, 0, 10)).toBe(10));
+    test('at boundary min', () => expect(clamp(0, 0, 10)).toBe(0));
+    test('at boundary max', () => expect(clamp(10, 0, 10)).toBe(10));
   });
-  describe('Expression parsing', () => {
-    const isValidExpr = (e: string) => /^[\d\s\+\-\*\/\.\(\)]+$/.test(e);
-    it('valid expression', () => { expect(isValidExpr('3 + 4 * 2')).toBe(true); });
-    it('invalid with letters', () => { expect(isValidExpr('3 + abc')).toBe(false); });
-    it('empty string is invalid', () => { expect(isValidExpr('')).toBe(false); });
+
+  describe('Truncation', () => {
+    test('short text unchanged', () => expect(truncate('hi', 10)).toBe('hi'));
+    test('long text truncated', () => expect(truncate('hello world', 5)).toBe('hello...'));
+    test('exact length unchanged', () => expect(truncate('hello', 5)).toBe('hello'));
+  });
+
+  describe('Slug generation', () => {
+    test('lowercase', () => expect(toSlug('Hello World')).toBe('hello-world'));
+    test('special chars', () => expect(toSlug('C++ & Java!')).toBe('c-java'));
+    test('numbers preserved', () => expect(toSlug('App v2.0')).toBe('app-v2-0'));
+  });
+
+  describe('Date utilities', () => {
+    test('past date detected', () => expect(isPastDate(new Date('2020-01-01'))).toBe(true));
+    test('future date not past', () => expect(isPastDate(new Date('2099-01-01'))).toBe(false));
+    test('days between', () => expect(daysBetween(new Date('2026-01-01'), new Date('2026-01-11'))).toBe(10));
+    test('same day is 0', () => expect(daysBetween(new Date('2026-05-28'), new Date('2026-05-28'))).toBe(0));
+    test('format date', () => expect(formatDate(new Date('2026-05-28T00:00:00Z'))).toBe('2026-05-28'));
+  });
+
+  describe('Utilities', () => {
+    test('deepEqual same objects', () => expect(deepEqual({a:1}, {a:1})).toBe(true));
+    test('deepEqual different objects', () => expect(deepEqual({a:1}, {a:2})).toBe(false));
+    test('paginate first page', () => expect(paginate([1,2,3,4,5], 0, 2)).toEqual([1,2]));
+    test('paginate second page', () => expect(paginate([1,2,3,4,5], 1, 2)).toEqual([3,4]));
+    test('paginate out of range', () => expect(paginate([1,2,3], 5, 2)).toEqual([]));
   });
 });

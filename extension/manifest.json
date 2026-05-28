@@ -1,56 +1,31 @@
 {
   "manifest_version": 3,
-  "name": "CalcMaster",
-  "version": "4.0.0",
-  "description": "Quick calculator, unit converter, and finance tools. 11 regions, 12 languages, works offline.",
-  "permissions": [
-    "storage",
-    "activeTab",
-    "contextMenus"
-  ],
-  "host_permissions": [],
+  "name": "CalMaster",
+  "version": "1.0.0",
+  "description": "Scientific calculator & unit converter — browser extension companion",
+  "permissions": ["storage", "activeTab", "notifications"],
+  "host_permissions": ["https://api.americangroupllc.com/*"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["content.js"],
+    "run_at": "document_idle"
+  }],
   "action": {
-    "default_popup": "popup/popup.html",
+    "default_popup": "popup.html",
+    "default_title": "CalMaster",
     "default_icon": {
-      "16": "icons/icon-16.png",
-      "32": "icons/icon-32.png",
-      "48": "icons/icon-48.png",
-      "128": "icons/icon-128.png"
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
     }
   },
   "icons": {
-    "16": "icons/icon-16.png",
-    "32": "icons/icon-32.png",
-    "48": "icons/icon-48.png",
-    "128": "icons/icon-128.png"
-  },
-  "background": {
-    "service_worker": "background/service-worker.js",
-    "type": "module"
-  },
-  "content_scripts": [
-    {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": [
-        "content/content.js"
-      ],
-      "run_at": "document_idle"
-    }
-  ],
-  "options_page": "options/options.html",
-  "offline_enabled": true,
-  "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'"
-  },
-  "commands": {
-    "open-calculator": {
-      "suggested_key": {
-        "default": "Alt+Shift+C",
-        "mac": "Command+Shift+C"
-      },
-      "description": "Open CalcMaster popup"
-    }
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   }
 }
