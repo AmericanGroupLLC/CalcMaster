@@ -1,0 +1,53 @@
+{
+  "cli": {
+    "version": ">= 12.0.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": true,
+        "bundleIdentifier": "com.americangroupllc.calmaster"
+      },
+      "android": {
+        "buildType": "apk",
+        "applicationId": "com.americangroupllc.calmaster"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "ios": {
+        "bundleIdentifier": "com.americangroupllc.calmaster",
+        "simulator": false
+      },
+      "android": {
+        "buildType": "apk",
+        "applicationId": "com.americangroupllc.calmaster"
+      }
+    },
+    "production": {
+      "ios": {
+        "bundleIdentifier": "com.americangroupllc.calmaster"
+      },
+      "android": {
+        "buildType": "app-bundle",
+        "applicationId": "com.americangroupllc.calmaster"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "dev@americangroupllc.com",
+        "ascAppId": "PLACEHOLDER",
+        "appleTeamId": "PLACEHOLDER"
+      },
+      "android": {
+        "serviceAccountKeyPath": "./google-service-account.json",
+        "track": "production"
+      }
+    }
+  }
+}
