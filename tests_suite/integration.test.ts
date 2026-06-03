@@ -1,3 +1,4 @@
+export {};
         // Shared domain helpers for CalMaster
 const isValidEmail = (e) => /^[\w.+-]+@[\w-]+\.[\w.]+$/.test(e);
 const isValidUrl = (u) => u.startsWith('http://') || u.startsWith('https://');
