@@ -729,6 +729,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'CalcMaster bundles the calculators most people actually use — unit conversions, percentages, scientific math, tax + finance, electronics, and a notes pad — in one polished app that respects your privacy and your battery.'**
   String get aboutBlurb;
+
+  /// No description provided for @aiChatHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask CalcMaster AI...'**
+  String get aiChatHint;
+
+  /// No description provided for @aiChatTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'CalcMaster AI'**
+  String get aiChatTitle;
+
+  /// No description provided for @aiChatEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask me anything about calculations, conversions, or finance.'**
+  String get aiChatEmpty;
+
+  /// No description provided for @authTwoFactor.
+  ///
+  /// In en, this message translates to:
+  /// **'Two-Factor Authentication'**
+  String get authTwoFactor;
+
+  /// No description provided for @authCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get authCancel;
+
+  /// No description provided for @authVerify.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify'**
+  String get authVerify;
+
+  /// No description provided for @authOtpHint.
+  ///
+  /// In en, this message translates to:
+  /// **'000000'**
+  String get authOtpHint;
+
+  /// No description provided for @privacyAtGlance.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy at a glance'**
+  String get privacyAtGlance;
+
+  /// No description provided for @deleteNoteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this note?'**
+  String get deleteNoteTitle;
+
+  /// No description provided for @deleteNoteCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get deleteNoteCancel;
+
+  /// No description provided for @deleteNoteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get deleteNoteConfirm;
+
+  /// No description provided for @labelFilingStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Filing status'**
+  String get labelFilingStatus;
+
+  /// No description provided for @labelCompoundFreq.
+  ///
+  /// In en, this message translates to:
+  /// **'Compounding frequency'**
+  String get labelCompoundFreq;
+
+  /// No description provided for @labelInputBase.
+  ///
+  /// In en, this message translates to:
+  /// **'Input base'**
+  String get labelInputBase;
+
+  /// No description provided for @labelOperator.
+  ///
+  /// In en, this message translates to:
+  /// **'Operator'**
+  String get labelOperator;
+
+  /// No description provided for @labelPerUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Per unit'**
+  String get labelPerUnit;
+
+  /// No description provided for @labelXofY.
+  ///
+  /// In en, this message translates to:
+  /// **'X% of Y'**
+  String get labelXofY;
+
+  /// No description provided for @labelXisWhatPctOfY.
+  ///
+  /// In en, this message translates to:
+  /// **'X is what % of Y'**
+  String get labelXisWhatPctOfY;
+
+  /// No description provided for @labelPctChangeXtoY.
+  ///
+  /// In en, this message translates to:
+  /// **'% change from X to Y'**
+  String get labelPctChangeXtoY;
 }
 
 class _AppLocalizationsDelegate

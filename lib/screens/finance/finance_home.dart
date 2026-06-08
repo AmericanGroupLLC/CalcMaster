@@ -28,10 +28,10 @@ class FinanceHome extends StatelessWidget {
               Text(loc.financeHubSubheading,
                   style: const TextStyle(color: AppColors.textMuted, fontSize: 14)),
               const SizedBox(height: Spacing.xl),
-              GridView.count(
+              GridView.extent(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: 2,
+                maxCrossAxisExtent: 240,
                 childAspectRatio: 1.6,
                 crossAxisSpacing: Spacing.md,
                 mainAxisSpacing: Spacing.md,

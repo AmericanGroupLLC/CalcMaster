@@ -7,17 +7,16 @@ import '../state/region_provider.dart';
 import '../theme/tokens.dart';
 
 class RegionPill extends StatelessWidget {
-  final VoidCallback? onLongPress;
-  const RegionPill({super.key, this.onLongPress});
+  /// Opens the region/currency picker. Wired to a plain tap so it's
+  /// discoverable (tap used to silently cycle regions, which was confusing).
+  final VoidCallback? onTap;
+  const RegionPill({super.key, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final region = context.watch<RegionProvider>().region;
     return GestureDetector(
-      onTap: () {
-        context.read<RegionProvider>().cycleRegion();
-      },
-      onLongPress: onLongPress,
+      onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: Spacing.md, vertical: 8),
         decoration: BoxDecoration(
@@ -86,6 +85,8 @@ class RegionPickerSheet extends StatelessWidget {
                   fontSize: 18,
                   fontWeight: FontWeight.w700)),
           const SizedBox(height: Spacing.md),
+          const _DetectLocationButton(),
+          const SizedBox(height: Spacing.sm),
           for (final r in regions)
             InkWell(
               borderRadius: BorderRadius.circular(Radii.button),
@@ -125,6 +126,80 @@ class RegionPickerSheet extends StatelessWidget {
               ),
             ),
         ],
+      ),
+    );
+  }
+}
+
+/// "Detect my location" action inside the picker — uses GPS to set the
+/// region/currency, with an inline spinner and result feedback.
+class _DetectLocationButton extends StatelessWidget {
+  const _DetectLocationButton();
+
+  @override
+  Widget build(BuildContext context) {
+    final detecting = context.watch<RegionProvider>().detecting;
+    return Material(
+      color: AppColors.accentPrimary.withValues(alpha: 0.14),
+      borderRadius: BorderRadius.circular(Radii.button),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(Radii.button),
+        onTap: detecting
+            ? null
+            : () async {
+                final messenger = ScaffoldMessenger.of(context);
+                final navigator = Navigator.of(context);
+                final result = await context
+                    .read<RegionProvider>()
+                    .detectRegionFromLocation();
+                if (result == DetectResult.success) {
+                  navigator.pop();
+                }
+                messenger.showSnackBar(SnackBar(
+                  behavior: SnackBarBehavior.floating,
+                  duration: const Duration(milliseconds: 1600),
+                  content: Text(switch (result) {
+                    DetectResult.success => 'Region set from your location',
+                    DetectResult.permissionDenied =>
+                      'Location permission denied — pick a region below',
+                    DetectResult.noMatch =>
+                      'No matching region for your location — pick one below',
+                    DetectResult.unavailable =>
+                      "Couldn't detect location — pick a region below",
+                  }),
+                ));
+              },
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+              horizontal: Spacing.md, vertical: Spacing.md),
+          decoration: BoxDecoration(
+            border: Border.all(
+                color: AppColors.accentPrimary.withValues(alpha: 0.4)),
+            borderRadius: BorderRadius.circular(Radii.button),
+          ),
+          child: Row(
+            children: [
+              if (detecting)
+                const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(
+                      strokeWidth: 2, color: AppColors.accentPrimary),
+                )
+              else
+                const Icon(Icons.my_location,
+                    size: 18, color: AppColors.accentPrimary),
+              const SizedBox(width: Spacing.md),
+              Text(
+                detecting ? 'Detecting…' : 'Detect my location',
+                style: const TextStyle(
+                    color: AppColors.text,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

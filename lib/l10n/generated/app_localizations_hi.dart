@@ -326,4 +326,61 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get aboutBlurb =>
       'CalcMaster एक ही ऐप में वो सारे कैलकुलेटर समेटे है जो लोग असल में काम में लाते हैं — यूनिट कन्वर्जन, प्रतिशत, वैज्ञानिक गणित, टैक्स + वित्त, इलेक्ट्रॉनिक्स, और एक नोट्स पैड।';
+
+  @override
+  String get aiChatHint => 'CalcMaster AI से पूछें...';
+
+  @override
+  String get aiChatTitle => 'CalcMaster AI';
+
+  @override
+  String get aiChatEmpty => 'गणना, रूपांतरण या वित्त के बारे में कुछ भी पूछें।';
+
+  @override
+  String get authTwoFactor => 'दो-कारक प्रमाणीकरण';
+
+  @override
+  String get authCancel => 'रद्द करें';
+
+  @override
+  String get authVerify => 'सत्यापित करें';
+
+  @override
+  String get authOtpHint => '000000';
+
+  @override
+  String get privacyAtGlance => 'गोपनीयता एक नज़र में';
+
+  @override
+  String get deleteNoteTitle => 'यह नोट हटाएं?';
+
+  @override
+  String get deleteNoteCancel => 'रद्द करें';
+
+  @override
+  String get deleteNoteConfirm => 'हटाएं';
+
+  @override
+  String get labelFilingStatus => 'दाखिल करने की स्थिति';
+
+  @override
+  String get labelCompoundFreq => 'चक्रवृद्धि आवृत्ति';
+
+  @override
+  String get labelInputBase => 'इनपुट आधार';
+
+  @override
+  String get labelOperator => 'ऑपरेटर';
+
+  @override
+  String get labelPerUnit => 'प्रति इकाई';
+
+  @override
+  String get labelXofY => 'Y का X%';
+
+  @override
+  String get labelXisWhatPctOfY => 'X, Y का कितना % है';
+
+  @override
+  String get labelPctChangeXtoY => 'X से Y तक % परिवर्तन';
 }

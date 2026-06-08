@@ -19,13 +19,20 @@ class InnerScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      // Transparent so the shell's animated gradient flows behind detail
+      // screens too, matching the hub screens.
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(Spacing.lg, Spacing.sm, Spacing.lg, Spacing.xxl),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+          // Single-task forms read best in a comfortable column rather than
+          // stretched across a wide desktop window.
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 600),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
               Row(
                 children: [
                   IconButton(
@@ -51,7 +58,9 @@ class InnerScaffold extends StatelessWidget {
                 ),
               const SizedBox(height: Spacing.md),
               child,
-            ],
+                ],
+              ),
+            ),
           ),
         ),
       ),

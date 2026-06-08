@@ -326,4 +326,62 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get aboutBlurb =>
       'CalcMaster объединяет калькуляторы, которыми люди реально пользуются — конверсии единиц, проценты, научная математика, налоги и финансы, электроника, блокнот — в одном изящном приложении, уважающем вашу приватность и батарею.';
+
+  @override
+  String get aiChatHint => 'Спросите CalcMaster AI...';
+
+  @override
+  String get aiChatTitle => 'CalcMaster AI';
+
+  @override
+  String get aiChatEmpty =>
+      'Спросите меня о вычислениях, конвертации или финансах.';
+
+  @override
+  String get authTwoFactor => 'Двухфакторная аутентификация';
+
+  @override
+  String get authCancel => 'Отмена';
+
+  @override
+  String get authVerify => 'Подтвердить';
+
+  @override
+  String get authOtpHint => '000000';
+
+  @override
+  String get privacyAtGlance => 'Конфиденциальность вкратце';
+
+  @override
+  String get deleteNoteTitle => 'Удалить эту заметку?';
+
+  @override
+  String get deleteNoteCancel => 'Отмена';
+
+  @override
+  String get deleteNoteConfirm => 'Удалить';
+
+  @override
+  String get labelFilingStatus => 'Статус подачи';
+
+  @override
+  String get labelCompoundFreq => 'Частота начисления';
+
+  @override
+  String get labelInputBase => 'Система счисления';
+
+  @override
+  String get labelOperator => 'Оператор';
+
+  @override
+  String get labelPerUnit => 'За единицу';
+
+  @override
+  String get labelXofY => 'X% от Y';
+
+  @override
+  String get labelXisWhatPctOfY => 'X — какой % от Y';
+
+  @override
+  String get labelPctChangeXtoY => '% изменения от X до Y';
 }

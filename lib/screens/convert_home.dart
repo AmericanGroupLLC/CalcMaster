@@ -39,7 +39,7 @@ class ConvertHome extends StatelessWidget {
                     ),
                   ),
                   RegionPill(
-                    onLongPress: () {
+                    onTap: () {
                       showModalBottomSheet(
                         context: context,
                         backgroundColor: Colors.transparent,
@@ -69,8 +69,8 @@ class ConvertHome extends StatelessWidget {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: categories.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 240,
                   childAspectRatio: 1.4,
                   crossAxisSpacing: Spacing.md,
                   mainAxisSpacing: Spacing.md,

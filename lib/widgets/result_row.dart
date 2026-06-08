@@ -28,10 +28,38 @@ class ResultRow extends StatelessWidget {
           borderRadius: BorderRadius.circular(Radii.button),
           onTap: () async {
             await Clipboard.setData(ClipboardData(text: value));
+            await HapticFeedback.selectionClick();
             if (context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Copied: $value'), duration: const Duration(seconds: 1)),
-              );
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  SnackBar(
+                    behavior: SnackBarBehavior.floating,
+                    backgroundColor: AppColors.surfaceElevated,
+                    duration: const Duration(milliseconds: 1200),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(Radii.button),
+                      side: BorderSide(
+                          color: AppColors.success.withValues(alpha: 0.4)),
+                    ),
+                    content: Row(
+                      children: [
+                        const Icon(Icons.check_circle_outline,
+                            color: AppColors.success, size: 18),
+                        const SizedBox(width: Spacing.sm),
+                        Expanded(
+                          child: Text(
+                            'Copied  $value',
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                                color: AppColors.text,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
             }
           },
           child: Container(

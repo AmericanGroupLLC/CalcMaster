@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../theme/tokens.dart';
 
@@ -73,7 +74,10 @@ class GlassCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(borderRadius),
       child: InkWell(
         borderRadius: BorderRadius.circular(borderRadius),
-        onTap: onTap,
+        onTap: () {
+          HapticFeedback.selectionClick();
+          onTap!();
+        },
         child: blurred,
       ),
     );

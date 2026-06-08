@@ -7,6 +7,7 @@ import '../../theme/tokens.dart';
 import '../../widgets/chip_picker.dart';
 import '../../widgets/inner_scaffold.dart';
 import '../../widgets/number_input.dart';
+import '../../widgets/pressable_scale.dart';
 import '../../widgets/result_row.dart';
 
 // =================== STANDARD ===================
@@ -71,24 +72,58 @@ class _StandardCalcState extends State<StandardCalc> {
   }
 
   Widget _btn(String label, {Color? bg, Color? fg, double flex = 1}) {
+    final isEquals = label == '=';
+    final isOperator = RegExp(r'[÷×−+]').hasMatch(label);
     return Expanded(
       flex: flex.toInt(),
       child: Padding(
         padding: const EdgeInsets.all(4),
-        child: Material(
-          color: bg ?? AppColors.surface,
-          borderRadius: BorderRadius.circular(Radii.button),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(Radii.button),
-            onTap: () => _press(label),
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 18),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                border: Border.all(color: AppColors.border),
-                borderRadius: BorderRadius.circular(Radii.button),
+        child: PressableScale(
+          onTap: () => _press(label),
+          haptic: isEquals
+              ? HapticFeedbackKind.medium
+              : HapticFeedbackKind.selection,
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 18),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: isEquals ? null : (bg ?? AppColors.surface),
+              // Equals key gets a vivid gradient to anchor the keypad.
+              gradient: isEquals
+                  ? const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFF9B7DFF), AppColors.accentPrimary],
+                    )
+                  : null,
+              border: Border.all(
+                color: isEquals
+                    ? Colors.transparent
+                    : (isOperator
+                        ? AppColors.accentPrimary.withValues(alpha: 0.35)
+                        : AppColors.border),
               ),
-              child: Text(label, style: TextStyle(color: fg ?? AppColors.text, fontSize: 18, fontWeight: FontWeight.w600)),
+              borderRadius: BorderRadius.circular(Radii.button),
+              boxShadow: isEquals
+                  ? [
+                      BoxShadow(
+                        color: AppColors.accentPrimary.withValues(alpha: 0.45),
+                        blurRadius: 16,
+                        spreadRadius: -2,
+                        offset: const Offset(0, 4),
+                      ),
+                    ]
+                  : null,
+            ),
+            child: Text(
+              label,
+              style: TextStyle(
+                color: isEquals
+                    ? Colors.white
+                    : (isOperator ? AppColors.accentPrimary : (fg ?? AppColors.text)),
+                fontSize: 18,
+                fontWeight: isOperator || isEquals ? FontWeight.w700 : FontWeight.w600,
+              ),
             ),
           ),
         ),
@@ -169,35 +204,68 @@ class _ScientificCalcState extends State<ScientificCalc> {
   }
 
   Widget _key(String label, String insert, {Color? bg, Color? fg, bool small = false}) {
+    final isEquals = label == '=';
+    final isOperator = RegExp(r'[÷×−+]').hasMatch(label);
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.all(4),
-        child: Material(
-          color: bg ?? AppColors.surface,
-          borderRadius: BorderRadius.circular(Radii.button),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(Radii.button),
-            onTap: () {
-              setState(() {
-                if (label == 'C') {
-                  expr = '';
-                } else if (label == '⌫') {
-                  if (expr.isNotEmpty) expr = expr.substring(0, expr.length - 1);
-                } else if (label == '=') {
-                  if (liveResult.isNotEmpty) expr = liveResult;
-                } else {
-                  expr += insert;
-                }
-              });
-            },
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: small ? 12 : 16),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                border: Border.all(color: AppColors.border),
-                borderRadius: BorderRadius.circular(Radii.button),
+        child: PressableScale(
+          onTap: () {
+            setState(() {
+              if (label == 'C') {
+                expr = '';
+              } else if (label == '⌫') {
+                if (expr.isNotEmpty) expr = expr.substring(0, expr.length - 1);
+              } else if (label == '=') {
+                if (liveResult.isNotEmpty) expr = liveResult;
+              } else {
+                expr += insert;
+              }
+            });
+          },
+          haptic: isEquals
+              ? HapticFeedbackKind.medium
+              : HapticFeedbackKind.selection,
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: small ? 12 : 16),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: isEquals ? null : (bg ?? AppColors.surface),
+              gradient: isEquals
+                  ? const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFF9B7DFF), AppColors.accentPrimary],
+                    )
+                  : null,
+              border: Border.all(
+                color: isEquals
+                    ? Colors.transparent
+                    : (isOperator
+                        ? AppColors.accentPrimary.withValues(alpha: 0.35)
+                        : AppColors.border),
               ),
-              child: Text(label, style: TextStyle(color: fg ?? AppColors.text, fontSize: small ? 14 : 18, fontWeight: FontWeight.w600)),
+              borderRadius: BorderRadius.circular(Radii.button),
+              boxShadow: isEquals
+                  ? [
+                      BoxShadow(
+                        color: AppColors.accentPrimary.withValues(alpha: 0.45),
+                        blurRadius: 16,
+                        spreadRadius: -2,
+                        offset: const Offset(0, 4),
+                      ),
+                    ]
+                  : null,
+            ),
+            child: Text(
+              label,
+              style: TextStyle(
+                color: isEquals
+                    ? Colors.white
+                    : (isOperator ? AppColors.accentPrimary : (fg ?? AppColors.text)),
+                fontSize: small ? 14 : 18,
+                fontWeight: isOperator || isEquals ? FontWeight.w700 : FontWeight.w600,
+              ),
             ),
           ),
         ),

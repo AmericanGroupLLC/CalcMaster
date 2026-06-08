@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../theme/tokens.dart';
 
@@ -39,24 +40,43 @@ class _Chip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: active ? AppColors.text : AppColors.surface,
-      borderRadius: BorderRadius.circular(Radii.pill),
-      child: InkWell(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 150),
+      decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(Radii.pill),
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: Spacing.lg, vertical: 9),
-          decoration: BoxDecoration(
-            border: Border.all(color: active ? AppColors.text : AppColors.border),
-            borderRadius: BorderRadius.circular(Radii.pill),
-          ),
-          child: Text(
-            label,
-            style: TextStyle(
-              color: active ? AppColors.bg : AppColors.text,
-              fontWeight: active ? FontWeight.w700 : FontWeight.w500,
-              fontSize: 14,
+        boxShadow: active
+            ? [
+                BoxShadow(
+                  color: AppColors.accentPrimary.withValues(alpha: 0.4),
+                  blurRadius: 12,
+                  spreadRadius: -2,
+                ),
+              ]
+            : null,
+      ),
+      child: Material(
+        color: active ? AppColors.accentPrimary : AppColors.surface,
+        borderRadius: BorderRadius.circular(Radii.pill),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(Radii.pill),
+          onTap: () {
+            HapticFeedback.selectionClick();
+            onTap();
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.lg, vertical: 9),
+            decoration: BoxDecoration(
+              border: Border.all(
+                  color: active ? AppColors.accentPrimary : AppColors.border),
+              borderRadius: BorderRadius.circular(Radii.pill),
+            ),
+            child: Text(
+              label,
+              style: TextStyle(
+                color: active ? Colors.white : AppColors.text,
+                fontWeight: active ? FontWeight.w700 : FontWeight.w500,
+                fontSize: 14,
+              ),
             ),
           ),
         ),

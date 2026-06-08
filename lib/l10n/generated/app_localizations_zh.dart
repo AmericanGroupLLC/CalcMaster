@@ -319,4 +319,61 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get aboutBlurb =>
       'CalcMaster 把人们真正常用的计算器集合在一个精致的应用里 — 单位转换、百分比、科学计算、税务与财务、电子工具,以及笔记本。尊重你的隐私与电池。';
+
+  @override
+  String get aiChatHint => '问 CalcMaster AI...';
+
+  @override
+  String get aiChatTitle => 'CalcMaster AI';
+
+  @override
+  String get aiChatEmpty => '问我任何关于计算、换算或财务的问题。';
+
+  @override
+  String get authTwoFactor => '双重身份验证';
+
+  @override
+  String get authCancel => '取消';
+
+  @override
+  String get authVerify => '验证';
+
+  @override
+  String get authOtpHint => '000000';
+
+  @override
+  String get privacyAtGlance => '隐私概览';
+
+  @override
+  String get deleteNoteTitle => '删除此笔记？';
+
+  @override
+  String get deleteNoteCancel => '取消';
+
+  @override
+  String get deleteNoteConfirm => '删除';
+
+  @override
+  String get labelFilingStatus => '报税状态';
+
+  @override
+  String get labelCompoundFreq => '复利频率';
+
+  @override
+  String get labelInputBase => '输入进制';
+
+  @override
+  String get labelOperator => '运算符';
+
+  @override
+  String get labelPerUnit => '每单位';
+
+  @override
+  String get labelXofY => 'X% 的 Y';
+
+  @override
+  String get labelXisWhatPctOfY => 'X 是 Y 的百分之几';
+
+  @override
+  String get labelPctChangeXtoY => '从 X 到 Y 的百分比变化';
 }

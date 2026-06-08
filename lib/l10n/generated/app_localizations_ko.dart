@@ -319,4 +319,61 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get aboutBlurb =>
       'CalcMaster는 사람들이 실제로 사용하는 계산기들을 한 앱에 모았습니다 — 단위 변환, 백분율, 공학 계산, 세금 + 금융, 전자공학, 메모장. 개인정보와 배터리를 존중합니다.';
+
+  @override
+  String get aiChatHint => 'CalcMaster AI에게 질문...';
+
+  @override
+  String get aiChatTitle => 'CalcMaster AI';
+
+  @override
+  String get aiChatEmpty => '계산, 변환 또는 재무에 대해 무엇이든 물어보세요.';
+
+  @override
+  String get authTwoFactor => '이중 인증';
+
+  @override
+  String get authCancel => '취소';
+
+  @override
+  String get authVerify => '확인';
+
+  @override
+  String get authOtpHint => '000000';
+
+  @override
+  String get privacyAtGlance => '개인정보 보호 요약';
+
+  @override
+  String get deleteNoteTitle => '이 메모를 삭제하시겠습니까?';
+
+  @override
+  String get deleteNoteCancel => '취소';
+
+  @override
+  String get deleteNoteConfirm => '삭제';
+
+  @override
+  String get labelFilingStatus => '신고 상태';
+
+  @override
+  String get labelCompoundFreq => '복리 빈도';
+
+  @override
+  String get labelInputBase => '입력 진수';
+
+  @override
+  String get labelOperator => '연산자';
+
+  @override
+  String get labelPerUnit => '단위당';
+
+  @override
+  String get labelXofY => 'Y의 X%';
+
+  @override
+  String get labelXisWhatPctOfY => 'X는 Y의 몇 %인가';
+
+  @override
+  String get labelPctChangeXtoY => 'X에서 Y로의 % 변화';
 }

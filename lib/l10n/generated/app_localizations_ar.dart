@@ -323,4 +323,62 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get aboutBlurb =>
       'يجمع CalcMaster الحاسبات التي يستخدمها الناس فعلاً — تحويلات الوحدات، النسب المئوية، الرياضيات العلمية، الضرائب والمالية، الإلكترونيات، ودفتر الملاحظات — في تطبيق واحد أنيق يحترم خصوصيتك وبطاريتك.';
+
+  @override
+  String get aiChatHint => 'اسأل CalcMaster AI...';
+
+  @override
+  String get aiChatTitle => 'CalcMaster AI';
+
+  @override
+  String get aiChatEmpty =>
+      'اسألني أي شيء عن الحسابات أو التحويلات أو المالية.';
+
+  @override
+  String get authTwoFactor => 'المصادقة الثنائية';
+
+  @override
+  String get authCancel => 'إلغاء';
+
+  @override
+  String get authVerify => 'تحقق';
+
+  @override
+  String get authOtpHint => '000000';
+
+  @override
+  String get privacyAtGlance => 'الخصوصية في لمحة';
+
+  @override
+  String get deleteNoteTitle => 'حذف هذه الملاحظة؟';
+
+  @override
+  String get deleteNoteCancel => 'إلغاء';
+
+  @override
+  String get deleteNoteConfirm => 'حذف';
+
+  @override
+  String get labelFilingStatus => 'حالة الإيداع الضريبي';
+
+  @override
+  String get labelCompoundFreq => 'تكرار الفائدة المركبة';
+
+  @override
+  String get labelInputBase => 'قاعدة الإدخال';
+
+  @override
+  String get labelOperator => 'العملية';
+
+  @override
+  String get labelPerUnit => 'لكل وحدة';
+
+  @override
+  String get labelXofY => 'X% من Y';
+
+  @override
+  String get labelXisWhatPctOfY => 'X هو كم % من Y';
+
+  @override
+  String get labelPctChangeXtoY => '% التغيير من X إلى Y';
 }
