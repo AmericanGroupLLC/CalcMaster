@@ -1,5 +1,5 @@
 // =====================================================================
-//  CalcMaster · Icon + Splash Asset Generator
+//  Calculator · Icon + Splash Asset Generator
 // =====================================================================
 //
 //  Run from the project root:
@@ -57,8 +57,8 @@ void main() {
 }
 
 // ---------------------------------------------------------------------
-// Icon — square 1024×1024 with rounded gradient background, big "CM"
-// monogram in accent purple, with a calculator dot grid behind it.
+// Icon — square 1024×1024 with rounded gradient background and a centered
+// calculator glyph (body + screen + keypad) in the brand colors.
 // ---------------------------------------------------------------------
 img.Image _renderIcon({required bool withBackground}) {
   final image = img.Image(width: kIconSize, height: kIconSize, numChannels: 4);
@@ -69,22 +69,17 @@ img.Image _renderIcon({required bool withBackground}) {
     _fillRoundedGradient(image, _bg, _bgGradient);
   }
 
-  // Subtle calculator grid backdrop (3×3 dots) — only when bg is opaque
-  if (withBackground) {
-    _drawDotGrid(image);
-  }
-
-  // The "CM" wordmark, centered.
-  _drawMonogram(image);
+  // The calculator glyph, centered.
+  _drawCalculator(image);
   return image;
 }
 
 img.Image _renderSplash() {
-  // Splash logo is the foreground monogram on transparent — flutter_native_splash
+  // Splash logo is the foreground glyph on transparent — flutter_native_splash
   // composites it onto a solid color bg from pubspec.
   final image = img.Image(width: kSplashSize, height: kSplashSize, numChannels: 4);
   img.fill(image, color: img.ColorRgba8(0, 0, 0, 0));
-  _drawMonogram(image, scale: 0.62);
+  _drawCalculator(image, scale: 0.78);
   return image;
 }
 
@@ -120,137 +115,82 @@ bool _inRoundedRect(int x, int y, int w, int h, int radius) {
   return dx * dx + dy * dy <= radius * radius;
 }
 
-// Draw a 3×3 rounded-square dot grid as a subtle backdrop. Echoes the
-// app's calculator/keypad theme without being literal.
-void _drawDotGrid(img.Image image) {
-  final w = image.width;
-  final h = image.height;
-  final dotR = (w * 0.022).round();
-  final spacing = (w * 0.16).round();
-  final originX = w ~/ 2 - spacing;
-  final originY = h ~/ 2 - spacing;
-  final color = img.ColorRgba8(_accentSoft.red, _accentSoft.green, _accentSoft.blue, 22);
-  for (var i = 0; i < 3; i++) {
-    for (var j = 0; j < 3; j++) {
-      final cx = originX + i * spacing;
-      final cy = originY + j * spacing;
-      img.fillCircle(image, x: cx, y: cy, radius: dotR, color: color);
+// Fill an axis-aligned rounded rectangle [x1,y1)-(x2,y2) with a solid color.
+void _fillRoundRect(
+  img.Image image,
+  int x1,
+  int y1,
+  int x2,
+  int y2,
+  int radius,
+  img.Color color,
+) {
+  final w = x2 - x1;
+  final h = y2 - y1;
+  if (w <= 0 || h <= 0) return;
+  final r = math.min(radius, math.min(w, h) ~/ 2);
+  for (var y = y1; y < y2; y++) {
+    for (var x = x1; x < x2; x++) {
+      if (_inRoundedRect(x - x1, y - y1, w, h, r)) {
+        image.setPixel(x, y, color);
+      }
     }
   }
 }
 
-// "CM" stylized monogram. Built from rectangles + accent dot rather than
-// trying to render text (avoids font-loading complexity in a CLI script).
-void _drawMonogram(img.Image image, {double scale = 1.0}) {
+// Calculator glyph: a rounded body holding a screen and a 3×3 keypad.
+// The right key column is accent purple (operators) with a mint bottom-right
+// "equals" key — original artwork that reads as a calculator at any size.
+void _drawCalculator(img.Image image, {double scale = 1.0}) {
   final w = image.width;
-  final h = image.height;
   final cx = w ~/ 2;
-  final cy = h ~/ 2;
+  final cy = image.height ~/ 2;
 
-  // Geometry: two stacked equal-thickness "C" and "M" forms, side-by-side.
-  // We'll instead render a single bold "C" with a calculator dot — this
-  // reads well at all sizes (down to 16×16 favicon).
-  final stroke = (w * 0.10 * scale).round();
-  final letterW = (w * 0.30 * scale).round();
-  final letterH = (w * 0.46 * scale).round();
-  final gap = (w * 0.04 * scale).round();
-
+  final body = img.ColorRgba8(247, 248, 252, 255); // soft white card
+  final screen = rgb(_bg); // dark navy display
+  final keyGray = img.ColorRgba8(0xCE, 0xD4, 0xE2, 255);
   final accent = rgb(_accent);
+  final accentSoft = rgb(_accentSoft);
   final mint = rgb(_mint);
 
-  // ---- "C" ----
-  final cLeft = cx - letterW - gap ~/ 2;
-  final cTop = cy - letterH ~/ 2;
-  // Outer rounded rect (C shape) — a thick C drawn as 3 strokes
-  // top stroke
-  img.fillRect(
-    image,
-    x1: cLeft,
-    y1: cTop,
-    x2: cLeft + letterW,
-    y2: cTop + stroke,
-    color: accent,
-  );
-  // bottom stroke
-  img.fillRect(
-    image,
-    x1: cLeft,
-    y1: cTop + letterH - stroke,
-    x2: cLeft + letterW,
-    y2: cTop + letterH,
-    color: accent,
-  );
-  // left stroke
-  img.fillRect(
-    image,
-    x1: cLeft,
-    y1: cTop,
-    x2: cLeft + stroke,
-    y2: cTop + letterH,
-    color: accent,
-  );
+  // ---- Body ----
+  final bodyW = (w * 0.52 * scale).round();
+  final bodyH = (w * 0.66 * scale).round();
+  final bl = cx - bodyW ~/ 2;
+  final bt = cy - bodyH ~/ 2;
+  _fillRoundRect(image, bl, bt, bl + bodyW, bt + bodyH, (bodyW * 0.15).round(), body);
 
-  // ---- "M" ----
-  final mLeft = cx + gap ~/ 2;
-  final mTop = cy - letterH ~/ 2;
-  // Left vertical
-  img.fillRect(
-    image,
-    x1: mLeft,
-    y1: mTop,
-    x2: mLeft + stroke,
-    y2: mTop + letterH,
-    color: accent,
-  );
-  // Right vertical
-  img.fillRect(
-    image,
-    x1: mLeft + letterW - stroke,
-    y1: mTop,
-    x2: mLeft + letterW,
-    y2: mTop + letterH,
-    color: accent,
-  );
-  // Diagonal-V at the top center, drawn as two thick angled strokes that
-  // stop *inside* the M's vertical strokes so the round caps don't bleed past.
-  final innerLeftTop = (x: mLeft + stroke, y: mTop);
-  final innerRightTop = (x: mLeft + letterW - stroke, y: mTop);
-  final valleyCenter = (x: mLeft + letterW ~/ 2, y: mTop + (letterH * 0.55).round());
-  _drawAngledStroke(image,
-      x1: innerLeftTop.x, y1: innerLeftTop.y,
-      x2: valleyCenter.x, y2: valleyCenter.y,
-      thickness: stroke, color: accent);
-  _drawAngledStroke(image,
-      x1: valleyCenter.x, y1: valleyCenter.y,
-      x2: innerRightTop.x, y2: innerRightTop.y,
-      thickness: stroke, color: accent);
+  final pad = (bodyW * 0.11).round();
+  final ix = bl + pad;
+  final iw = bodyW - 2 * pad;
 
-  // Mint accent dot in the bottom-right of the "C" — implies "calculate"
-  final dotR = (stroke * 0.55).round();
-  img.fillCircle(image,
-      x: cLeft + letterW - stroke ~/ 2,
-      y: cTop + letterH - stroke ~/ 2 - (stroke * 0.6).round(),
-      radius: dotR,
-      color: mint);
-}
+  // ---- Screen ----
+  final st = bt + pad;
+  final sh = (bodyH * 0.17).round();
+  _fillRoundRect(image, ix, st, ix + iw, st + sh, (sh * 0.22).round(), screen);
+  // A right-aligned accent block on the screen, suggesting a digit.
+  final numW = (iw * 0.30).round();
+  final numH = (sh * 0.34).round();
+  final numY = st + (sh - numH) ~/ 2;
+  _fillRoundRect(image, ix + iw - numW, numY, ix + iw, numY + numH, (numH * 0.3).round(), accentSoft);
 
-void _drawAngledStroke(
-  img.Image image, {
-  required int x1,
-  required int y1,
-  required int x2,
-  required int y2,
-  required int thickness,
-  required img.Color color,
-}) {
-  // Rasterise a thick line by drawing a chain of filled circles.
-  final dx = x2 - x1;
-  final dy = y2 - y1;
-  final length = math.sqrt(dx * dx + dy * dy).round();
-  for (var i = 0; i <= length; i++) {
-    final t = length == 0 ? 0.0 : i / length;
-    final cx = (x1 + dx * t).round();
-    final cy = (y1 + dy * t).round();
-    img.fillCircle(image, x: cx, y: cy, radius: thickness ~/ 2, color: color);
+  // ---- Keypad: 3 × 3 ----
+  const cols = 3;
+  const rows = 3;
+  final gtop = st + sh + pad;
+  final gbottom = bt + bodyH - pad;
+  final gap = (iw * 0.12).round();
+  final keyW = ((iw - (cols - 1) * gap) / cols).floor();
+  final keyH = ((gbottom - gtop - (rows - 1) * gap) / rows).floor();
+  final keyR = (keyW * 0.30).round();
+  for (var r = 0; r < rows; r++) {
+    for (var c = 0; c < cols; c++) {
+      final kx = ix + c * (keyW + gap);
+      final ky = gtop + r * (keyH + gap);
+      img.Color kc = keyGray;
+      if (c == cols - 1) kc = accent; // right column = operators
+      if (r == rows - 1 && c == cols - 1) kc = mint; // bottom-right = equals
+      _fillRoundRect(image, kx, ky, kx + keyW, ky + keyH, keyR, kc);
+    }
   }
 }

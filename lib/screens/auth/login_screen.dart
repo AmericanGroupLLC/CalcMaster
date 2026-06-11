@@ -155,7 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: Spacing.xl),
                       GlowText(
-                        'CalcMaster',
+                        'Calculator',
                         glowColor: AppColors.accentPrimary,
                         style: const TextStyle(
                             fontSize: 28, fontWeight: FontWeight.bold),

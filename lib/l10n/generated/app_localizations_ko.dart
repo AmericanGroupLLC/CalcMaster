@@ -9,7 +9,7 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
-  String get appTitle => 'CalcMaster';
+  String get appTitle => 'Calculator';
 
   @override
   String get appTagline => '월드 계산기 & 변환기';
@@ -189,7 +189,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsSubscribePro => 'Pro 구독';
 
   @override
-  String get settingsCalcMasterPro => 'CalcMaster Pro';
+  String get settingsCalcMasterPro => 'Calculator Pro';
 
   @override
   String get settingsRestorePurchases => '구매 복원';
@@ -210,10 +210,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsPrivacyPolicy => '개인정보 처리방침';
 
   @override
-  String get settingsAbout => 'CalcMaster 정보';
+  String get settingsAbout => 'Calculator 정보';
 
   @override
-  String get paywallTitle => 'CalcMaster Pro 잠금 해제';
+  String get paywallTitle => 'Calculator Pro 잠금 해제';
 
   @override
   String get paywallSubtitle => '광고 제거, 고급 인사이트, 실시간 환율, 인디 개발 지원.';
@@ -318,13 +318,13 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get aboutBlurb =>
-      'CalcMaster는 사람들이 실제로 사용하는 계산기들을 한 앱에 모았습니다 — 단위 변환, 백분율, 공학 계산, 세금 + 금융, 전자공학, 메모장. 개인정보와 배터리를 존중합니다.';
+      'Calculator는 사람들이 실제로 사용하는 계산기들을 한 앱에 모았습니다 — 단위 변환, 백분율, 공학 계산, 세금 + 금융, 전자공학, 메모장. 개인정보와 배터리를 존중합니다.';
 
   @override
-  String get aiChatHint => 'CalcMaster AI에게 질문...';
+  String get aiChatHint => 'Calculator AI에게 질문...';
 
   @override
-  String get aiChatTitle => 'CalcMaster AI';
+  String get aiChatTitle => 'Calculator AI';
 
   @override
   String get aiChatEmpty => '계산, 변환 또는 재무에 대해 무엇이든 물어보세요.';

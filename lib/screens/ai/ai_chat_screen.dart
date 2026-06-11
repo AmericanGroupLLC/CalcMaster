@@ -151,7 +151,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
             ),
             const SizedBox(height: Spacing.xl),
             GlowText(
-              'CalcMaster AI',
+              'Calculator AI',
               glowColor: AppColors.accentPrimary,
               style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),

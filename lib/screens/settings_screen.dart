@@ -53,7 +53,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _sendFeedback() async {
-    final uri = Uri.parse('mailto:${MonetizationConfig.supportEmail}?subject=CalcMaster%20Feedback');
+    final uri = Uri.parse('mailto:${MonetizationConfig.supportEmail}?subject=Calculator%20Feedback');
     try {
       await launchUrl(uri);
     } catch (_) {

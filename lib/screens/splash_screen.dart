@@ -9,7 +9,7 @@ import '../widgets/animated_gradient_background.dart';
 import '../widgets/glow_text.dart';
 import '../widgets/particle_dot_grid.dart';
 
-/// 2-second branded splash. iOS users see "i" morphing into "CalcMaster",
+/// 2-second branded splash. iOS users see "i" morphing into "Calculator",
 /// Android users see "a" morphing into the same. The static OS-level launch
 /// screen is configured by flutter_native_splash; this animated overlay plays
 /// on top once Dart has booted.
@@ -40,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     return 'C';
   }
 
-  static const String _word = 'CalcMaster';
+  static const String _word = 'Calculator';
 
   @override
   void initState() {

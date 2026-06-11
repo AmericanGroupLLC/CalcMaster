@@ -36,6 +36,12 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.1
   flutter_native_splash: ^2.4.3
 
+# Pin archive to the 3.x line: the `image` package's EXR codec references
+# `ZLibDecoder`, which archive 4.x removed — without this the icon/splash
+# generation tooling fails to compile under the current Dart SDK.
+dependency_overrides:
+  archive: ^3.6.1
+
 flutter:
   uses-material-design: true
   generate: true

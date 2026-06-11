@@ -18,6 +18,17 @@ class StandardCalc extends StatefulWidget {
   State<StandardCalc> createState() => _StandardCalcState();
 }
 
+// Apple Calculator key palette (rendered over the app's dark gradient).
+class _AppleKeys {
+  static const function = Color(0xFFA5A5A5); // AC, +/-, %
+  static const functionText = Color(0xFF1A1A1A);
+  static const digit = Color(0xFF2E2E33); // numbers & decimal
+  static const operator = Color(0xFFFF9F0A); // ÷ × − + =
+  static const operatorActive = Colors.white; // pressed operator
+}
+
+enum _KeyKind { function, digit, operator }
+
 class _StandardCalcState extends State<StandardCalc> {
   String expr = '';
 
@@ -35,96 +46,111 @@ class _StandardCalcState extends State<StandardCalc> {
     }
   }
 
-  void _press(String label) {
+  // Internal operator chars the active-highlight should track.
+  static const _opChar = {'÷': '/', '×': '*', '−': '-', '+': '+'};
+
+  bool _isActiveOperator(String label) {
+    final ch = _opChar[label];
+    return ch != null && expr.isNotEmpty && expr.endsWith(ch);
+  }
+
+  void _backspace() {
+    if (expr.isNotEmpty) setState(() => expr = expr.substring(0, expr.length - 1));
+  }
+
+  // Toggle the sign of the trailing number (Apple's +/- key).
+  void _toggleSign() {
+    final m = RegExp(r'(\d*\.?\d+)$').firstMatch(expr);
+    if (m == null) return;
+    final idx = m.start;
+    final hasUnaryMinus = idx > 0 &&
+        expr[idx - 1] == '-' &&
+        (idx - 1 == 0 || '(+-*/%'.contains(expr[idx - 2]));
     setState(() {
-      switch (label) {
-        case 'C':
-          expr = '';
-          break;
-        case '⌫':
-          if (expr.isNotEmpty) expr = expr.substring(0, expr.length - 1);
-          break;
-        case '=':
-          if (liveResult.isNotEmpty) expr = liveResult;
-          break;
-        case '×':
-          expr += '*';
-          break;
-        case '÷':
-          expr += '/';
-          break;
-        case '−':
-          expr += '-';
-          break;
-        case '( )':
-          final open = '('.allMatches(expr).length;
-          final close = ')'.allMatches(expr).length;
-          if (open > close && (expr.isNotEmpty && RegExp(r'[\d\)\.]$').hasMatch(expr))) {
-            expr += ')';
-          } else {
-            expr += '(';
-          }
-          break;
-        default:
-          expr += label;
-      }
+      expr = hasUnaryMinus
+          ? expr.substring(0, idx - 1) + expr.substring(idx)
+          : '${expr.substring(0, idx)}-${expr.substring(idx)}';
     });
   }
 
-  Widget _btn(String label, {Color? bg, Color? fg, double flex = 1}) {
+  void _press(String label) {
+    switch (label) {
+      case 'AC':
+      case 'C':
+        setState(() => expr = '');
+        break;
+      case '+/−':
+        _toggleSign();
+        break;
+      case '=':
+        if (liveResult.isNotEmpty) setState(() => expr = liveResult);
+        break;
+      case '×':
+        setState(() => expr += '*');
+        break;
+      case '÷':
+        setState(() => expr += '/');
+        break;
+      case '−':
+        setState(() => expr += '-');
+        break;
+      default:
+        setState(() => expr += label);
+    }
+  }
+
+  Widget _key(String label, _KeyKind kind, double size, double gap, {double widthFactor = 1}) {
+    final active = kind == _KeyKind.operator && _isActiveOperator(label);
     final isEquals = label == '=';
-    final isOperator = RegExp(r'[÷×−+]').hasMatch(label);
-    return Expanded(
-      flex: flex.toInt(),
-      child: Padding(
-        padding: const EdgeInsets.all(4),
-        child: PressableScale(
-          onTap: () => _press(label),
-          haptic: isEquals
-              ? HapticFeedbackKind.medium
-              : HapticFeedbackKind.selection,
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 18),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: isEquals ? null : (bg ?? AppColors.surface),
-              // Equals key gets a vivid gradient to anchor the keypad.
-              gradient: isEquals
-                  ? const LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [Color(0xFF9B7DFF), AppColors.accentPrimary],
-                    )
-                  : null,
-              border: Border.all(
-                color: isEquals
-                    ? Colors.transparent
-                    : (isOperator
-                        ? AppColors.accentPrimary.withValues(alpha: 0.35)
-                        : AppColors.border),
-              ),
-              borderRadius: BorderRadius.circular(Radii.button),
-              boxShadow: isEquals
-                  ? [
-                      BoxShadow(
-                        color: AppColors.accentPrimary.withValues(alpha: 0.45),
-                        blurRadius: 16,
-                        spreadRadius: -2,
-                        offset: const Offset(0, 4),
-                      ),
-                    ]
-                  : null,
-            ),
-            child: Text(
-              label,
-              style: TextStyle(
-                color: isEquals
-                    ? Colors.white
-                    : (isOperator ? AppColors.accentPrimary : (fg ?? AppColors.text)),
-                fontSize: 18,
-                fontWeight: isOperator || isEquals ? FontWeight.w700 : FontWeight.w600,
-              ),
-            ),
+
+    Color bg;
+    Color fg;
+    switch (kind) {
+      case _KeyKind.function:
+        bg = _AppleKeys.function;
+        fg = _AppleKeys.functionText;
+        break;
+      case _KeyKind.digit:
+        bg = _AppleKeys.digit;
+        fg = Colors.white;
+        break;
+      case _KeyKind.operator:
+        bg = active ? _AppleKeys.operatorActive : _AppleKeys.operator;
+        fg = active ? _AppleKeys.operator : Colors.white;
+        break;
+    }
+
+    // A wide key spans N columns plus the gaps it bridges.
+    final width = size * widthFactor + gap * (widthFactor - 1);
+    return PressableScale(
+      onTap: () => _press(label),
+      haptic: isEquals ? HapticFeedbackKind.medium : HapticFeedbackKind.selection,
+      child: Container(
+        width: width,
+        height: size,
+        alignment: widthFactor > 1 ? Alignment.centerLeft : Alignment.center,
+        padding: widthFactor > 1 ? EdgeInsets.only(left: size * 0.36) : EdgeInsets.zero,
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(size / 2),
+          boxShadow: kind == _KeyKind.operator && !active
+              ? [
+                  BoxShadow(
+                    color: _AppleKeys.operator.withValues(alpha: 0.4),
+                    blurRadius: 14,
+                    spreadRadius: -4,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+              : null,
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: fg,
+            fontSize: size * 0.4,
+            fontWeight: FontWeight.w500,
+            height: 1,
           ),
         ),
       ),
@@ -133,46 +159,108 @@ class _StandardCalcState extends State<StandardCalc> {
 
   @override
   Widget build(BuildContext context) {
+    // Apple keypad: 4 columns × 5 rows. Each entry is (label, kind, widthFactor).
+    final rows = <List<(String, _KeyKind, double)>>[
+      [
+        (expr.isEmpty ? 'AC' : 'C', _KeyKind.function, 1),
+        ('+/−', _KeyKind.function, 1),
+        ('%', _KeyKind.function, 1),
+        ('÷', _KeyKind.operator, 1),
+      ],
+      [
+        ('7', _KeyKind.digit, 1),
+        ('8', _KeyKind.digit, 1),
+        ('9', _KeyKind.digit, 1),
+        ('×', _KeyKind.operator, 1),
+      ],
+      [
+        ('4', _KeyKind.digit, 1),
+        ('5', _KeyKind.digit, 1),
+        ('6', _KeyKind.digit, 1),
+        ('−', _KeyKind.operator, 1),
+      ],
+      [
+        ('1', _KeyKind.digit, 1),
+        ('2', _KeyKind.digit, 1),
+        ('3', _KeyKind.digit, 1),
+        ('+', _KeyKind.operator, 1),
+      ],
+      [
+        ('0', _KeyKind.digit, 2),
+        ('.', _KeyKind.digit, 1),
+        ('=', _KeyKind.operator, 1),
+      ],
+    ];
+
     return InnerScaffold(
       title: AppLocalizations.of(context)!.calcStandard,
-      subtitle: 'Live result updates as you type',
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Container(
-            constraints: const BoxConstraints(minHeight: 100),
-            alignment: Alignment.bottomRight,
-            padding: const EdgeInsets.only(top: Spacing.lg, bottom: Spacing.sm),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                FittedBox(
-                  alignment: Alignment.centerRight,
-                  fit: BoxFit.scaleDown,
-                  child: Text(expr.isEmpty ? '0' : expr, style: const TextStyle(color: AppColors.text, fontSize: 38, fontWeight: FontWeight.w600)),
-                ),
-                if (liveResult.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(top: Spacing.sm),
-                    child: Text('= $liveResult', style: const TextStyle(color: AppColors.textMuted, fontSize: 18)),
+      subtitle: 'Swipe the display to delete · live result',
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          const gap = 12.0;
+          final available = constraints.maxWidth;
+          final size = ((available - gap * 3) / 4).clamp(56.0, 88.0);
+          final keypadWidth = size * 4 + gap * 3;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // ---- Display (swipe horizontally to backspace) ----
+              GestureDetector(
+                onHorizontalDragEnd: (_) => _backspace(),
+                behavior: HitTestBehavior.opaque,
+                child: Container(
+                  width: keypadWidth,
+                  constraints: const BoxConstraints(minHeight: 130),
+                  alignment: Alignment.bottomRight,
+                  padding: const EdgeInsets.only(top: Spacing.lg, bottom: Spacing.md),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      if (liveResult.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 6),
+                          child: Text('= $liveResult',
+                              style: const TextStyle(color: AppColors.textMuted, fontSize: 20)),
+                        ),
+                      FittedBox(
+                        alignment: Alignment.centerRight,
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          expr.isEmpty ? '0' : expr,
+                          maxLines: 1,
+                          style: const TextStyle(
+                              color: AppColors.text, fontSize: 64, fontWeight: FontWeight.w300),
+                        ),
+                      ),
+                    ],
                   ),
-              ],
-            ),
-          ),
-          for (final row in [
-            ['C', '( )', '%', '÷'],
-            ['7', '8', '9', '×'],
-            ['4', '5', '6', '−'],
-            ['1', '2', '3', '+'],
-            ['⌫', '0', '.', '='],
-          ])
-            Row(children: [
-              for (final k in row)
-                _btn(k,
-                    bg: k == '=' ? AppColors.accentPrimary : (RegExp(r'[÷×−+]').hasMatch(k) ? AppColors.surfaceAlt : null),
-                    fg: k == '=' ? Colors.white : null),
-            ]),
-        ],
+                ),
+              ),
+              const SizedBox(height: Spacing.sm),
+              // ---- Keypad ----
+              SizedBox(
+                width: keypadWidth,
+                child: Column(
+                  children: [
+                    for (final row in rows)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: gap),
+                        child: Row(
+                          children: [
+                            for (var i = 0; i < row.length; i++) ...[
+                              if (i > 0) const SizedBox(width: gap),
+                              _key(row[i].$1, row[i].$2, size, gap, widthFactor: row[i].$3),
+                            ],
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

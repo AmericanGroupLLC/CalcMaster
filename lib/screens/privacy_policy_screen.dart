@@ -29,13 +29,13 @@ class PrivacyPolicyScreen extends StatelessWidget {
           Text(loc.privacyAtGlance,
               style: const TextStyle(color: AppColors.text, fontSize: 22, fontWeight: FontWeight.w700)),
           const SizedBox(height: Spacing.md),
-          _para('CalcMaster runs almost entirely on your device. Your conversions, '
+          _para('Calculator runs almost entirely on your device. Your conversions, '
               'notes, and selected region are stored locally and never leave your phone unless you explicitly opt in.'),
           _para('We use anonymous analytics to understand which calculators are most useful so '
               'we can prioritize improvements. No personally identifiable information is collected.'),
           _para('When you tap an affiliate link or sponsored card, you leave the app and visit '
               'a partner website. Their privacy policy applies once you click.'),
-          _para('If you subscribe to CalcMaster Pro, your purchase is processed by the App Store or Google Play; '
+          _para('If you subscribe to Calculator Pro, your purchase is processed by the App Store or Google Play; '
               'we never see your payment details.'),
           const SizedBox(height: Spacing.lg),
           FilledButton(

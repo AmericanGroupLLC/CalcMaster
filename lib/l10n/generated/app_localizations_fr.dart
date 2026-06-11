@@ -9,7 +9,7 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
-  String get appTitle => 'CalcMaster';
+  String get appTitle => 'Calculator';
 
   @override
   String get appTagline => 'Calculatrice et convertisseur mondial';
@@ -192,7 +192,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsSubscribePro => 'S\'abonner à Pro';
 
   @override
-  String get settingsCalcMasterPro => 'CalcMaster Pro';
+  String get settingsCalcMasterPro => 'Calculator Pro';
 
   @override
   String get settingsRestorePurchases => 'Restaurer les achats';
@@ -213,10 +213,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsPrivacyPolicy => 'Politique de confidentialité';
 
   @override
-  String get settingsAbout => 'À propos de CalcMaster';
+  String get settingsAbout => 'À propos de Calculator';
 
   @override
-  String get paywallTitle => 'Débloquez CalcMaster Pro';
+  String get paywallTitle => 'Débloquez Calculator Pro';
 
   @override
   String get paywallSubtitle =>
@@ -325,13 +325,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get aboutBlurb =>
-      'CalcMaster regroupe les calculatrices que les gens utilisent vraiment — conversions d\'unités, pourcentages, mathématiques scientifiques, impôts et finance, électronique, et un bloc-notes — dans une seule application soignée qui respecte votre vie privée et votre batterie.';
+      'Calculator regroupe les calculatrices que les gens utilisent vraiment — conversions d\'unités, pourcentages, mathématiques scientifiques, impôts et finance, électronique, et un bloc-notes — dans une seule application soignée qui respecte votre vie privée et votre batterie.';
 
   @override
-  String get aiChatHint => 'Demandez à CalcMaster AI...';
+  String get aiChatHint => 'Demandez à Calculator AI...';
 
   @override
-  String get aiChatTitle => 'CalcMaster AI';
+  String get aiChatTitle => 'Calculator AI';
 
   @override
   String get aiChatEmpty =>

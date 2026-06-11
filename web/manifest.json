@@ -1,6 +1,6 @@
 {
-  "name": "CalcMaster \u2014 World Calculator & Converter",
-  "short_name": "CalcMaster",
+  "name": "Calculator \u2014 World Calculator & Converter",
+  "short_name": "Calculator",
   "id": "/",
   "start_url": ".",
   "scope": "/",

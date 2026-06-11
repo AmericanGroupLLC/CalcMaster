@@ -9,7 +9,7 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
-  String get appTitle => 'CalcMaster';
+  String get appTitle => 'Calculator';
 
   @override
   String get appTagline => '全球计算器与转换器';
@@ -189,7 +189,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsSubscribePro => '订阅 Pro';
 
   @override
-  String get settingsCalcMasterPro => 'CalcMaster Pro';
+  String get settingsCalcMasterPro => 'Calculator Pro';
 
   @override
   String get settingsRestorePurchases => '恢复购买';
@@ -210,10 +210,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsPrivacyPolicy => '隐私政策';
 
   @override
-  String get settingsAbout => '关于 CalcMaster';
+  String get settingsAbout => '关于 Calculator';
 
   @override
-  String get paywallTitle => '解锁 CalcMaster Pro';
+  String get paywallTitle => '解锁 Calculator Pro';
 
   @override
   String get paywallSubtitle => '去除广告,获得高级洞察,即时刷新汇率,支持独立开发。';
@@ -318,13 +318,13 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get aboutBlurb =>
-      'CalcMaster 把人们真正常用的计算器集合在一个精致的应用里 — 单位转换、百分比、科学计算、税务与财务、电子工具,以及笔记本。尊重你的隐私与电池。';
+      'Calculator 把人们真正常用的计算器集合在一个精致的应用里 — 单位转换、百分比、科学计算、税务与财务、电子工具,以及笔记本。尊重你的隐私与电池。';
 
   @override
-  String get aiChatHint => '问 CalcMaster AI...';
+  String get aiChatHint => '问 Calculator AI...';
 
   @override
-  String get aiChatTitle => 'CalcMaster AI';
+  String get aiChatTitle => 'Calculator AI';
 
   @override
   String get aiChatEmpty => '问我任何关于计算、换算或财务的问题。';
