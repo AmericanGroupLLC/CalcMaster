@@ -1,6 +1,6 @@
 export default () => ({
   port: parseInt(process.env.PORT ?? '3000', 10),
-  apiBaseUrl: process.env.API_BASE_URL || 'https://api.calcmaster.app',
+  apiBaseUrl: process.env.API_BASE_URL || 'https://api.safecodeg.com',
   database: {
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT ?? '5432', 10),
@@ -22,7 +22,7 @@ export default () => ({
     clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
     callbackUrl:
       process.env.GOOGLE_CALLBACK_URL ||
-      `${process.env.API_BASE_URL || 'https://api.calcmaster.app'}/api/v1/auth/google/callback`,
+      `${process.env.API_BASE_URL || 'https://api.safecodeg.com'}/api/v1/auth/google/callback`,
   },
   apple: {
     clientId: process.env.APPLE_CLIENT_ID || 'com.americangroupllc.calcmaster',
@@ -31,7 +31,7 @@ export default () => ({
     privateKey: process.env.APPLE_PRIVATE_KEY || '',
     callbackUrl:
       process.env.APPLE_CALLBACK_URL ||
-      `${process.env.API_BASE_URL || 'https://api.calcmaster.app'}/api/v1/auth/apple/callback`,
+      `${process.env.API_BASE_URL || 'https://api.safecodeg.com'}/api/v1/auth/apple/callback`,
   },
   ai: {
     openaiKey: process.env.OPENAI_API_KEY || '',
@@ -48,7 +48,7 @@ export default () => ({
   cors: {
     origins: (
       process.env.CORS_ORIGINS ||
-      'https://calcmaster.app,https://www.calcmaster.app'
+      'https://www.safecodeg.com,https://www.www.safecodeg.com'
     ).split(','),
   },
 });

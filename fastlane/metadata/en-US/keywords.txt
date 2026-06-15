@@ -1,0 +1,1 @@
+calculator,converter,unit,currency,tax,tip,loan,bmi,gps,scientific,fraction,percent,emi,money

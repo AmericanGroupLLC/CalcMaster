@@ -1,0 +1,50 @@
+CalcMaster is the only calculator you need on your phone. One polished app, ten unit categories, five calculator modes, seven finance tools, eight engineering utilities, and a notes pad — all designed for travelers, students, freelancers, and anyone who does the math.
+
+—— What you can do ——
+
+CONVERT (10 categories)
+Distance · Volume · Weight · Temperature · Speed · Area · Data Size · Fuel Economy · Pressure · Energy. Tap any category, type a value, and instantly see every other unit. Big accent-tinted result + a complete cross-reference list.
+
+CALCULATE (5 modes)
+Standard four-function · Scientific (sin / cos / tan / log / ln / √ / xʸ / n!) · Percentage (X% of Y, % change, increase/decrease) · Base converter (binary / octal / decimal / hex) · Fraction (add, subtract, multiply, divide, simplify, mixed numbers).
+
+FINANCE (7 tools)
+Income tax with real 2025–2026 brackets for US, UK, EU, Canada, Australia, India, and Japan — including filing-status differences and standard deductions · Sales tax / VAT · Tip & split · Discount · Compound interest with optional monthly contributions · EMI / loan amortization · Live currency rates from the European Central Bank with offline fallback · Unit-price comparison.
+
+TOOLS (8 utilities)
+GPS coordinates (decimal ↔ DMS) with one-tap "Use my location" · Ohm's Law solver from any two of V, I, R, P · BMI with healthy-range bands · Date difference · World time zones · ADC / DAC voltage ↔ digital code · Age calculator · Aspect ratio.
+
+NOTES
+Save calculations, formulas, and reminders. Search, edit, delete. Stays on your device — no account, no sync.
+
+—— Why CalcMaster ——
+
+• Region-aware. Tap the flag in the header to switch between US, UK, EU, CA, AU, IN, JP. Currency, sales-tax defaults, and progressive tax brackets all update live.
+
+• Beautiful, dark, and fast. Hand-authored line-art icons, neon accents per category, and instant results — no spinners, no waiting.
+
+• Privacy first. Everything runs on-device. We don't ask you to log in, and we don't sell your data. The currency module fetches public European Central Bank rates; that's the only network call.
+
+• Offline ready. Convert, calculate, and budget without a signal. Currency rates cache locally and refresh when you reconnect.
+
+• Cross-platform. Same calculations, same answers on iPhone and iPad — and on Android too if you switch.
+
+—— CalcMaster Pro ——
+
+Optional subscription removes the small banner ad, refreshes currency rates instantly instead of every 24 hours, unlocks advanced finance insights, and supports indie development. Three tiers:
+• Monthly $2.99
+• Annual $19.99 (save 44%)
+• Lifetime $49.99 — pay once, own it forever
+
+Cancel any time from your device's subscription settings.
+
+—— Built for ——
+
+• Travelers calculating tips and currency conversions abroad
+• Freelancers estimating taxes after every invoice
+• Students checking unit conversions and physics formulas
+• Engineers solving voltage drops and ADC resolution
+• Cooks scaling recipes between metric and imperial
+• Anyone tired of juggling six different apps to do the math
+
+Download CalcMaster and replace your stock calculator. We think you'll like it.

@@ -1,0 +1,39 @@
+name: Publish marketing site (GitHub Pages)
+
+# Publishes marketing/site/ so the Privacy Policy / Terms / Support URLs are LIVE.
+# Both app stores reject submissions without a reachable Privacy Policy URL.
+# After the first run, your URLs are:
+#   https://<owner>.github.io/<repo>/privacy.html
+#   https://<owner>.github.io/<repo>/terms.html
+#   https://<owner>.github.io/<repo>/support.html
+# Enable once: repo Settings → Pages → Source = "GitHub Actions".
+
+on:
+  push:
+    branches: [main, master]
+    paths: ['marketing/site/**', '.github/workflows/pages.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: marketing/site
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,8 @@
+First release of CalcMaster.
+• 10 unit converters across distance, volume, weight, temperature, and 6 more
+• 5 calculator modes (standard, scientific, percentage, base, fraction)
+• 7 region-aware finance tools (tax, tip, EMI, currency, more)
+• 9 utility tools incl. the new Calendar (GPS, Ohm's Law, BMI, time zones, more)
+• Notes pad
+• Optional Pro subscription removes ads
+Tap Settings → Send feedback to share what you'd like next.

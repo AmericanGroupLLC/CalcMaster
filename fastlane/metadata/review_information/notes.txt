@@ -1,0 +1,19 @@
+Thanks for reviewing CalcMaster.
+
+CalcMaster is a calculator + unit converter + finance tool that runs entirely on-device. There is no login, no account, and no user-generated content visible to other users.
+
+Test instructions:
+1. Open the app → Convert tab is the default. Tap any category card to convert units.
+2. Tap the bottom-nav tabs to explore Calculate, Finance, Tools, and Notes.
+3. In Tools, tap Calendar to browse months and inspect any date.
+4. Tap the gear icon in the top-right to open Settings.
+5. From Settings, tap "Subscribe to Pro" to see the paywall.
+   — On this build, "Continue" returns a sandbox snackbar; production IAP is configured separately.
+6. Tap "Send feedback" in Settings to test mailto: support@safecodeg.com.
+
+Privacy:
+• Location: requested only when the user explicitly taps "Use my location" in the GPS Coordinates tool. Not transmitted.
+• Network: a single GET to api.frankfurter.app for European Central Bank currency rates, used by the Currency converter. Offline fallback is built in.
+• Tracking: an App Tracking Transparency prompt may appear because the app shows ads via AdMob.
+
+If you need anything else, please email support@safecodeg.com and we'll respond within one business day.

@@ -15,6 +15,7 @@ import 'screens/paywall_screen.dart';
 import 'screens/privacy_policy_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/splash_screen.dart';
+import 'screens/tools/calendar_screen.dart';
 import 'screens/tools/tools_home.dart';
 import 'screens/tools/tools_screens.dart';
 import 'widgets/tab_scaffold.dart';
@@ -96,6 +97,7 @@ final appRouter = GoRouter(
                 GoRoute(path: 'adc-dac', builder: (_, __) => const AdcDacCalc()),
                 GoRoute(path: 'age', builder: (_, __) => const AgeCalc()),
                 GoRoute(path: 'aspect-ratio', builder: (_, __) => const AspectRatioCalc()),
+                GoRoute(path: 'calendar', builder: (_, __) => const CalendarToolScreen()),
               ],
             ),
           ],

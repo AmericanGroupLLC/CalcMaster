@@ -121,7 +121,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'Calculator'**
+  /// **'CalcMaster'**
   String get appTitle;
 
   /// Tagline shown under the app title in the Convert hero.
@@ -475,7 +475,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsCalcMasterPro.
   ///
   /// In en, this message translates to:
-  /// **'Calculator Pro'**
+  /// **'CalcMaster Pro'**
   String get settingsCalcMasterPro;
 
   /// No description provided for @settingsRestorePurchases.
@@ -517,13 +517,13 @@ abstract class AppLocalizations {
   /// No description provided for @settingsAbout.
   ///
   /// In en, this message translates to:
-  /// **'About Calculator'**
+  /// **'About CalcMaster'**
   String get settingsAbout;
 
   /// No description provided for @paywallTitle.
   ///
   /// In en, this message translates to:
-  /// **'Unlock Calculator Pro'**
+  /// **'Unlock CalcMaster Pro'**
   String get paywallTitle;
 
   /// No description provided for @paywallSubtitle.
@@ -727,19 +727,19 @@ abstract class AppLocalizations {
   /// No description provided for @aboutBlurb.
   ///
   /// In en, this message translates to:
-  /// **'Calculator bundles the calculators most people actually use — unit conversions, percentages, scientific math, tax + finance, electronics, and a notes pad — in one polished app that respects your privacy and your battery.'**
+  /// **'CalcMaster bundles the calculators most people actually use — unit conversions, percentages, scientific math, tax + finance, electronics, and a notes pad — in one polished app that respects your privacy and your battery.'**
   String get aboutBlurb;
 
   /// No description provided for @aiChatHint.
   ///
   /// In en, this message translates to:
-  /// **'Ask Calculator AI...'**
+  /// **'Ask CalcMaster AI...'**
   String get aiChatHint;
 
   /// No description provided for @aiChatTitle.
   ///
   /// In en, this message translates to:
-  /// **'Calculator AI'**
+  /// **'CalcMaster AI'**
   String get aiChatTitle;
 
   /// No description provided for @aiChatEmpty.

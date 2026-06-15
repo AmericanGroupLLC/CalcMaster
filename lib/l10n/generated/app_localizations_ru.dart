@@ -9,7 +9,7 @@ class AppLocalizationsRu extends AppLocalizations {
   AppLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
-  String get appTitle => 'Calculator';
+  String get appTitle => 'CalcMaster';
 
   @override
   String get appTagline => 'Мировой калькулятор и конвертер';
@@ -192,7 +192,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settingsSubscribePro => 'Подписаться на Pro';
 
   @override
-  String get settingsCalcMasterPro => 'Calculator Pro';
+  String get settingsCalcMasterPro => 'CalcMaster Pro';
 
   @override
   String get settingsRestorePurchases => 'Восстановить покупки';
@@ -213,10 +213,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settingsPrivacyPolicy => 'Политика конфиденциальности';
 
   @override
-  String get settingsAbout => 'О Calculator';
+  String get settingsAbout => 'О CalcMaster';
 
   @override
-  String get paywallTitle => 'Откройте Calculator Pro';
+  String get paywallTitle => 'Откройте CalcMaster Pro';
 
   @override
   String get paywallSubtitle =>
@@ -325,13 +325,13 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get aboutBlurb =>
-      'Calculator объединяет калькуляторы, которыми люди реально пользуются — конверсии единиц, проценты, научная математика, налоги и финансы, электроника, блокнот — в одном изящном приложении, уважающем вашу приватность и батарею.';
+      'CalcMaster объединяет калькуляторы, которыми люди реально пользуются — конверсии единиц, проценты, научная математика, налоги и финансы, электроника, блокнот — в одном изящном приложении, уважающем вашу приватность и батарею.';
 
   @override
-  String get aiChatHint => 'Спросите Calculator AI...';
+  String get aiChatHint => 'Спросите CalcMaster AI...';
 
   @override
-  String get aiChatTitle => 'Calculator AI';
+  String get aiChatTitle => 'CalcMaster AI';
 
   @override
   String get aiChatEmpty =>

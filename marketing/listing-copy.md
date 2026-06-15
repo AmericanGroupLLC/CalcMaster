@@ -14,7 +14,7 @@ Privacy / Terms / Support fields read placeholder URLs from `lib/monetization/mo
 | App name | **CalcMaster** | Both |
 | Tagline | **World calculator & converter** | Both |
 | Brand colors | #0B1020 (bg), #7C5CFF (accent), #5CE0A8 (mint), #FFC85C (warning) | Both |
-| Bundle / package ID | `com.calcmaster.calcmaster` | Both |
+| Bundle / package ID | `com.americangroupllc.calcmaster` | Both |
 | Category — primary | **Utilities** (App Store) / **Tools** (Play) | Both |
 | Category — secondary | **Productivity** | Both |
 | Age rating | **4+** (no objectionable content) / **Everyone** (Play) | Both |
@@ -135,19 +135,19 @@ We'd love to hear from you. Tap Settings → Send feedback to reach the team.
 ### Support URL
 
 ```
-https://calcmaster.app/support
+https://www.safecodeg.com/calcmaster/support.html
 ```
 
 ### Marketing URL (optional)
 
 ```
-https://calcmaster.app
+https://www.safecodeg.com
 ```
 
 ### Privacy Policy URL (REQUIRED)
 
 ```
-https://calcmaster.app/privacy
+https://www.safecodeg.com/calcmaster/privacy.html
 ```
 
 > **Action required**: publish a real privacy policy at that URL before submitting. Use Iubenda, Termly, or a static page on GitHub Pages. The Settings → Privacy screen in the app already links to it.
@@ -205,19 +205,19 @@ productivity
 ### Contact email
 
 ```
-support@calcmaster.app
+support@safecodeg.com
 ```
 
 ### Website
 
 ```
-https://calcmaster.app
+https://www.safecodeg.com
 ```
 
 ### Privacy Policy URL (REQUIRED)
 
 ```
-https://calcmaster.app/privacy
+https://www.safecodeg.com/calcmaster/privacy.html
 ```
 
 ### Content rating questionnaire (recommended answers — confirms PEGI 3 / Everyone / 4+)
@@ -250,14 +250,14 @@ Test instructions:
 3. Tap the gear icon in the top-right to open Settings.
 4. From Settings, tap "Subscribe to Pro" to see the paywall.
    — On this build, "Continue" intentionally returns a sandbox snackbar; production credentials will be configured before the listing goes live.
-5. Tap "Send feedback" in Settings to test mailto: support@calcmaster.app.
+5. Tap "Send feedback" in Settings to test mailto: support@safecodeg.com.
 
 Privacy:
 • Location: requested only when the user explicitly taps "Use my location" in the GPS Coordinates tool. Not transmitted.
 • Network: a single GET to api.frankfurter.app for European Central Bank currency rates, used by the Currency converter. Offline fallback is built in.
 • Tracking: No App Tracking Transparency prompt is required because we don't track users across apps or websites.
 
-If you need a demo subscription account or any other access, please email support@calcmaster.app and we'll respond within one business day.
+If you need a demo subscription account or any other access, please email support@safecodeg.com and we'll respond within one business day.
 ```
 
 ---
@@ -291,8 +291,8 @@ When you're ready to submit, copy each field above into the relevant store dashb
 - [ ] Short description — (above)
 - [ ] Full description — (above)
 - [ ] What's new — (above)
-- [ ] Email — *support@calcmaster.app*
-- [ ] Website — *https://calcmaster.app*
+- [ ] Email — *support@safecodeg.com*
+- [ ] Website — *https://www.safecodeg.com*
 - [ ] Privacy Policy URL — REQUIRED, must be live
 - [ ] Category — Tools (primary)
 - [ ] Tags — calculator, unit converter, finance, utility, productivity

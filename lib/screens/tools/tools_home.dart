@@ -44,6 +44,7 @@ class ToolsHome extends StatelessWidget {
                   RichHubCard(title: loc.toolAdcDac, subtitle: 'Analog ↔ Digital conversion', svgPath: 'assets/icons/adc_dac.svg', accent: accent, onTap: () => context.push('/tools/adc-dac')),
                   RichHubCard(title: loc.toolAge, subtitle: 'Exact age calculator', svgPath: 'assets/icons/age.svg', accent: accent, onTap: () => context.push('/tools/age')),
                   RichHubCard(title: loc.toolAspectRatio, subtitle: 'Screen & image ratios', svgPath: 'assets/icons/aspect_ratio.svg', accent: accent, onTap: () => context.push('/tools/aspect-ratio')),
+                  RichHubCard(title: 'Calendar', subtitle: 'Month view & date facts', svgPath: 'assets/icons/calendar.svg', accent: accent, onTap: () => context.push('/tools/calendar')),
                 ],
               ),
             ],

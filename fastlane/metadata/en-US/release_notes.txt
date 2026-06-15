@@ -1,0 +1,11 @@
+Hello, world! This is the first release of CalcMaster.
+
+Highlights of this build:
+• 10 unit converters, 5 calculator modes, 7 finance tools, 8 utilities, and a notes pad
+• New Calendar tool: month view with ISO week, day-of-year, and quarter
+• Region-aware tax + currency for US, UK, EU, CA, AU, IN, JP
+• Live European Central Bank exchange rates with offline fallback
+• Beautiful dark theme with hand-authored line-art icons
+• Optional CalcMaster Pro for ad-free + advanced features
+
+We'd love to hear from you. Tap Settings → Send feedback to reach the team.

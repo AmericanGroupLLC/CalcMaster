@@ -73,7 +73,6 @@ void main() {
     final dir = Directionality.of(tester.element(find.byType(ConvertHome)));
     expect(dir, equals(TextDirection.ltr));
   });
-}
 
   testWidgets('All locales have aiChatTitle key', (tester) async {
     for (final code in headings.keys) {
@@ -94,3 +93,4 @@ void main() {
           reason: 'labelFilingStatus should be non-empty for locale $code');
     }
   });
+}

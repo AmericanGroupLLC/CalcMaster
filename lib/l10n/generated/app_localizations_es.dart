@@ -9,7 +9,7 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
-  String get appTitle => 'Calculator';
+  String get appTitle => 'CalcMaster';
 
   @override
   String get appTagline => 'Calculadora y conversor mundial';
@@ -192,7 +192,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsSubscribePro => 'Suscríbete a Pro';
 
   @override
-  String get settingsCalcMasterPro => 'Calculator Pro';
+  String get settingsCalcMasterPro => 'CalcMaster Pro';
 
   @override
   String get settingsRestorePurchases => 'Restaurar compras';
@@ -213,10 +213,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsPrivacyPolicy => 'Política de privacidad';
 
   @override
-  String get settingsAbout => 'Acerca de Calculator';
+  String get settingsAbout => 'Acerca de CalcMaster';
 
   @override
-  String get paywallTitle => 'Desbloquea Calculator Pro';
+  String get paywallTitle => 'Desbloquea CalcMaster Pro';
 
   @override
   String get paywallSubtitle =>
@@ -325,13 +325,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get aboutBlurb =>
-      'Calculator reúne las calculadoras que la gente realmente usa — conversiones de unidades, porcentajes, matemáticas científicas, impuestos y finanzas, electrónica, y un bloc de notas — en una sola aplicación pulida que respeta tu privacidad y tu batería.';
+      'CalcMaster reúne las calculadoras que la gente realmente usa — conversiones de unidades, porcentajes, matemáticas científicas, impuestos y finanzas, electrónica, y un bloc de notas — en una sola aplicación pulida que respeta tu privacidad y tu batería.';
 
   @override
-  String get aiChatHint => 'Pregunta a Calculator AI...';
+  String get aiChatHint => 'Pregunta a CalcMaster AI...';
 
   @override
-  String get aiChatTitle => 'Calculator AI';
+  String get aiChatTitle => 'CalcMaster AI';
 
   @override
   String get aiChatEmpty =>

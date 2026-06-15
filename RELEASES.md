@@ -97,7 +97,7 @@ Before flipping these from test → production, edit `lib/monetization/monetizat
 | RevenueCat keys | `appl_DUMMY_…` / `goog_DUMMY_…` | From app.revenuecat.com |
 | Firebase project ID | `calcmaster-DUMMY-12345` | From console.firebase.google.com |
 | Amazon Associates tags (US/UK/IN) | `calcmaster-20` / `-21` | From affiliate-program.amazon.com |
-| Privacy / Terms / Support URLs | `calcmaster.app/...` | Publish at a real domain |
+| Privacy / Terms / Support URLs | `www.safecodeg.com/...` | Publish at a real domain |
 
 Then set the master switches in the same file from `false` → `true` per-pillar.
 

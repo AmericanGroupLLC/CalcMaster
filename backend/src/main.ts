@@ -13,7 +13,7 @@ async function bootstrap() {
   // CORS — defaults to production origins; override via CORS_ORIGINS env var
   const allowedOrigins = (
     process.env.CORS_ORIGINS ||
-    'https://calcmaster.app,https://www.calcmaster.app'
+    'https://www.safecodeg.com,https://www.www.safecodeg.com'
   ).split(',');
 
   app.enableCors({
@@ -55,7 +55,7 @@ async function bootstrap() {
   }
 
   const port = process.env.PORT || 3000;
-  const apiBase = process.env.API_BASE_URL || 'https://api.calcmaster.app';
+  const apiBase = process.env.API_BASE_URL || 'https://api.safecodeg.com';
   await app.listen(port);
   console.log(`CalcMaster API running on port ${port}`);
   if (process.env.NODE_ENV !== 'production' || process.env.SWAGGER_ENABLED === 'true') {

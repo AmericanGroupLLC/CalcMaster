@@ -6,3 +6,11 @@ node_modules/
 build/
 .dart_tool/
 .flutter-plugins-dependencies
+
+# Signing & store credentials — never commit
+android/key.properties
+*.jks
+*.keystore
+*.p8
+fastlane/play-service-account.json
+fastlane/report.xml

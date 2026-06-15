@@ -23,7 +23,7 @@ This report outlines the comprehensive, end-to-end audit, hardening, and product
 *   **Complete 12-Locale Internationalization:** Italian (`it`), Korean (`ko`), and Russian (`ru`) locales have been fully integrated, matching the existing 9 locales. Every single locale contains exactly **121 ARB keys**, guaranteeing zero missing translations or runtime UI crashes due to translation gaps.
 *   **Hardcoded String Removal:** Every user-visible string on the AI Chat screen, Auth MFA dialog, Notes delete dialog, and Finance/Calculator screens has been bound to `AppLocalizations.of(context)`. 
 *   **Runtime SnackBar Safety:** Removed illegal `const` specifiers from `SnackBar` instances on the GPS screen where dynamic `AppLocalizations` contexts are resolved at runtime.
-*   **Production API Routing:** Switched the default API base URL in `api_client.dart` from `localhost` to the secure production server: `https://api.calcmaster.app/api/v1`.
+*   **Production API Routing:** Switched the default API base URL in `api_client.dart` from `localhost` to the secure production server: `https://api.safecodeg.com/api/v1`.
 
 ### B. NestJS Backend (Security & Features)
 *   **JWKS Apple Sign-In Verification:** Upgraded the Apple Sign-In handler from a decoded JWT stub to a production-grade signature verifier using Apple's JSON Web Key Set (JWKS) endpoint (`https://appleid.apple.com/auth/keys`) via `jwks-rsa` and `jsonwebtoken`.

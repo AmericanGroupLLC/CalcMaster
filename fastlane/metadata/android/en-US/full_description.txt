@@ -1,0 +1,34 @@
+CalcMaster is the only calculator you need on your phone. One polished app, ten unit categories, five calculator modes, seven finance tools, eight engineering utilities, and a notes pad — all designed for travelers, students, freelancers, and anyone who does the math.
+
+—— What you can do ——
+
+CONVERT (10 categories)
+Distance · Volume · Weight · Temperature · Speed · Area · Data Size · Fuel Economy · Pressure · Energy. Tap any category, type a value, and instantly see every other unit.
+
+CALCULATE (5 modes)
+Standard four-function · Scientific (sin / cos / tan / log / ln / √ / xʸ / n!) · Percentage · Base converter (binary / octal / decimal / hex) · Fraction.
+
+FINANCE (7 tools)
+Income tax with real 2025–2026 brackets for US, UK, EU, Canada, Australia, India, and Japan · Sales tax / VAT · Tip & split · Discount · Compound interest · EMI / loan amortization · Live currency rates from the European Central Bank with offline fallback · Unit-price comparison.
+
+TOOLS (9 utilities)
+GPS coordinates (decimal ↔ DMS) · Ohm's Law solver · BMI · Date difference · World time zones · ADC / DAC · Age calculator · Aspect ratio · Calendar (month view, ISO week, day-of-year).
+
+NOTES
+Save calculations, formulas, and reminders. Stays on your device — no account, no sync.
+
+—— Why CalcMaster ——
+
+• Region-aware. Tap the flag in the header to switch between US, UK, EU, CA, AU, IN, JP. Currency, sales-tax defaults, and progressive tax brackets all update live.
+
+• Beautiful, dark, and fast. Hand-authored line-art icons, neon accents per category, and instant results.
+
+• Privacy first. Everything runs on-device. We don't ask you to log in, and we don't sell your data. The currency module fetches public European Central Bank rates; that's the only network call.
+
+• Offline ready. Convert, calculate, and budget without a signal.
+
+—— CalcMaster Pro ——
+
+Optional subscription removes the banner ad, refreshes currency rates instantly, unlocks advanced finance insights, and supports development. Monthly $2.99 · Annual $19.99 · Lifetime $49.99. Cancel any time.
+
+Download CalcMaster and replace your stock calculator. We think you'll like it.

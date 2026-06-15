@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "CalMaster",
-    "slug": "calmaster",
-    "version": "1.0.0",
+    "name": "CalcMaster",
+    "slug": "calcmaster",
+    "version": "4.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -13,7 +13,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.americangroupllc.calmaster",
+      "bundleIdentifier": "com.americangroupllc.calcmaster",
       "buildNumber": "1"
     },
     "android": {
@@ -21,7 +21,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.americangroupllc.calmaster",
+      "package": "com.americangroupllc.calcmaster",
       "versionCode": 1,
       "permissions": [
         "INTERNET",

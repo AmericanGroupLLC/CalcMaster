@@ -25,11 +25,11 @@ void main() {
   // credentials are missing, so this never blocks startup.
   AnalyticsService.instance.bootstrap();
   AdService.instance.bootstrap();
-  runApp(const CalculatorApp());
+  runApp(const CalcMasterApp());
 }
 
-class CalculatorApp extends StatelessWidget {
-  const CalculatorApp({super.key});
+class CalcMasterApp extends StatelessWidget {
+  const CalcMasterApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +52,7 @@ class CalculatorApp extends StatelessWidget {
         }),
       ],
       child: MaterialApp.router(
-        title: 'Calculator',
+        title: 'CalcMaster',
         theme: theme,
         debugShowCheckedModeBanner: false,
         routerConfig: appRouter,

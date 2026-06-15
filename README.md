@@ -117,9 +117,9 @@ Replace before submitting to App Store / Play Store / public web hosting.
 | `amazonAssociatesTagUS` / `_UK` / `_IN` | `calcmaster-20` / `-21` | affiliate-program.amazon.com → Tag |
 | `mealKitAffiliateUrl` / `wellnessSubscriptionUrl` | `example.com/affiliate/...?ref=DUMMY` | Real partner tracking URLs |
 | `affiliateSlots` | Amazon search URLs | Replace with concrete product detail page URLs |
-| `privacyPolicyUrl` / `termsOfServiceUrl` | `calcmaster.app/privacy` `/terms` | Publish at a real domain (Iubenda / Termly / GitHub Pages) |
-| `supportEmail` | `support@calcmaster.app` | A real, monitored mailbox |
-| `marketingWebsite` / `appStoreUrl` / `playStoreUrl` | `calcmaster.app` / fake bundle IDs | After buying domain + listing apps |
+| `privacyPolicyUrl` / `termsOfServiceUrl` | `www.safecodeg.com/privacy` `/terms` | Publish at a real domain (Iubenda / Termly / GitHub Pages) |
+| `supportEmail` | `support@safecodeg.com` | A real, monitored mailbox |
+| `marketingWebsite` / `appStoreUrl` / `playStoreUrl` | `www.safecodeg.com` / fake bundle IDs | After buying domain + listing apps |
 
 Master switches at the top of the same file (all default `false`):
 - `adsEnabled`
