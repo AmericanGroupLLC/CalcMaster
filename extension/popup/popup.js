@@ -273,7 +273,7 @@ setupFinance();
 // Open full app link
 document.getElementById('open-full-app').addEventListener('click', (e) => {
   e.preventDefault();
-  chrome.tabs.create({ url: 'https://www.safecodeg.com/web/' });
+  chrome.tabs.create({ url: 'https://safecodeg.com/web/' });
 });
 
 // Save/restore state

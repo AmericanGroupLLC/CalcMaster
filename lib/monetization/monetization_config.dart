@@ -129,12 +129,11 @@ class MonetizationConfig {
   // ───────────────────────────────────────────────────────────────────
   //  LEGAL / SUPPORT
   // ───────────────────────────────────────────────────────────────────
-  // Safe Code G (American Group LLC). Publish marketing/site/* under
-  // https://www.safecodeg.com/calcmaster/ so these resolve before submitting.
-  static const String privacyPolicyUrl = 'https://www.safecodeg.com/calcmaster/privacy.html';
-  static const String termsOfServiceUrl = 'https://www.safecodeg.com/calcmaster/terms.html';
-  static const String supportEmail = 'support@safecodeg.com';
-  static const String marketingWebsite = 'https://www.safecodeg.com';
+  // Safe Code G (American Group LLC) — live pages on safecodeg.com.
+  static const String privacyPolicyUrl = 'https://safecodeg.com/privacy-policy';
+  static const String termsOfServiceUrl = 'https://safecodeg.com/terms';
+  static const String supportEmail = 'contact@safecodeg.com';
+  static const String marketingWebsite = 'https://safecodeg.com';
   static const String appStoreUrl =
       'https://apps.apple.com/app/calcmaster/id0000000000'; // REPLACE after listing
   static const String playStoreUrl =

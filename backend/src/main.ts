@@ -13,7 +13,7 @@ async function bootstrap() {
   // CORS — defaults to production origins; override via CORS_ORIGINS env var
   const allowedOrigins = (
     process.env.CORS_ORIGINS ||
-    'https://www.safecodeg.com,https://www.www.safecodeg.com'
+    'https://safecodeg.com,https://www.safecodeg.com'
   ).split(',');
 
   app.enableCors({

@@ -36,9 +36,9 @@ Last reconciled: 2026-06-14 (against pubspec `4.0.0+1`, bundle `com.americangrou
 | Description | §2 | ✅ ready |
 | Keywords | §2 | ✅ ready |
 | Category (primary/secondary) | Utilities / Productivity | ✅ ready |
-| Support URL | `https://www.safecodeg.com/calcmaster/support.html` | ⚠️ page exists (`marketing/site/support.html`), **needs hosting** |
-| Marketing URL | `https://www.safecodeg.com` | ⚠️ needs hosting |
-| Privacy Policy URL | `https://www.safecodeg.com/calcmaster/privacy.html` | ⚠️ page exists (`marketing/site/privacy.html`), **needs hosting** — REQUIRED |
+| Support URL | `https://safecodeg.com/support` | ⚠️ page exists (`marketing/site/support.html`), **needs hosting** |
+| Marketing URL | `https://safecodeg.com` | ⚠️ needs hosting |
+| Privacy Policy URL | `https://safecodeg.com/privacy-policy` | ⚠️ page exists (`marketing/site/privacy.html`), **needs hosting** — REQUIRED |
 | App icon 1024×1024 | `Assets.xcassets/AppIcon.appiconset` (from `assets/icon/app_icon.png`) | ✅ ready |
 | iPhone screenshots | `marketing/screenshots/iphone-6.9-*.png` | ⚠️ exist, but show old "CalcMaster" brand — **re-capture after rename** |
 | App Privacy ("nutrition label") | answers in `listing-copy.md` §3 questionnaire | 🔲 enter in dashboard |
@@ -56,12 +56,12 @@ Last reconciled: 2026-06-14 (against pubspec `4.0.0+1`, bundle `com.americangrou
 | Short description | §3 | ✅ ready |
 | Full description | §2 body | ✅ ready |
 | App category | Tools (primary) | ✅ ready |
-| Contact email | `support@safecodeg.com` | ⚠️ needs a real mailbox |
-| Website | `https://www.safecodeg.com` | ⚠️ needs hosting |
+| Contact email | `contact@safecodeg.com` | ⚠️ needs a real mailbox |
+| Website | `https://safecodeg.com` | ⚠️ needs hosting |
 | App icon 512×512 | `assets/icon/app_icon.png` (1024 down-scales) | ✅ ready |
 | Feature graphic 1024×500 | `marketing/play-store/feature-graphic-1024x500.png` | ⚠️ verify no old brand text |
 | Phone screenshots | `marketing/screenshots/*.png` | ⚠️ re-capture after rename |
-| Privacy Policy URL | `https://www.safecodeg.com/calcmaster/privacy.html` | ⚠️ needs hosting — REQUIRED |
+| Privacy Policy URL | `https://safecodeg.com/privacy-policy` | ⚠️ needs hosting — REQUIRED |
 | Data safety form | answers in `listing-copy.md` §3 | 🔲 enter in dashboard |
 | Content rating questionnaire | `listing-copy.md` §3 | ✅ answers drafted |
 | Release notes | `listing-copy.md` §3 "What's new" | ✅ ready |
@@ -84,13 +84,13 @@ These require you to hold external accounts / secrets:
    manager, and **back the keystore up permanently** — losing it means you can
    never ship updates under the same package name. See `docs/RELEASE.md` → "Android signing".
 
-3. **Public hosting + domain** — buy `www.safecodeg.com` (or any host) and publish
+3. **Public hosting + domain** — buy `safecodeg.com` (or any host) and publish
    `marketing/site/*` so the Privacy Policy / Terms / Support URLs resolve. Both
    stores reject submissions with a dead Privacy Policy URL. After hosting, update
    the four `*Url`/`supportEmail` constants in
    `lib/monetization/monetization_config.dart`.
 
-4. **Real support mailbox** — `support@safecodeg.com` must receive mail (Apple's
+4. **Real support mailbox** — `contact@safecodeg.com` must receive mail (Apple's
    reviewer and users will use it).
 
 5. **AdMob + IAP product setup** — create the ad units and the three subscription

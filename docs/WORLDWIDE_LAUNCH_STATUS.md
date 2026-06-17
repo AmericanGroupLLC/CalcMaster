@@ -45,7 +45,7 @@ marketing/site/
 └── styles.css       # Single dark-themed stylesheet
 ```
 
-These satisfy Apple + Google's hard requirement for a public privacy policy URL. Once you buy the `www.safecodeg.com` domain (or use any host), the URLs in `lib/monetization/monetization_config.dart` resolve.
+These satisfy Apple + Google's hard requirement for a public privacy policy URL. Once you buy the `safecodeg.com` domain (or use any host), the URLs in `lib/monetization/monetization_config.dart` resolve.
 
 ### 4. Universal release script
 
@@ -99,7 +99,7 @@ firebase deploy --only hosting:marketing,hosting:webapp
 2. **Capture missing 6.9" iPhone screenshots** — wipe the iPhone 17 Pro Max simulator (`xcrun simctl erase`) and re-run `tools/capture_marketing_shots.sh`.
 3. **Capture Android phone screenshots** at 1080×2400 — extend the capture script with `adb shell screencap`.
 4. **Localize listing copy** for the App Store + Play Console for the 5 secondary locales (es, zh, hi, fr, ar).
-5. **Buy the `www.safecodeg.com` domain** + deploy the marketing site to it.
+5. **Buy the `safecodeg.com` domain** + deploy the marketing site to it.
 6. **Apple Developer enrollment** ($99/yr) so `flutter build ipa` can codesign.
 7. **AdMob / RevenueCat / Firebase accounts** — flip the master switches in `lib/monetization/monetization_config.dart`.
 
