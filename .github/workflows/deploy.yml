@@ -80,4 +80,5 @@ jobs:
           FASTLANE_APPLE_ID: ${{ secrets.FASTLANE_APPLE_ID }}
           IOS_DIST_P12_BASE64: ${{ secrets.IOS_DIST_P12_BASE64 }}    # base64 of the distribution cert + private key (.p12)
           IOS_DIST_P12_PASSWORD: ${{ secrets.IOS_DIST_P12_PASSWORD }}
-        run: bundle exec fastlane ios ${{ github.event_name == 'push' && 'beta' || inputs.lane }}
+          BUILD_NUMBER: ${{ github.run_number }}                     # unique CFBundleVersion per CI run
+        run: bundle exec fastlane ios ${{ github.event_name == 'push' && 'release' || inputs.lane }}

@@ -99,7 +99,13 @@ platform :ios do
       profile_name: lane_context[SharedValues::SIGH_NAME],
       targets: ["Runner"]
     )
-    sh("cd .. && flutter build ipa --release --export-method app-store")
+    # CFBundleVersion must be unique per version on App Store Connect, so let CI
+    # pass a monotonic build number (GitHub run number). Falls back to pubspec
+    # when BUILD_NUMBER is unset (e.g. local builds).
+    build_number = ENV["BUILD_NUMBER"].to_s.strip
+    flags = "--release --export-method app-store"
+    flags += " --build-number=#{build_number}" unless build_number.empty?
+    sh("cd .. && flutter build ipa #{flags}")
   end
 
   desc "Build + upload to TestFlight (works for the very first build too)"
