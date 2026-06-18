@@ -12,5 +12,6 @@ android/key.properties
 *.jks
 *.keystore
 *.p8
+*.p12
 fastlane/play-service-account.json
 fastlane/report.xml
