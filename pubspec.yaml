@@ -46,10 +46,10 @@ flutter:
   uses-material-design: true
   generate: true
   # google_mobile_ads is CocoaPods-only, but webview_flutter_wkwebview resolves
-  # via Swift Package Manager — the two collide during `pod install`. Pin this
-  # project to CocoaPods until google_mobile_ads adopts SPM.
-  config:
-    enable-swift-package-manager: false
+  # via Swift Package Manager — the two collide during `pod install`. The pinned
+  # Flutter 3.24.x keeps SPM off by default, so no extra config is needed here.
+  # (The `config: enable-swift-package-manager` key only exists in newer Flutter
+  # and is rejected by 3.24.x with "Unexpected child config under flutter".)
   assets:
     - assets/icons/
 
