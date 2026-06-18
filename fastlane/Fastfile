@@ -24,7 +24,7 @@ AAB_PATH = "../build/app/outputs/bundle/release/app-release.aab".freeze
 # ASC_KEY_CONTENT is the base64 .p8 private key — keep it a SECRET, never commit it.
 def asc_api_key
   app_store_connect_api_key(
-    key_id: ENV.fetch("ASC_KEY_ID", "4YUXDMJC64"),
+    key_id: ENV.fetch("ASC_KEY_ID", "Q9WLC6U37V"),
     issuer_id: ENV.fetch("ASC_ISSUER_ID", "ec93cc91-97c2-4b03-860b-697d7ec5d1fb"),
     key_content: ENV.fetch("ASC_KEY_CONTENT"),
     is_key_content_base64: true,
