@@ -14,7 +14,7 @@ require "tmpdir"
 default_platform(:ios)
 
 APP_ID = "com.americangroupllc.calcmaster".freeze
-APP_NAME = "CalcMaster".freeze
+APP_NAME = "CalcMaster: World Calc".freeze
 AAB_PATH = "../build/app/outputs/bundle/release/app-release.aab".freeze
 
 # --- helpers ---------------------------------------------------------------
@@ -54,14 +54,17 @@ platform :ios do
 
   desc "ONE-TIME: register the App ID + create the App Store Connect record"
   lane :bootstrap do
+    # `produce` has no api_key: param — running the API-key action first stores
+    # the key in the lane context, which produce (spaceship) then picks up.
+    asc_api_key
     produce(
-      api_key: asc_api_key,
       app_identifier: APP_ID,
       app_name: APP_NAME,
       language: "en-US",
       app_version: "4.0.0",
-      sku: "calcmaster-001",
-      enable_services: { app_tracking_transparency: "on" }
+      sku: "calcmaster-001"
+      # No enable_services: App Tracking Transparency is an app-level framework
+      # (Info.plist NSUserTrackingUsageDescription), not a registerable capability.
     )
   end
 
