@@ -36,7 +36,7 @@ jobs:
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: '17' }
       - uses: ruby/setup-ruby@v1
-        with: { ruby-version: '3.3', bundler-cache: true }
+        with: { ruby-version: '3.3', bundler-cache: true, bundler: latest }
 
       - name: Materialize signing + Play secrets
         env:
@@ -70,7 +70,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with: { flutter-version: '3.24.x', channel: stable, cache: true }
       - uses: ruby/setup-ruby@v1
-        with: { ruby-version: '3.3', bundler-cache: true }
+        with: { ruby-version: '3.3', bundler-cache: true, bundler: latest }
 
       - run: flutter pub get
       - name: Fastlane
