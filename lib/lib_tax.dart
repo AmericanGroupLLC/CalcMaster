@@ -24,7 +24,10 @@ const Map<RegionId, double> salesTaxRate = {
 
 const Map<RegionId, Map<FilingStatus, double>> standardDeduction = {
   RegionId.US: {FilingStatus.single: 15000, FilingStatus.joint: 30000, FilingStatus.head: 22500},
-  RegionId.UK: {FilingStatus.single: 12570, FilingStatus.joint: 12570, FilingStatus.head: 12570},
+  // UK: the £12,570 personal allowance is already modelled as the 0% band in
+  // the bracket table below, so applying it again as a standard deduction would
+  // double-count it. Keep this at 0 and let the brackets handle the allowance.
+  RegionId.UK: {FilingStatus.single: 0, FilingStatus.joint: 0, FilingStatus.head: 0},
   RegionId.EU: {FilingStatus.single: 10908, FilingStatus.joint: 21816, FilingStatus.head: 10908},
   RegionId.CA: {FilingStatus.single: 15705, FilingStatus.joint: 15705, FilingStatus.head: 15705},
   RegionId.AU: {FilingStatus.single: 18200, FilingStatus.joint: 18200, FilingStatus.head: 18200},

@@ -29,6 +29,15 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- Supabase OAuth (Google) deep-link callback. Scheme must match
+                 SupabaseConfig.oauthRedirect and the Supabase redirect allowlist. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="com.americangroupllc.calcmaster"
+                      android:host="login-callback"/>
+            </intent-filter>
         </activity>
         <!-- AdMob: Google's TEST app ID. Replace with real AdMob app ID before
              production release. https://developers.google.com/admob/android/quick-start -->

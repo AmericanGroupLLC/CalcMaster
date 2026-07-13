@@ -8,6 +8,7 @@ import '../monetization/analytics_service.dart';
 import '../monetization/monetization_config.dart';
 import '../monetization/notification_service.dart';
 import '../monetization/premium_provider.dart';
+import '../state/auth_provider.dart';
 import '../theme/tokens.dart';
 import '../widgets/pro_badge.dart';
 
@@ -69,6 +70,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
     final isPro = context.watch<PremiumProvider>().isPro;
+    final auth = context.watch<AuthProvider>();
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: AppBar(
@@ -83,6 +85,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(Spacing.lg, 0, Spacing.lg, Spacing.xxl),
         children: [
+          const _SectionHeader(label: 'Account'),
+          if (auth.isLoggedIn)
+            _Tile(
+              icon: Icons.person_outline,
+              iconColor: AppColors.accentPrimary,
+              title: (auth.user?['displayName'] ?? auth.user?['email'] ?? 'Signed in')
+                  .toString(),
+              subtitle: auth.user?['email']?.toString(),
+              trailing: TextButton(
+                onPressed: () async {
+                  await context.read<AuthProvider>().logout();
+                  if (!context.mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Signed out.')),
+                  );
+                },
+                child: const Text('Sign out',
+                    style: TextStyle(color: AppColors.accentPrimary)),
+              ),
+            )
+          else
+            _Tile(
+              icon: Icons.login,
+              iconColor: AppColors.accentPrimary,
+              title: 'Sign in',
+              subtitle: 'Sign in or create an account',
+              onTap: () => context.push('/login'),
+            ),
+          const SizedBox(height: Spacing.lg),
           _SectionHeader(label: loc.settingsSubscription),
           _Tile(
             icon: Icons.workspace_premium,

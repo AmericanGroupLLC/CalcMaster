@@ -25,6 +25,7 @@ dependencies:
   # ───── Real monetization SDKs (test creds work without accounts) ─────
   google_mobile_ads: ^5.3.1
   app_tracking_transparency: ^2.0.6+1
+  supabase_flutter: ^2.15.0
 
 dev_dependencies:
   flutter_test:

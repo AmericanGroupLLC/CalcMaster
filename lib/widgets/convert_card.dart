@@ -50,27 +50,36 @@ class ConvertCard extends StatelessWidget {
                 ),
               ),
               const Spacer(),
-              Text(
-                [
-                  category.hint.primary,
-                  category.hint.secondary,
-                  if (category.hint.tertiary != null) category.hint.tertiary!,
-                ].join(' · '),
-                style: TextStyle(color: accent, fontSize: 10, fontWeight: FontWeight.w600),
+              Flexible(
+                child: Text(
+                  [
+                    category.hint.primary,
+                    category.hint.secondary,
+                    if (category.hint.tertiary != null) category.hint.tertiary!,
+                  ].join(' · '),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.end,
+                  style: TextStyle(color: accent, fontSize: 10, fontWeight: FontWeight.w600),
+                ),
               ),
             ],
           ),
           const SizedBox(height: Spacing.sm),
           Text(
             localizedCategoryLabel(context, category.id),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(color: AppColors.text, fontSize: 16, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 2),
-          Text(
-            category.subtitle,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
+          Flexible(
+            child: Text(
+              category.subtitle,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
+            ),
           ),
         ],
       ),

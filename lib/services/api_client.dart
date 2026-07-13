@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ApiClient {
   ApiClient._();
@@ -11,88 +11,16 @@ class ApiClient {
     defaultValue: 'https://api.safecodeg.com/api/v1',
   );
 
-  String? _accessToken;
-  String? _refreshToken;
+  // Auth is owned by Supabase; gateway calls carry the current Supabase JWT.
+  Session? get _session => Supabase.instance.client.auth.currentSession;
+  String? get _accessToken => _session?.accessToken;
 
   Map<String, String> get _headers => {
         'Content-Type': 'application/json',
         if (_accessToken != null) 'Authorization': 'Bearer $_accessToken',
       };
 
-  Future<void> loadTokens() async {
-    final prefs = await SharedPreferences.getInstance();
-    _accessToken = prefs.getString('access_token');
-    _refreshToken = prefs.getString('refresh_token');
-  }
-
-  Future<void> _saveTokens(String access, String refresh) async {
-    _accessToken = access;
-    _refreshToken = refresh;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('access_token', access);
-    await prefs.setString('refresh_token', refresh);
-  }
-
-  Future<void> clearTokens() async {
-    _accessToken = null;
-    _refreshToken = null;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('access_token');
-    await prefs.remove('refresh_token');
-  }
-
   bool get isAuthenticated => _accessToken != null;
-
-  Future<Map<String, dynamic>> register({
-    required String email,
-    required String password,
-    String? displayName,
-    String? locale,
-    String? region,
-  }) async {
-    final body = {
-      'email': email,
-      'password': password,
-      if (displayName != null) 'displayName': displayName,
-      if (locale != null) 'locale': locale,
-      if (region != null) 'region': region,
-    };
-    final data = await _post('/auth/register', body);
-    await _saveTokens(data['accessToken'], data['refreshToken']);
-    return data;
-  }
-
-  Future<Map<String, dynamic>> login({
-    required String email,
-    required String password,
-  }) async {
-    final data = await _post('/auth/login', {
-      'email': email,
-      'password': password,
-    });
-    if (data['requiresMfa'] == true) return data;
-    await _saveTokens(data['accessToken'], data['refreshToken']);
-    return data;
-  }
-
-  Future<Map<String, dynamic>> verifyMfa({
-    required String tempToken,
-    required String code,
-  }) async {
-    final data = await _post('/auth/mfa/verify', {
-      'tempToken': tempToken,
-      'code': code,
-    });
-    await _saveTokens(data['accessToken'], data['refreshToken']);
-    return data;
-  }
-
-  Future<void> logout() async {
-    try {
-      await _post('/auth/logout', {});
-    } catch (_) {}
-    await clearTokens();
-  }
 
   Future<Map<String, dynamic>> getProfile() async =>
       (await _get('/users/me')) as Map<String, dynamic>;
@@ -218,7 +146,7 @@ class ApiClient {
       return jsonDecode(res.body);
     }
 
-    if (res.statusCode == 401 && _refreshToken != null) {
+    if (res.statusCode == 401 && _session != null) {
       return _refreshAndRetry(res.request!.url, method: method, body: requestBody);
     }
 
@@ -231,16 +159,9 @@ class ApiClient {
 
   Future<dynamic> _refreshAndRetry(Uri url, {String method = 'GET', String? body}) async {
     try {
-      final refreshRes = await http.post(
-        Uri.parse('$_baseUrl/auth/refresh'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'refreshToken': _refreshToken}),
-      );
-
-      if (refreshRes.statusCode == 200) {
-        final data = jsonDecode(refreshRes.body);
-        await _saveTokens(data['accessToken'], data['refreshToken']);
-
+      // Let Supabase mint a fresh JWT, then replay the request with it.
+      final refreshed = await Supabase.instance.client.auth.refreshSession();
+      if (refreshed.session != null) {
         http.Response retryRes;
         switch (method) {
           case 'POST':
@@ -256,7 +177,6 @@ class ApiClient {
       }
     } catch (_) {}
 
-    await clearTokens();
     throw ApiException(statusCode: 401, message: 'Session expired');
   }
 

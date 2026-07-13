@@ -24,6 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _loading = false;
   bool _obscure = true;
   String? _validationError;
+  bool _navigated = false;
 
   @override
   void dispose() {
@@ -122,9 +123,37 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Future<void> _googleSignIn() async {
+    if (_loading) return;
+    setState(() {
+      _validationError = null;
+      _loading = true;
+    });
+    await context.read<AuthProvider>().signInWithGoogle();
+    // Session arrives asynchronously via onAuthStateChange; build() navigates
+    // once auth becomes authenticated.
+    if (mounted) setState(() => _loading = false);
+  }
+
+  void _demoLogin() {
+    // Demo mode: enter the app without an account. Supabase is the backend for
+    // signed-in features, but the calculators/converters work fully offline, so
+    // this gives reviewers/testers a one-tap tour.
+    context.read<AuthProvider>().enterDemoMode();
+    context.go('/convert');
+  }
+
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
+
+    // OAuth (Google) completes asynchronously; navigate once authenticated.
+    if (auth.isLoggedIn && !_navigated) {
+      _navigated = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) context.go('/convert');
+      });
+    }
 
     return Scaffold(
       backgroundColor: AppColors.bg,
@@ -208,6 +237,31 @@ class _LoginScreenState extends State<LoginScreen> {
                                   style: const TextStyle(
                                       color: AppColors.danger, fontSize: 13)),
                             ],
+                            if (auth.notice != null) ...[
+                              const SizedBox(height: Spacing.md),
+                              Text(auth.notice!,
+                                  style: const TextStyle(
+                                      color: AppColors.success, fontSize: 13)),
+                            ],
+                            if (auth.awaitingEmailConfirmation) ...[
+                              const SizedBox(height: Spacing.sm),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: TextButton(
+                                  onPressed: _loading
+                                      ? null
+                                      : () => context
+                                          .read<AuthProvider>()
+                                          .resendConfirmation(),
+                                  style: TextButton.styleFrom(
+                                      padding: EdgeInsets.zero),
+                                  child: const Text('Resend confirmation email',
+                                      style: TextStyle(
+                                          color: AppColors.accentPrimary,
+                                          fontSize: 13)),
+                                ),
+                              ),
+                            ],
                             const SizedBox(height: Spacing.xl),
                             SizedBox(
                               height: 50,
@@ -250,6 +304,69 @@ class _LoginScreenState extends State<LoginScreen> {
                                               color: Colors.white),
                                         ),
                                 ),
+                              ),
+                            ),
+                            const SizedBox(height: Spacing.lg),
+                            Row(
+                              children: [
+                                const Expanded(
+                                    child: Divider(color: AppColors.border)),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: Spacing.md),
+                                  child: Text('or',
+                                      style: TextStyle(
+                                          color: AppColors.textDim,
+                                          fontSize: 13)),
+                                ),
+                                const Expanded(
+                                    child: Divider(color: AppColors.border)),
+                              ],
+                            ),
+                            const SizedBox(height: Spacing.lg),
+                            SizedBox(
+                              height: 50,
+                              child: OutlinedButton.icon(
+                                onPressed: _loading ? null : _googleSignIn,
+                                style: OutlinedButton.styleFrom(
+                                  backgroundColor:
+                                      Colors.white.withValues(alpha: 0.06),
+                                  side: const BorderSide(
+                                      color: AppColors.border),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(Radii.button),
+                                  ),
+                                ),
+                                icon: const Icon(Icons.g_mobiledata,
+                                    color: AppColors.text, size: 28),
+                                label: const Text('Continue with Google',
+                                    style: TextStyle(
+                                        color: AppColors.text,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600)),
+                              ),
+                            ),
+                            const SizedBox(height: Spacing.md),
+                            SizedBox(
+                              height: 50,
+                              child: TextButton.icon(
+                                onPressed: _loading ? null : _demoLogin,
+                                style: TextButton.styleFrom(
+                                  backgroundColor:
+                                      AppColors.accentPrimary.withValues(alpha: 0.12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(Radii.button),
+                                  ),
+                                ),
+                                icon: const Icon(Icons.bolt,
+                                    color: AppColors.accentPrimary, size: 20),
+                                label: const Text('Try Demo',
+                                    style: TextStyle(
+                                        color: AppColors.accentPrimary,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600)),
                               ),
                             ),
                           ],

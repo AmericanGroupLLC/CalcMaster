@@ -65,6 +65,12 @@ double _fn(String name, double a) {
       return math.exp(a);
     case 'abs':
       return a.abs();
+    case 'ceil':
+      return a.ceilToDouble();
+    case 'floor':
+      return a.floorToDouble();
+    case 'round':
+      return a.roundToDouble();
     default:
       throw CalcError('Unsupported function $name');
   }
