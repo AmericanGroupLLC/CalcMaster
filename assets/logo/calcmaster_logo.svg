@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="320" viewBox="0 0 1120 320" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="40" y1="40" x2="300" y2="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7C5CFF"/>
+      <stop offset="0.55" stop-color="#5A6BFF"/>
+      <stop offset="1" stop-color="#3FA9FF"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.9" r="0.75" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#5CE0A8" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#5CE0A8" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="glyph" x1="90" y1="110" x2="230" y2="210" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#EAF2FF"/>
+    </linearGradient>
+    <linearGradient id="wordAccent" x1="360" y1="120" x2="760" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0B1020"/>
+      <stop offset="1" stop-color="#2A2350"/>
+    </linearGradient>
+    <linearGradient id="wordBrand" x1="700" y1="120" x2="1080" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7C5CFF"/>
+      <stop offset="1" stop-color="#3FA9FF"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Icon tile -->
+  <g>
+    <rect x="40" y="40" width="240" height="240" rx="54" fill="#0B1020"/>
+    <rect x="40" y="40" width="240" height="240" rx="54" fill="url(#bg)"/>
+    <rect x="40" y="40" width="240" height="240" rx="54" fill="url(#glow)"/>
+    <g fill="url(#glyph)" transform="translate(40,40) scale(0.234)">
+      <rect x="268" y="418" width="360" height="70" rx="35"/>
+      <path d="M604 383 L724 453 L604 523 Z"/>
+      <rect x="396" y="536" width="360" height="70" rx="35"/>
+      <path d="M420 501 L300 571 L420 641 Z"/>
+    </g>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="330" y="197" font-family="Inter, 'Helvetica Neue', Arial, sans-serif"
+        font-size="128" font-weight="800" letter-spacing="-4" fill="url(#wordAccent)">Calc<tspan fill="url(#wordBrand)">Master</tspan></text>
+</svg>

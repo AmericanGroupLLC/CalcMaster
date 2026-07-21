@@ -29,7 +29,6 @@ const _bg = (red: 0x0B, green: 0x10, blue: 0x20);
 const _bgGradient = (red: 0x14, green: 0x1A, blue: 0x2E);
 const _accent = (red: 0x7C, green: 0x5C, blue: 0xFF); // primary purple
 const _accentSoft = (red: 0xB8, green: 0x9C, blue: 0xFF); // lavender
-const _white = (red: 0xFF, green: 0xFF, blue: 0xFF);
 const _mint = (red: 0x5C, green: 0xE0, blue: 0xA8);
 
 img.Color rgb(({int red, int green, int blue}) c, [int a = 255]) =>
