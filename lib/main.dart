@@ -28,7 +28,7 @@ Future<void> main() async {
   try {
     await Supabase.initialize(
       url: SupabaseConfig.url,
-      publishableKey: SupabaseConfig.publishableKey,
+      anonKey: SupabaseConfig.anonKey,
     );
   } catch (e) {
     debugPrint('Supabase init failed: $e');

@@ -21,4 +21,15 @@ class SupabaseConfig {
   /// manifest. Scheme = app bundle id to guarantee uniqueness.
   static const String oauthRedirect =
       'com.americangroupllc.calcmaster://login-callback/';
+
+  /// Alias kept for cross-app consistency (some code refers to `anonKey`).
+  static const String anonKey = publishableKey;
+
+  /// Shared test accounts provisioned in the backend (per the org integration
+  /// guide). This app does NOT require login — sign-in is optional and only powers
+  /// cloud sync — but these back the optional "Use test account" button.
+  static const String qaEmail = 'qa@safecodeg.com';
+  static const String qaPassword = 'QATest@2026!';
+  static const String devEmail = 'dev@safecodeg.com';
+  static const String devPassword = 'DevTest@2026!';
 }

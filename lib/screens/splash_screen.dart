@@ -3,9 +3,7 @@ import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
-import '../state/auth_provider.dart';
 import '../theme/tokens.dart';
 import '../widgets/animated_gradient_background.dart';
 import '../widgets/glow_text.dart';
@@ -83,11 +81,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
     _ctl.forward().then((_) {
       if (!mounted || isTest) return;
-      // Gate the tab shell behind sign-in. Authenticated users (including the
-      // persisted offline test account) land on the calculator home; everyone
-      // else sees the login screen first.
-      final auth = context.read<AuthProvider>();
-      context.go(auth.isLoggedIn ? '/calculate' : '/login');
+      // Login is OPTIONAL: everyone lands directly on the calculator home as a
+      // guest. Sign-in is only reachable on demand (Settings → Sign in) and
+      // simply unlocks optional cloud features — it is never forced at startup.
+      context.go('/calculate');
     });
 
     if (isTest) {

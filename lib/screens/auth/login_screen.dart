@@ -135,12 +135,14 @@ class _LoginScreenState extends State<LoginScreen> {
     if (mounted) setState(() => _loading = false);
   }
 
-  void _demoLogin() {
-    // Demo mode: enter the app without an account. Supabase is the backend for
-    // signed-in features, but the calculators/converters work fully offline, so
-    // this gives reviewers/testers a one-tap tour.
-    context.read<AuthProvider>().enterDemoMode();
-    context.go('/convert');
+  Future<void> _continueAsGuest() async {
+    // Guest mode: use the app with no account. The choice is persisted so the
+    // app never re-prompts on relaunch. Calculators/converters work fully
+    // offline; optional Supabase sign-in only powers cloud features.
+    final auth = context.read<AuthProvider>();
+    final router = GoRouter.of(context);
+    await auth.continueAsGuest();
+    if (mounted) router.go('/calculate');
   }
 
   Future<void> _useTestAccount() async {
@@ -362,10 +364,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                             const SizedBox(height: Spacing.md),
+                            // Prominent guest entry — login is OPTIONAL, so this
+                            // is the primary way into the app.
                             SizedBox(
                               height: 50,
                               child: TextButton.icon(
-                                onPressed: _loading ? null : _demoLogin,
+                                onPressed: _loading ? null : _continueAsGuest,
                                 style: TextButton.styleFrom(
                                   backgroundColor:
                                       AppColors.accentPrimary.withValues(alpha: 0.12),
@@ -374,9 +378,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                         BorderRadius.circular(Radii.button),
                                   ),
                                 ),
-                                icon: const Icon(Icons.bolt,
+                                icon: const Icon(Icons.arrow_forward_rounded,
                                     color: AppColors.accentPrimary, size: 20),
-                                label: const Text('Try Demo',
+                                label: const Text('Continue without account',
                                     style: TextStyle(
                                         color: AppColors.accentPrimary,
                                         fontSize: 15,
@@ -426,9 +430,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: Spacing.md),
                       TextButton(
-                        onPressed: () => context.go('/convert'),
+                        onPressed: _loading ? null : _continueAsGuest,
                         child: const Text(
-                          'Continue without account',
+                          'Skip for now',
                           style: TextStyle(color: AppColors.textDim),
                         ),
                       ),

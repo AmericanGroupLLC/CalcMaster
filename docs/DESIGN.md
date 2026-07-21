@@ -102,3 +102,38 @@ Dark, "futuristic AI" aesthetic defined by tokens in `lib/theme/tokens.dart`:
 ## Out of scope
 Custom server/database, hardware integration beyond GPS, and theming beyond the built-in
 dark design system.
+
+## Authentication design: login is OPTIONAL
+
+CalcMaster is a fully offline calculator utility, so **an account is never
+required**. The app boots straight into the calculator home as a **guest**.
+
+### Flow
+1. `main()` initialises Supabase in a guarded try/catch
+   (`Supabase.initialize(url: SupabaseConfig.url, anonKey: SupabaseConfig.anonKey)`);
+   a missing/invalid config never blocks startup.
+2. The splash screen (`lib/screens/splash_screen.dart`) always navigates to the
+   calculator home (`/calculate`). There is **no forced login gate**.
+3. The guest choice is persisted with `shared_preferences`
+   (`AuthService`, key `guest_mode`) so the app never re-prompts on relaunch.
+
+### Optional sign-in
+- The login screen is reachable only on demand from **Settings → Sign in**.
+- It supports email/password + Google via Supabase GoTrue
+  (`Supabase.instance.client.auth.signInWithPassword(...)`), plus a prominent
+  **"Continue without account"** button, a **"Skip for now"** link, and a
+  **"Use test account"** button backed by `SupabaseConfig.qaEmail` /
+  `SupabaseConfig.qaPassword`.
+- Signing in only unlocks optional cloud features.
+
+### Offline test-account fallback
+`AuthProvider.login` tries Supabase first. On a **network/socket error** (device
+offline or Supabase uninitialised), if the entered credentials match a
+`SupabaseConfig` test account (QA/Dev) it falls back to a persisted local demo
+session so reviewers can get in with no network. A genuine `AuthException`
+(rejected credentials, unconfirmed email) **never** falls back.
+
+### Sign-out
+`AuthProvider.logout` clears **both** the Supabase session and the offline demo
+session, then returns the user to the guest home — it never forces the login
+screen.

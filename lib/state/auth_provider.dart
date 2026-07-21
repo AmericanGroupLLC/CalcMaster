@@ -32,27 +32,33 @@ class AuthProvider extends ChangeNotifier {
 
   bool _isDemo = false;
 
-  /// True when the user tapped "Try Demo" — browsing without a Supabase account.
+  /// True when the user is browsing as a guest (no Supabase account).
   bool get isDemo => _isDemo;
+
+  /// True when the user has explicitly chosen guest mode (persisted).
+  bool get isGuest => _localAuth.isGuest;
 
   SupabaseClient get _client => Supabase.instance.client;
 
   final AuthService _localAuth = AuthService.instance;
 
-  /// Enters the app in demo mode (no account). Calculators/converters work
-  /// offline; signed-in-only features can check [isDemo] to prompt sign-in.
-  void enterDemoMode() {
+  /// Enters the app as a guest (no account) and persists that choice so the app
+  /// never re-prompts for sign-in on relaunch. Calculators/converters work
+  /// fully offline; signed-in-only features can check [isDemo]/[isLoggedIn] to
+  /// offer an optional sign-in later.
+  Future<void> continueAsGuest() async {
+    await _localAuth.setGuest();
     _isDemo = true;
     _status = AuthStatus.unauthenticated;
     notifyListeners();
   }
 
   Future<void> init() async {
-    // Restore the offline test-account session first — it takes precedence and
-    // works even when Supabase failed to initialize (the app is offline).
+    // Restore the offline demo session first — it takes precedence and works
+    // even when Supabase failed to initialize (e.g. the device is offline).
     await _localAuth.init();
     if (_localAuth.isAuthenticated) {
-      _applyLocalTestUser();
+      _applyLocalTestUser(_localAuth.email!);
     } else {
       // Reflect any restored Supabase session, then keep in sync with changes.
       try {
@@ -76,27 +82,37 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Mirrors the bundled offline test account into the UI-facing state.
-  void _applyLocalTestUser() {
+  /// Mirrors an offline demo session (for [email]) into the UI-facing state.
+  void _applyLocalTestUser(String email) {
     _isDemo = false;
     _user = {
-      'id': 'local-test',
-      'email': AuthService.testEmail,
+      'id': 'local-demo',
+      'email': email,
       'displayName': AuthService.testDisplayName,
     };
     _status = AuthStatus.authenticated;
     _error = null;
   }
 
-  /// One-tap sign-in with the bundled offline test account. Persists across
-  /// launches. Returns true on success.
+  /// True when [email]/[password] match one of the SupabaseConfig test accounts
+  /// (QA or Dev). Comparison is case-insensitive on the email.
+  bool _isConfigTestAccount(String email, String password) {
+    final e = email.trim().toLowerCase();
+    return (e == SupabaseConfig.qaEmail.toLowerCase() &&
+            password == SupabaseConfig.qaPassword) ||
+        (e == SupabaseConfig.devEmail.toLowerCase() &&
+            password == SupabaseConfig.devPassword);
+  }
+
+  /// One-tap sign-in with the shared QA test account. Tries Supabase first and
+  /// (with no network) falls back to a persisted offline demo session. Returns
+  /// true on success.
   Future<bool> loginWithTestAccount() async {
-    final ok = await _localAuth.signInWithTestAccount();
-    if (ok) {
-      _applyLocalTestUser();
-      notifyListeners();
-    }
-    return ok;
+    final res = await login(
+      email: SupabaseConfig.qaEmail,
+      password: SupabaseConfig.qaPassword,
+    );
+    return res.containsKey('accessToken');
   }
 
   void _applySession(Session? session) {
@@ -180,14 +196,8 @@ class AuthProvider extends ChangeNotifier {
   }) async {
     _error = null;
     _notice = null;
-    // Offline test-account short-circuit: no network / Supabase needed.
-    if (await _localAuth.signIn(email, password)) {
-      _awaitingEmailConfirmation = false;
-      _applyLocalTestUser();
-      notifyListeners();
-      return {'accessToken': 'local-test-session', 'user': _user};
-    }
     try {
+      // Real, online sign-in via Supabase GoTrue.
       final res = await _client.auth.signInWithPassword(
         email: email,
         password: password,
@@ -200,7 +210,11 @@ class AuthProvider extends ChangeNotifier {
       _error = 'Sign in failed. Please try again.';
       return {'error': _error};
     } on AuthException catch (e) {
-      // Surface the "confirm your email" path so the UI can offer a resend.
+      // Supabase actively REJECTED these credentials (wrong password,
+      // unconfirmed email, etc). This is a genuine auth failure, so we NEVER
+      // fall back to an offline session here — not even for a test-account
+      // email. Surface the "confirm your email" path so the UI can offer a
+      // resend.
       final code = e.code ?? '';
       if (code == 'email_not_confirmed' ||
           e.message.toLowerCase().contains('not confirmed')) {
@@ -213,7 +227,20 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
       return {'error': _error};
     } catch (e) {
-      _error = 'Sign in failed. Please try again.';
+      // Network/socket error (device offline) or Supabase never initialized.
+      // The server never got to accept OR reject the credentials, so — and
+      // ONLY here — if the entered credentials match one of the SupabaseConfig
+      // test accounts, fall back to a persisted local demo session so reviewers
+      // can still get in with no network. Any other credentials just fail; we
+      // never invent a session for unknown users.
+      if (_isConfigTestAccount(email, password)) {
+        await _localAuth.saveOfflineSession(email.trim());
+        _awaitingEmailConfirmation = false;
+        _applyLocalTestUser(email.trim());
+        notifyListeners();
+        return {'accessToken': 'local-demo-session', 'user': _user};
+      }
+      _error = 'Sign in failed. Please check your connection and try again.';
       notifyListeners();
       return {'error': _error};
     }
@@ -252,10 +279,13 @@ class AuthProvider extends ChangeNotifier {
     return false;
   }
 
+  /// Signs out and returns the user to the guest home — it never forces the
+  /// login screen. Clears BOTH sessions: the offline demo session and the live
+  /// Supabase session.
   Future<void> logout() async {
-    await _localAuth.signOut();
+    await _localAuth.signOut(); // clears the persisted offline demo session
     try {
-      await _client.auth.signOut();
+      await _client.auth.signOut(); // clears the Supabase session
     } catch (_) {}
     _user = null;
     _isDemo = false;

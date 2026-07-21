@@ -76,3 +76,29 @@ Provider / ChangeNotifier via `MultiProvider` in `main.dart`: `RegionProvider`, 
 - **Bundle/app id** is `com.americangroupllc.calcmaster` (Supabase OAuth redirect scheme depends on it) — leave it.
 - **Web** uses a desktop layout above 840px width (side rail, max content 1120px) in `tab_scaffold.dart`.
 - Generated l10n (`lib/l10n/generated/`) is committed but regenerable — edit ARB, not the generated files.
+
+## Authentication (login is OPTIONAL)
+
+CalcMaster does **not** require an account. The app opens directly to the
+calculator home as a **guest** — there is no forced login gate.
+
+- **Startup**: `lib/screens/splash_screen.dart` always routes to `/calculate`
+  after the splash animation. It never sends unauthenticated users to `/login`.
+- **Guest choice is persisted** via `shared_preferences`
+  (`lib/services/auth_service.dart`, key `guest_mode`), so relaunches never
+  re-prompt for sign-in.
+- **Optional sign-in** is reachable only on demand — `Settings → Sign in`
+  (`context.push('/login')`) — and only unlocks optional cloud features.
+- **Login screen** (`lib/screens/auth/login_screen.dart`) offers email/password
+  and Google sign-in, a prominent **"Continue without account"** button, a
+  **"Skip for now"** link, and a **"Use test account"** button
+  (`SupabaseConfig.qaEmail` / `qaPassword`).
+- **Supabase** is initialised in `main()` inside a try/catch with
+  `Supabase.initialize(url: SupabaseConfig.url, anonKey: SupabaseConfig.anonKey)`.
+  Sign-in uses `Supabase.instance.client.auth.signInWithPassword(...)`.
+- **Offline fallback**: if sign-in fails with a network/socket error AND the
+  entered credentials match a `SupabaseConfig` test account (QA/Dev), the app
+  falls back to a persisted local demo session. A real `AuthException` (wrong
+  password, unconfirmed email) never falls back.
+- **Sign-out** (`AuthProvider.logout`) clears both the Supabase session and the
+  offline demo session and returns to the guest home — it never forces `/login`.
