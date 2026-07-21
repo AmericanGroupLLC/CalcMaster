@@ -282,3 +282,17 @@ Before clicking "Submit" on App Store Connect or Play Console:
 ## License
 
 Proprietary. © 2026 CalcMaster team. All rights reserved.
+
+## Test / reviewer account
+
+CalcMaster runs fully offline (Supabase auth is flag-gated off). A bundled
+local test account is available for reviewers and testers. The session is
+persisted across launches via `SharedPreferences`.
+
+- **Email:** `test@americangroupllc.com`
+- **Password:** `Test1234!`
+
+Sign in from the login screen (shown before the tab shell) either by entering
+the credentials above, or with one tap via the **Use test account** button.
+Either path lands on the calculator home. Sign out from Settings to return to
+the login screen.

@@ -3,7 +3,9 @@ import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
+import '../state/auth_provider.dart';
 import '../theme/tokens.dart';
 import '../widgets/animated_gradient_background.dart';
 import '../widgets/glow_text.dart';
@@ -73,15 +75,21 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       curve: const Interval(0.92, 1.0, curve: Curves.easeIn),
     );
 
-    _ctl.forward().then((_) {
-      if (mounted) context.go('/convert');
-    });
-
     // In widget tests, skip the splash animation entirely so tabs_test etc
     // can find the Convert hub immediately after pumpAndSettle.
     final isTest = WidgetsBinding.instance.runtimeType
         .toString()
         .contains('AutomatedTestWidgetsFlutterBinding');
+
+    _ctl.forward().then((_) {
+      if (!mounted || isTest) return;
+      // Gate the tab shell behind sign-in. Authenticated users (including the
+      // persisted offline test account) land on the calculator home; everyone
+      // else sees the login screen first.
+      final auth = context.read<AuthProvider>();
+      context.go(auth.isLoggedIn ? '/calculate' : '/login');
+    });
+
     if (isTest) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) context.go('/convert');

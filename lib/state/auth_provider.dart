@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../services/auth_service.dart';
 import '../services/supabase_config.dart';
 
 enum AuthStatus { unknown, authenticated, unauthenticated }
@@ -36,6 +37,8 @@ class AuthProvider extends ChangeNotifier {
 
   SupabaseClient get _client => Supabase.instance.client;
 
+  final AuthService _localAuth = AuthService.instance;
+
   /// Enters the app in demo mode (no account). Calculators/converters work
   /// offline; signed-in-only features can check [isDemo] to prompt sign-in.
   void enterDemoMode() {
@@ -45,13 +48,55 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> init() async {
-    // Reflect any restored session, then keep in sync with auth changes.
-    _applySession(_client.auth.currentSession);
-    _client.auth.onAuthStateChange.listen((data) {
-      _applySession(data.session);
-      notifyListeners();
-    });
+    // Restore the offline test-account session first — it takes precedence and
+    // works even when Supabase failed to initialize (the app is offline).
+    await _localAuth.init();
+    if (_localAuth.isAuthenticated) {
+      _applyLocalTestUser();
+    } else {
+      // Reflect any restored Supabase session, then keep in sync with changes.
+      try {
+        _applySession(_client.auth.currentSession);
+      } catch (_) {
+        _status = AuthStatus.unauthenticated;
+      }
+    }
+    try {
+      _client.auth.onAuthStateChange.listen((data) {
+        // A live Supabase session only overrides state when no local session
+        // is active, so the offline test account is never clobbered.
+        if (!_localAuth.isAuthenticated) {
+          _applySession(data.session);
+          notifyListeners();
+        }
+      });
+    } catch (_) {
+      // Supabase not available (offline) — local auth is the only path.
+    }
     notifyListeners();
+  }
+
+  /// Mirrors the bundled offline test account into the UI-facing state.
+  void _applyLocalTestUser() {
+    _isDemo = false;
+    _user = {
+      'id': 'local-test',
+      'email': AuthService.testEmail,
+      'displayName': AuthService.testDisplayName,
+    };
+    _status = AuthStatus.authenticated;
+    _error = null;
+  }
+
+  /// One-tap sign-in with the bundled offline test account. Persists across
+  /// launches. Returns true on success.
+  Future<bool> loginWithTestAccount() async {
+    final ok = await _localAuth.signInWithTestAccount();
+    if (ok) {
+      _applyLocalTestUser();
+      notifyListeners();
+    }
+    return ok;
   }
 
   void _applySession(Session? session) {
@@ -135,6 +180,13 @@ class AuthProvider extends ChangeNotifier {
   }) async {
     _error = null;
     _notice = null;
+    // Offline test-account short-circuit: no network / Supabase needed.
+    if (await _localAuth.signIn(email, password)) {
+      _awaitingEmailConfirmation = false;
+      _applyLocalTestUser();
+      notifyListeners();
+      return {'accessToken': 'local-test-session', 'user': _user};
+    }
     try {
       final res = await _client.auth.signInWithPassword(
         email: email,
@@ -201,10 +253,12 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> logout() async {
+    await _localAuth.signOut();
     try {
       await _client.auth.signOut();
     } catch (_) {}
     _user = null;
+    _isDemo = false;
     _status = AuthStatus.unauthenticated;
     notifyListeners();
   }
