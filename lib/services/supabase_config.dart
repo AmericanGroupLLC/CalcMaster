@@ -12,7 +12,8 @@ class SupabaseConfig {
 
   static const String publishableKey = String.fromEnvironment(
     'SUPABASE_ANON_KEY',
-    defaultValue: 'sb_publishable_nqtYGp48NKiRF53zivkpsQ_bRiqDSfc',
+    defaultValue:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNtdnZqaXZ2bHByamh6aG9penltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMDIxMDMsImV4cCI6MjA5NTc3ODEwM30.csC-AHt-nI6BaZd6yt7imxbpAkS5tEOjqcpetZGWkF0',
   );
 
   /// Deep-link the OAuth provider redirects back to after sign-in. Must be
@@ -29,7 +30,9 @@ class SupabaseConfig {
   /// guide). This app does NOT require login — sign-in is optional and only powers
   /// cloud sync — but these back the optional "Use test account" button.
   static const String qaEmail = 'qa@safecodeg.com';
-  static const String qaPassword = 'QATest@2026!';
+  static const String qaPassword = 'QATest@2024!';
   static const String devEmail = 'dev@safecodeg.com';
-  static const String devPassword = 'DevTest@2026!';
+  static const String devPassword = 'DevTest@2024!';
+  static const String adminEmail = 'admin@safecodeg.com';
+  static const String adminPassword = 'AdminTest@2024!';
 }
