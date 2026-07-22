@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -5,6 +6,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class ApiClient {
   ApiClient._();
   static final instance = ApiClient._();
+
+  // Fail fast when the backend is unreachable/unresponsive rather than hanging
+  // the UI. On timeout the underlying call throws [TimeoutException], which
+  // callers treat as a connectivity failure.
+  static const Duration _timeout = Duration(seconds: 20);
 
   static const String _baseUrl = String.fromEnvironment(
     'API_BASE_URL',
@@ -104,38 +110,46 @@ class ApiClient {
   // ─── Internal HTTP ───
 
   Future<dynamic> _get(String path) async {
-    final res = await http.get(
-      Uri.parse('$_baseUrl$path'),
-      headers: _headers,
-    );
+    final res = await http
+        .get(
+          Uri.parse('$_baseUrl$path'),
+          headers: _headers,
+        )
+        .timeout(_timeout);
     return _handleResponse(res, method: 'GET');
   }
 
   Future<dynamic> _post(String path, Map<String, dynamic> body) async {
     final encoded = jsonEncode(body);
-    final res = await http.post(
-      Uri.parse('$_baseUrl$path'),
-      headers: _headers,
-      body: encoded,
-    );
+    final res = await http
+        .post(
+          Uri.parse('$_baseUrl$path'),
+          headers: _headers,
+          body: encoded,
+        )
+        .timeout(_timeout);
     return _handleResponse(res, method: 'POST', requestBody: encoded);
   }
 
   Future<dynamic> _patch(String path, Map<String, dynamic> body) async {
     final encoded = jsonEncode(body);
-    final res = await http.patch(
-      Uri.parse('$_baseUrl$path'),
-      headers: _headers,
-      body: encoded,
-    );
+    final res = await http
+        .patch(
+          Uri.parse('$_baseUrl$path'),
+          headers: _headers,
+          body: encoded,
+        )
+        .timeout(_timeout);
     return _handleResponse(res, method: 'PATCH', requestBody: encoded);
   }
 
   Future<dynamic> _delete(String path) async {
-    final res = await http.delete(
-      Uri.parse('$_baseUrl$path'),
-      headers: _headers,
-    );
+    final res = await http
+        .delete(
+          Uri.parse('$_baseUrl$path'),
+          headers: _headers,
+        )
+        .timeout(_timeout);
     if (res.statusCode == 204) return null;
     return _handleResponse(res, method: 'DELETE');
   }

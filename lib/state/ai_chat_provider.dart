@@ -66,7 +66,7 @@ class AiChatProvider extends ChangeNotifier {
           [];
       notifyListeners();
     } catch (e) {
-      _error = e.toString();
+      _error = 'Could not load this conversation. Check your connection.';
       notifyListeners();
     }
   }
@@ -101,11 +101,18 @@ class AiChatProvider extends ChangeNotifier {
         reply,
       ];
     } on ApiException catch (e) {
+      // The backend was reachable but returned an error. Keep the real call as
+      // primary and surface an honest, non-technical message instead of the raw
+      // server error. There is no offline/mock AI — an answer needs the backend.
       _messages = _messages.where((m) => !m.isLoading).toList();
-      _error = e.message;
+      _error = e.statusCode == 401
+          ? 'AI chat needs you to be signed in. Please sign in and try again.'
+          : 'AI chat is temporarily unavailable. Please try again in a moment.';
     } catch (e) {
+      // Network/connectivity failure (no route, DNS, timeout, TLS, etc.).
       _messages = _messages.where((m) => !m.isLoading).toList();
-      _error = 'Failed to get AI response. Check your connection.';
+      _error =
+          'AI chat needs a connection. Check your internet and try again.';
     }
 
     _isSending = false;

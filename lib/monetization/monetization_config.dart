@@ -26,9 +26,14 @@ class MonetizationConfig {
   /// Requires real AdMob unit IDs (see ADMOB section).
   static const bool adsEnabled = false;
 
-  /// Show paywall + accept real in-app purchases via RevenueCat.
-  /// Requires real RevenueCat key + IAP products in App Store Connect / Play Console.
-  static const bool subscriptionsEnabled = false;
+  /// Show paywall + accept real in-app purchases via the `in_app_purchase`
+  /// plugin (StoreKit / Play Billing). When enabled, [PremiumProvider] connects
+  /// to the store, loads the products below, and only grants Pro on a completed
+  /// purchase/restore. On devices with no configured store products (e.g. the
+  /// simulator) it honestly reports "unavailable" and grants nothing.
+  /// TODO(monetization): add SERVER-SIDE receipt verification before release
+  /// (see PremiumProvider) — the current client-side grant is spoofable.
+  static const bool subscriptionsEnabled = true;
 
   /// Render affiliate CTA buttons inside detail screens + tag URLs.
   /// Requires real Amazon Associates (or other) tag.

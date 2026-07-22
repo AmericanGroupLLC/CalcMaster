@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../l10n/generated/app_localizations.dart';
-import '../monetization/analytics_service.dart';
 import '../monetization/monetization_config.dart';
 import '../monetization/premium_provider.dart';
 import '../theme/tokens.dart';
@@ -20,20 +19,23 @@ class _PaywallScreenState extends State<PaywallScreen> {
   bool _busy = false;
 
   Future<void> _purchase() async {
+    final premium = context.read<PremiumProvider>();
     setState(() => _busy = true);
-    final ok = await context.read<PremiumProvider>().purchase(_selected);
+    final ok = await premium.purchase(_selected);
     if (!mounted) return;
     setState(() => _busy = false);
     if (ok) {
       Navigator.of(context).pop();
     } else {
       final loc = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(MonetizationConfig.subscriptionsEnabled
+      // Prefer the provider's honest reason (e.g. "unavailable on this device"
+      // on the simulator); fall back to generic copy.
+      final message = premium.lastError ??
+          (MonetizationConfig.subscriptionsEnabled
               ? 'Could not complete purchase.'
-              : loc.paywallSubscriptionsDisabled),
-        ),
+              : loc.paywallSubscriptionsDisabled);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
       );
     }
   }
@@ -121,8 +123,20 @@ class _PaywallScreenState extends State<PaywallScreen> {
               Center(
                 child: TextButton(
                   onPressed: () async {
-                    AnalyticsService.instance.logPurchaseRestored();
-                    await context.read<PremiumProvider>().restore();
+                    final premium = context.read<PremiumProvider>();
+                    final messenger = ScaffoldMessenger.of(context);
+                    final restored = await premium.restore();
+                    if (!context.mounted) return;
+                    if (restored) {
+                      Navigator.of(context).pop();
+                    } else {
+                      messenger.showSnackBar(
+                        SnackBar(
+                          content: Text(premium.lastError ??
+                              'No active purchases found.'),
+                        ),
+                      );
+                    }
                   },
                   child: Text(loc.paywallRestore,
                       style: const TextStyle(color: AppColors.textMuted)),

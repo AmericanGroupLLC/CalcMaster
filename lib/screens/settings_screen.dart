@@ -134,10 +134,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: loc.settingsRestorePurchases,
             subtitle: 'Already paid on another device?',
             onTap: () async {
-              final ok = await context.read<PremiumProvider>().restore();
+              final premium = context.read<PremiumProvider>();
+              final ok = await premium.restore();
               if (!context.mounted) return;
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(ok ? 'Restored.' : 'No active purchases found.')),
+                SnackBar(
+                  content: Text(ok
+                      ? 'Restored.'
+                      : (premium.lastError ?? 'No active purchases found.')),
+                ),
               );
             },
           ),
