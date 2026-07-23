@@ -208,7 +208,7 @@ class _BmiCalcState extends State<BmiCalc> {
   }
 }
 
-// =================== DATE DIFF ===================
+// // =================== DATE DIFF ===================
 
 DateTime? _parseDate(String input) {
   final m = RegExp(r'^(\d{4})-(\d{1,2})-(\d{1,2})$').firstMatch(input);
@@ -226,63 +226,209 @@ String _isoDate(DateTime d) {
   return '${d.year}-$mm-$dd';
 }
 
+// class DateDiffCalc extends StatefulWidget {
+//   const DateDiffCalc({super.key});
+//   @override
+//   State<DateDiffCalc> createState() => _DateDiffCalcState();
+// }
+// class _DateDiffCalcState extends State<DateDiffCalc> {
+//   late TextEditingController from;
+//   late TextEditingController to;
+//   @override
+//   void initState() {
+//     super.initState();
+//     final today = _isoDate(DateTime.now());
+//     from = TextEditingController(text: today);
+//     to = TextEditingController(text: today);
+//     for (final c in [from, to]) c.addListener(() => setState(() {}));
+//   }
+//   @override void dispose() { for (final c in [from, to]) c.dispose(); super.dispose(); }
+//   @override
+//   Widget build(BuildContext context) {
+//     final a0 = _parseDate(from.text);
+//     final b0 = _parseDate(to.text);
+//     DateTime? a = a0, b = b0;
+//     if (a != null && b != null && a.isAfter(b)) { final t = a; a = b; b = t; }
+//     String calendar = '—';
+//     String totalDays = '—', weeks = '—', hours = '—';
+//     if (a != null && b != null) {
+//       var years = b.year - a.year;
+//       var months = b.month - a.month;
+//       var days = b.day - a.day;
+//       if (days < 0) {
+//         months -= 1;
+//         final prevLast = DateTime(b.year, b.month, 0).day;
+//         days += prevLast;
+//       }
+//       if (months < 0) { years -= 1; months += 12; }
+//       calendar = '${years}y ${months}m ${days}d';
+//       final diff = b.difference(a);
+//       totalDays = '${diff.inDays}';
+//       weeks = '${diff.inDays ~/ 7}';
+//       hours = '${diff.inHours}';
+//     }
+//     return InnerScaffold(
+//       title: AppLocalizations.of(context)!.toolDateDiff,
+//       subtitle: 'YYYY-MM-DD format',
+//       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+//         NumberInput(label: 'From', controller: from, keyboardType: TextInputType.text),
+//         NumberInput(label: 'To', controller: to, keyboardType: TextInputType.text),
+//         const SizedBox(height: Spacing.lg),
+//         ResultRow(label: 'Calendar', value: calendar, highlight: true),
+//         ResultRow(label: 'Total days', value: totalDays),
+//         ResultRow(label: 'Weeks', value: weeks),
+//         ResultRow(label: 'Hours', value: hours),
+//       ]),
+//     );
+//   }
+// }
+
 class DateDiffCalc extends StatefulWidget {
   const DateDiffCalc({super.key});
+
   @override
   State<DateDiffCalc> createState() => _DateDiffCalcState();
 }
+
 class _DateDiffCalcState extends State<DateDiffCalc> {
   late TextEditingController from;
   late TextEditingController to;
+
   @override
   void initState() {
     super.initState();
     final today = _isoDate(DateTime.now());
+
     from = TextEditingController(text: today);
     to = TextEditingController(text: today);
-    for (final c in [from, to]) c.addListener(() => setState(() {}));
+
+    for (final c in [from, to]) {
+      c.addListener(() => setState(() {}));
+    }
   }
-  @override void dispose() { for (final c in [from, to]) c.dispose(); super.dispose(); }
+
+  @override
+  void dispose() {
+    for (final c in [from, to]) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  Future<void> _pickDate(TextEditingController controller) async {
+    final initial = _parseDate(controller.text) ?? DateTime.now();
+
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: initial,
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null) {
+      controller.text = _isoDate(picked);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final a0 = _parseDate(from.text);
     final b0 = _parseDate(to.text);
+
     DateTime? a = a0, b = b0;
-    if (a != null && b != null && a.isAfter(b)) { final t = a; a = b; b = t; }
+
+    if (a != null && b != null && a.isAfter(b)) {
+      final t = a;
+      a = b;
+      b = t;
+    }
+
     String calendar = '—';
-    String totalDays = '—', weeks = '—', hours = '—';
+    String totalDays = '—';
+    String weeks = '—';
+    String hours = '—';
+
     if (a != null && b != null) {
       var years = b.year - a.year;
       var months = b.month - a.month;
       var days = b.day - a.day;
+
       if (days < 0) {
-        months -= 1;
+        months--;
         final prevLast = DateTime(b.year, b.month, 0).day;
         days += prevLast;
       }
-      if (months < 0) { years -= 1; months += 12; }
+
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+
       calendar = '${years}y ${months}m ${days}d';
+
       final diff = b.difference(a);
+
       totalDays = '${diff.inDays}';
       weeks = '${diff.inDays ~/ 7}';
       hours = '${diff.inHours}';
     }
+
     return InnerScaffold(
       title: AppLocalizations.of(context)!.toolDateDiff,
-      subtitle: 'YYYY-MM-DD format',
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        NumberInput(label: 'From', controller: from, keyboardType: TextInputType.text),
-        NumberInput(label: 'To', controller: to, keyboardType: TextInputType.text),
-        const SizedBox(height: Spacing.lg),
-        ResultRow(label: 'Calendar', value: calendar, highlight: true),
-        ResultRow(label: 'Total days', value: totalDays),
-        ResultRow(label: 'Weeks', value: weeks),
-        ResultRow(label: 'Hours', value: hours),
-      ]),
+      subtitle: 'Tap the fields to select dates',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+
+          NumberInput(
+            label: 'From',
+            controller: from,
+            keyboardType: TextInputType.text,
+            readOnly: true,
+            onTap: () => _pickDate(from),
+          ),
+
+          NumberInput(
+            label: 'To',
+            controller: to,
+            keyboardType: TextInputType.text,
+            readOnly: true,
+            onTap: () => _pickDate(to),
+          ),
+
+          const SizedBox(height: Spacing.lg),
+
+          ResultRow(
+            label: 'Calendar',
+            value: calendar,
+            highlight: true,
+          ),
+
+          ResultRow(
+            label: 'Total days',
+            value: totalDays,
+          ),
+
+          ResultRow(
+            label: 'Weeks',
+            value: weeks,
+          ),
+
+          ResultRow(
+            label: 'Hours',
+            value: hours,
+          ),
+        ],
+      ),
     );
   }
 }
-
 // =================== TIME ZONES ===================
 
 class TimeZonesScreen extends StatefulWidget {
@@ -400,60 +546,192 @@ class _AdcDacCalcState extends State<AdcDacCalc> {
 }
 
 // =================== AGE ===================
+//
+// class AgeCalc extends StatefulWidget {
+//   const AgeCalc({super.key});
+//   @override
+//   State<AgeCalc> createState() => _AgeCalcState();
+// }
+// class _AgeCalcState extends State<AgeCalc> {
+//   final dob = TextEditingController(text: '2000-01-01');
+//   late TextEditingController ref;
+//   @override
+//   void initState() {
+//     super.initState();
+//     ref = TextEditingController(text: _isoDate(DateTime.now()));
+//     for (final c in [dob, ref]) c.addListener(() => setState(() {}));
+//   }
+//   @override void dispose() { for (final c in [dob, ref]) c.dispose(); super.dispose(); }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final a = _parseDate(dob.text);
+//     final b = _parseDate(ref.text);
+//     String age = '—', total = '—', next = '—';
+//     if (a != null && b != null && !a.isAfter(b)) {
+//       var years = b.year - a.year;
+//       var months = b.month - a.month;
+//       var days = b.day - a.day;
+//       if (days < 0) {
+//         months -= 1;
+//         final prevLast = DateTime(b.year, b.month, 0).day;
+//         days += prevLast;
+//       }
+//       if (months < 0) { years -= 1; months += 12; }
+//       age = '${years}y ${months}m ${days}d';
+//       total = '${b.difference(a).inDays}';
+//       var nb = DateTime(b.year, a.month, a.day);
+//       if (nb.isBefore(b)) nb = DateTime(b.year + 1, a.month, a.day);
+//       final daysToNext = nb.difference(b).inDays;
+//       next = '${_isoDate(nb)} · in $daysToNext days';
+//     }
+//     return InnerScaffold(
+//       title: AppLocalizations.of(context)!.toolAge,
+//       subtitle: 'YYYY-MM-DD',
+//       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+//         NumberInput(label: 'Date of birth', controller: dob, keyboardType: TextInputType.text),
+//         NumberInput(label: 'Reference date', controller: ref, keyboardType: TextInputType.text),
+//         const SizedBox(height: Spacing.lg),
+//         ResultRow(label: 'Age', value: age, highlight: true),
+//         ResultRow(label: 'Total days lived', value: total),
+//         ResultRow(label: 'Next birthday', value: next),
+//       ]),
+//     );
+//   }
+// }
+
+// =================== AGE ===================
 
 class AgeCalc extends StatefulWidget {
   const AgeCalc({super.key});
+
   @override
   State<AgeCalc> createState() => _AgeCalcState();
 }
+
 class _AgeCalcState extends State<AgeCalc> {
   final dob = TextEditingController(text: '2000-01-01');
   late TextEditingController ref;
+
   @override
   void initState() {
     super.initState();
     ref = TextEditingController(text: _isoDate(DateTime.now()));
-    for (final c in [dob, ref]) c.addListener(() => setState(() {}));
+
+    for (final c in [dob, ref]) {
+      c.addListener(() => setState(() {}));
+    }
   }
-  @override void dispose() { for (final c in [dob, ref]) c.dispose(); super.dispose(); }
+
+  @override
+  void dispose() {
+    for (final c in [dob, ref]) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  Future<void> _pickDate(TextEditingController controller) async {
+    final initial = _parseDate(controller.text) ?? DateTime.now();
+
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: initial,
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null) {
+      controller.text = _isoDate(picked);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final a = _parseDate(dob.text);
     final b = _parseDate(ref.text);
+
     String age = '—', total = '—', next = '—';
+
     if (a != null && b != null && !a.isAfter(b)) {
       var years = b.year - a.year;
       var months = b.month - a.month;
       var days = b.day - a.day;
+
       if (days < 0) {
-        months -= 1;
+        months--;
         final prevLast = DateTime(b.year, b.month, 0).day;
         days += prevLast;
       }
-      if (months < 0) { years -= 1; months += 12; }
+
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+
       age = '${years}y ${months}m ${days}d';
       total = '${b.difference(a).inDays}';
+
       var nb = DateTime(b.year, a.month, a.day);
-      if (nb.isBefore(b)) nb = DateTime(b.year + 1, a.month, a.day);
+      if (nb.isBefore(b)) {
+        nb = DateTime(b.year + 1, a.month, a.day);
+      }
+
       final daysToNext = nb.difference(b).inDays;
       next = '${_isoDate(nb)} · in $daysToNext days';
     }
+
     return InnerScaffold(
       title: AppLocalizations.of(context)!.toolAge,
-      subtitle: 'YYYY-MM-DD',
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        NumberInput(label: 'Date of birth', controller: dob, keyboardType: TextInputType.text),
-        NumberInput(label: 'Reference date', controller: ref, keyboardType: TextInputType.text),
-        const SizedBox(height: Spacing.lg),
-        ResultRow(label: 'Age', value: age, highlight: true),
-        ResultRow(label: 'Total days lived', value: total),
-        ResultRow(label: 'Next birthday', value: next),
-      ]),
+      subtitle: 'Tap the fields to select dates',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+
+          NumberInput(
+            label: 'Date of birth',
+            controller: dob,
+            keyboardType: TextInputType.text,
+            readOnly: true,
+            onTap: () => _pickDate(dob),
+          ),
+
+          NumberInput(
+            label: 'Reference date',
+            controller: ref,
+            keyboardType: TextInputType.text,
+            readOnly: true,
+            onTap: () => _pickDate(ref),
+          ),
+
+          const SizedBox(height: Spacing.lg),
+
+          ResultRow(
+            label: 'Age',
+            value: age,
+            highlight: true,
+          ),
+
+          ResultRow(
+            label: 'Total days lived',
+            value: total,
+          ),
+
+          ResultRow(
+            label: 'Next birthday',
+            value: next,
+          ),
+        ],
+      ),
     );
   }
 }
-
 // =================== ASPECT RATIO ===================
 
 class AspectRatioCalc extends StatefulWidget {

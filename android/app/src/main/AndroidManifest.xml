@@ -22,9 +22,9 @@
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
             <meta-data
-              android:name="io.flutter.embedding.android.NormalTheme"
-              android:resource="@style/NormalTheme"
-              />
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme"
+                />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -36,14 +36,14 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="com.americangroupllc.calcmaster"
-                      android:host="login-callback"/>
+                    android:host="login-callback"/>
             </intent-filter>
         </activity>
         <!-- AdMob: Google's TEST app ID. Replace with real AdMob app ID before
              production release. https://developers.google.com/admob/android/quick-start -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
+            android:value="ca-app-pub-1804742004018995~3291928616"/>
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />

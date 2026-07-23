@@ -24,16 +24,11 @@ class MonetizationConfig {
 
   /// Show banner / interstitial / native ads in the app.
   /// Requires real AdMob unit IDs (see ADMOB section).
-  static const bool adsEnabled = false;
+  static const bool adsEnabled = true;
 
-  /// Show paywall + accept real in-app purchases via the `in_app_purchase`
-  /// plugin (StoreKit / Play Billing). When enabled, [PremiumProvider] connects
-  /// to the store, loads the products below, and only grants Pro on a completed
-  /// purchase/restore. On devices with no configured store products (e.g. the
-  /// simulator) it honestly reports "unavailable" and grants nothing.
-  /// TODO(monetization): add SERVER-SIDE receipt verification before release
-  /// (see PremiumProvider) — the current client-side grant is spoofable.
-  static const bool subscriptionsEnabled = true;
+  /// Show paywall + accept real in-app purchases via RevenueCat.
+  /// Requires real RevenueCat key + IAP products in App Store Connect / Play Console.
+  static const bool subscriptionsEnabled = false;
 
   /// Render affiliate CTA buttons inside detail screens + tag URLs.
   /// Requires real Amazon Associates (or other) tag.
@@ -57,13 +52,13 @@ class MonetizationConfig {
   // before public release.
   // https://developers.google.com/admob/flutter/quick-start
   static const String admobAppIdIos = 'ca-app-pub-3940256099942544~1458002511'; // REPLACE
-  static const String admobAppIdAndroid = 'ca-app-pub-3940256099942544~3347511713'; // REPLACE
+  static const String admobAppIdAndroid = 'ca-app-pub-1804742004018995~3291928616'; // Real value
 
   static const String admobIosBanner = 'ca-app-pub-3940256099942544/2934735716'; // REPLACE
-  static const String admobAndroidBanner = 'ca-app-pub-3940256099942544/6300978111'; // REPLACE
+  static const String admobAndroidBanner = 'ca-app-pub-1804742004018995/7853301794'; // Real value
 
   static const String admobIosInterstitial = 'ca-app-pub-3940256099942544/4411468910'; // REPLACE
-  static const String admobAndroidInterstitial = 'ca-app-pub-3940256099942544/1033173712'; // REPLACE
+  static const String admobAndroidInterstitial = 'ca-app-pub-1804742004018995/1563793836'; // Real value
 
   static const String admobIosNative = 'ca-app-pub-3940256099942544/3986624511'; // REPLACE
   static const String admobAndroidNative = 'ca-app-pub-3940256099942544/2247696110'; // REPLACE
@@ -169,18 +164,18 @@ class MonetizationConfig {
   /// build never serves blank slots.
   static bool get adsReady =>
       adsEnabled &&
-      admobAppIdIos.isNotEmpty &&
-      admobAppIdAndroid.isNotEmpty;
+          admobAppIdIos.isNotEmpty &&
+          admobAppIdAndroid.isNotEmpty;
 
   /// True only when subscriptions are enabled AND a real RevenueCat key is in
   /// place (i.e. the dummy `_DUMMY_` marker has been removed).
   static bool get subscriptionsReady =>
       subscriptionsEnabled &&
-      !revenueCatIosKey.contains('DUMMY') &&
-      !revenueCatAndroidKey.contains('DUMMY');
+          !revenueCatIosKey.contains('DUMMY') &&
+          !revenueCatAndroidKey.contains('DUMMY');
 
   /// True when at least one affiliate tag has been replaced from the dummy.
   static bool get affiliatesReady =>
       affiliatesEnabled &&
-      !amazonAssociatesTagUS.contains('DUMMY');
+          !amazonAssociatesTagUS.contains('DUMMY');
 }

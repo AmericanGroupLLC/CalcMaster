@@ -10,6 +10,10 @@ class NumberInput extends StatelessWidget {
   final TextInputType keyboardType;
   final bool autofocus;
 
+  // NEW
+  final bool readOnly;
+  final VoidCallback? onTap;
+
   const NumberInput({
     super.key,
     this.label,
@@ -17,6 +21,10 @@ class NumberInput extends StatelessWidget {
     this.unitSymbol,
     this.keyboardType = const TextInputType.numberWithOptions(decimal: true),
     this.autofocus = false,
+
+    // NEW
+    this.readOnly = false,
+    this.onTap,
   });
 
   @override
@@ -31,7 +39,10 @@ class NumberInput extends StatelessWidget {
               padding: const EdgeInsets.only(left: 2, bottom: 6),
               child: Text(
                 label!,
-                style: const TextStyle(color: AppColors.textMuted, fontSize: 13),
+                style: const TextStyle(
+                  color: AppColors.textMuted,
+                  fontSize: 13,
+                ),
               ),
             ),
           ],
@@ -41,7 +52,10 @@ class NumberInput extends StatelessWidget {
               borderRadius: BorderRadius.circular(Radii.input),
               border: Border.all(color: AppColors.border),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: Spacing.lg, vertical: Spacing.md),
+            padding: const EdgeInsets.symmetric(
+              horizontal: Spacing.lg,
+              vertical: Spacing.md,
+            ),
             child: Row(
               children: [
                 Expanded(
@@ -49,6 +63,11 @@ class NumberInput extends StatelessWidget {
                     controller: controller,
                     keyboardType: keyboardType,
                     autofocus: autofocus,
+
+                    // NEW
+                    readOnly: readOnly,
+                    onTap: onTap,
+
                     style: const TextStyle(
                       color: AppColors.text,
                       fontSize: 22,
@@ -59,10 +78,14 @@ class NumberInput extends StatelessWidget {
                       isCollapsed: true,
                       border: InputBorder.none,
                       hintText: '0',
-                      hintStyle: TextStyle(color: AppColors.textDim),
+                      hintStyle: TextStyle(
+                        color: AppColors.textDim,
+                      ),
                     ),
                     inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'[0-9.\-]')),
+                      FilteringTextInputFormatter.allow(
+                          RegExp(r'[0-9.\-]')
+                      ),
                     ],
                   ),
                 ),
