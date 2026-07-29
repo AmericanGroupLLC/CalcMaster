@@ -1,4 +1,10 @@
+import 'dart:convert';
+import 'dart:math' show Random;
+
+import 'package:crypto/crypto.dart' show sha256;
 import 'package:flutter/foundation.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../services/auth_service.dart';
@@ -246,19 +252,42 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  /// Launches the Google OAuth flow in an external browser. The session is
-  /// delivered asynchronously via [onAuthStateChange] when the provider
-  /// redirects back to [SupabaseConfig.oauthRedirect], so callers should react
-  /// to [status]/[isLoggedIn] rather than this method's return value.
+  /// Seamless Google sign-in via the Supabase-native ID-token flow.
+  ///
+  /// The native Google SDK returns a signed `idToken` (+ `accessToken`);
+  /// [SupabaseClient.auth.signInWithIdToken] exchanges them for a session and
+  /// auto-creates the account on first sign-in (no separate sign-up step).
+  /// [SupabaseConfig.googleServerClientId] (the web/server client id) must match
+  /// the Google provider's configured Client ID in the Supabase dashboard, or
+  /// the exchange is rejected. Returns true on success; false on cancel/failure.
   Future<bool> signInWithGoogle() async {
     _error = null;
     _notice = null;
     try {
-      return await _client.auth.signInWithOAuth(
-        OAuthProvider.google,
-        redirectTo: kIsWeb ? null : SupabaseConfig.oauthRedirect,
-        authScreenLaunchMode: LaunchMode.externalApplication,
+      final iosClientId = SupabaseConfig.googleIosClientId;
+      final googleSignIn = GoogleSignIn(
+        serverClientId: SupabaseConfig.googleServerClientId,
+        clientId: iosClientId.isNotEmpty ? iosClientId : null,
       );
+
+      final account = await googleSignIn.signIn();
+      if (account == null) return false; // user cancelled — not an error.
+      final googleAuth = await account.authentication;
+      final idToken = googleAuth.idToken;
+      if (idToken == null) {
+        _error = 'Google sign-in failed: missing ID token.';
+        notifyListeners();
+        return false;
+      }
+
+      final res = await _client.auth.signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: idToken,
+        accessToken: googleAuth.accessToken,
+      );
+      _applySession(res.session);
+      notifyListeners();
+      return res.session != null;
     } on AuthException catch (e) {
       _error = e.message;
       notifyListeners();
@@ -268,6 +297,91 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
       return false;
     }
+  }
+
+  /// Seamless Apple sign-in via the Supabase-native ID-token flow.
+  ///
+  /// Generates a cryptographically random raw nonce and sends its SHA-256 hash
+  /// to Apple; Apple binds the hash into the returned identity token, and
+  /// Supabase re-derives the hash from the raw nonce to verify the binding
+  /// (replay protection). Supabase auto-creates the account on first sign-in.
+  /// Returns true on success; false on cancel/failure.
+  Future<bool> signInWithApple() async {
+    _error = null;
+    _notice = null;
+    try {
+      final rawNonce = _generateNonce();
+      final hashedNonce = sha256.convert(utf8.encode(rawNonce)).toString();
+
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: const [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+        nonce: hashedNonce,
+      );
+
+      final idToken = credential.identityToken;
+      if (idToken == null) {
+        _error = 'Apple sign-in failed: missing identity token.';
+        notifyListeners();
+        return false;
+      }
+
+      final res = await _client.auth.signInWithIdToken(
+        provider: OAuthProvider.apple,
+        idToken: idToken,
+        nonce: rawNonce,
+      );
+      _applySession(res.session);
+      notifyListeners();
+      return res.session != null;
+    } on SignInWithAppleAuthorizationException catch (e) {
+      // User cancelled the native sheet — not an error to surface loudly.
+      if (e.code == AuthorizationErrorCode.canceled) return false;
+      _error = 'Apple sign-in failed. Please try again.';
+      notifyListeners();
+      return false;
+    } on AuthException catch (e) {
+      _error = e.message;
+      notifyListeners();
+      return false;
+    } catch (e) {
+      _error = 'Apple sign-in failed. Please try again.';
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// Seamless, no-login identity. Creates a real (anonymous) Supabase session
+  /// that persists and can later be upgraded to a full account. This is the
+  /// account-backed complement to guest mode ([continueAsGuest]).
+  Future<bool> signInAnonymously() async {
+    _error = null;
+    _notice = null;
+    try {
+      final res = await _client.auth.signInAnonymously();
+      _applySession(res.session);
+      notifyListeners();
+      return res.session != null;
+    } on AuthException catch (e) {
+      _error = e.message;
+      notifyListeners();
+      return false;
+    } catch (e) {
+      _error = 'Anonymous sign-in failed. Please try again.';
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// Cryptographically secure random nonce (URL-safe charset) for Apple sign-in.
+  String _generateNonce([int length = 32]) {
+    const charset =
+        '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-._';
+    final random = Random.secure();
+    return List.generate(length, (_) => charset[random.nextInt(charset.length)])
+        .join();
   }
 
   /// Retained for the existing UI contract. Supabase performs MFA inline during
@@ -286,6 +400,9 @@ class AuthProvider extends ChangeNotifier {
     await _localAuth.signOut(); // clears the persisted offline demo session
     try {
       await _client.auth.signOut(); // clears the Supabase session
+    } catch (_) {}
+    try {
+      await GoogleSignIn().signOut(); // clears the cached native Google session
     } catch (_) {}
     _user = null;
     _isDemo = false;

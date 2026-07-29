@@ -129,9 +129,21 @@ class _LoginScreenState extends State<LoginScreen> {
       _validationError = null;
       _loading = true;
     });
+    // Native Supabase ID-token flow: on success the session is applied
+    // synchronously and build() navigates once auth becomes authenticated.
     await context.read<AuthProvider>().signInWithGoogle();
-    // Session arrives asynchronously via onAuthStateChange; build() navigates
+    if (mounted) setState(() => _loading = false);
+  }
+
+  Future<void> _appleSignIn() async {
+    if (_loading) return;
+    setState(() {
+      _validationError = null;
+      _loading = true;
+    });
+    // Native Supabase ID-token flow (Sign in with Apple). build() navigates
     // once auth becomes authenticated.
+    await context.read<AuthProvider>().signInWithApple();
     if (mounted) setState(() => _loading = false);
   }
 
@@ -357,6 +369,32 @@ class _LoginScreenState extends State<LoginScreen> {
                                 icon: const Icon(Icons.g_mobiledata,
                                     color: AppColors.text, size: 28),
                                 label: const Text('Continue with Google',
+                                    style: TextStyle(
+                                        color: AppColors.text,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600)),
+                              ),
+                            ),
+                            const SizedBox(height: Spacing.md),
+                            // Sign in with Apple — native ID-token flow. Optional,
+                            // just like Google; the app never requires an account.
+                            SizedBox(
+                              height: 50,
+                              child: OutlinedButton.icon(
+                                onPressed: _loading ? null : _appleSignIn,
+                                style: OutlinedButton.styleFrom(
+                                  backgroundColor:
+                                      Colors.white.withValues(alpha: 0.06),
+                                  side: const BorderSide(
+                                      color: AppColors.border),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(Radii.button),
+                                  ),
+                                ),
+                                icon: const Icon(Icons.apple,
+                                    color: AppColors.text, size: 24),
+                                label: const Text('Continue with Apple',
                                     style: TextStyle(
                                         color: AppColors.text,
                                         fontSize: 15,
