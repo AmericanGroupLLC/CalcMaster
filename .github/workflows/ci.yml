@@ -51,9 +51,9 @@ jobs:
 
       - name: Platform simulation summary
         run: |
-          echo "📱 iOS target:     com.americangroupllc.$(echo 'CalMaster' | tr '[:upper:]' '[:lower:]' | tr -d '-')"
-          echo "🤖 Android target: com.americangroupllc.$(echo 'CalMaster' | tr '[:upper:]' '[:lower:]' | tr -d '-')"
-          echo "✅ CalMaster CI complete"
+          echo "📱 iOS target:     com.americangroupllc.calcmaster"
+          echo "🤖 Android target: com.americangroupllc.calcmaster"
+          echo "✅ CalcMaster CI complete"
 
   eas-config-check:
     name: EAS Build Config Check

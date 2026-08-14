@@ -13,6 +13,8 @@ android/key.properties
 *.keystore
 *.p8
 *.p12
+# sigh/get_provisioning_profile drops the fetched profile in the repo root
+*.mobileprovision
 fastlane/play-service-account.json
 fastlane/report.xml
 

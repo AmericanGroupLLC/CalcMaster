@@ -15,7 +15,7 @@ describe('CalMaster Desktop App', () => {
     test('has mac build config', () => expect(pkg.build?.mac).toBeDefined());
     test('has win build config', () => expect(pkg.build?.win).toBeDefined());
     test('has linux build config', () => expect(pkg.build?.linux).toBeDefined());
-    test('appId contains app name', () => expect(pkg.build?.appId).toContain('calmaster'));
+    test('appId matches the store package name', () => expect(pkg.build?.appId).toBe('com.americangroupllc.calcmaster'));
   });
 
   describe('main.js', () => {

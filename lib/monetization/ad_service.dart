@@ -22,19 +22,15 @@ class AdService {
   InterstitialAd? _cachedInterstitial;
   bool _loadingInterstitial = false;
 
+  /// Single gate for ad loading. Previously this was
+  /// `adsEnabled || _hasTestAds()`, and `_hasTestAds()` only checked that a
+  /// unit ID string was non-empty — which is always true — so ads rendered
+  /// even with `adsEnabled = false`. It now defers entirely to
+  /// [MonetizationConfig.adsReady], which additionally requires real
+  /// (non-test) unit IDs, so a release build cannot ship test ads.
   bool get enabled {
     if (kIsWeb) return false;
-    return MonetizationConfig.adsEnabled || _hasTestAds();
-  }
-
-  /// Even when adsEnabled is false, our MonetizationConfig ships TEST IDs by
-  /// default — so we can still surface test ads in dev builds. Production
-  /// builds should keep adsEnabled = false until real unit IDs land.
-  bool _hasTestAds() {
-    if (kIsWeb) return false;
-    if (Platform.isIOS) return MonetizationConfig.admobIosBanner.isNotEmpty;
-    if (Platform.isAndroid) return MonetizationConfig.admobAndroidBanner.isNotEmpty;
-    return false;
+    return MonetizationConfig.adsReady;
   }
 
   Future<void> bootstrap() async {

@@ -78,10 +78,14 @@ class _ConvertDetailState extends State<ConvertDetail> {
               Row(
                 children: [
                   IconButton(
+                    tooltip: 'Go back',
                     icon: const Icon(Icons.chevron_left, size: 26, color: AppColors.text),
                     onPressed: () => context.pop(),
                     padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
+                    // An unbounded `BoxConstraints()` collapsed the hit area to
+                    // the 26px glyph, below the 44pt minimum touch target in
+                    // Apple's HIG. Keep the tight padding, restore the target.
+                    constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
                   ),
                   const SizedBox(width: 4),
                   Container(

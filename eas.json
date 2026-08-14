@@ -9,31 +9,31 @@
       "distribution": "internal",
       "ios": {
         "simulator": true,
-        "bundleIdentifier": "com.americangroupllc.calmaster"
+        "bundleIdentifier": "com.americangroupllc.calcmaster"
       },
       "android": {
         "buildType": "apk",
-        "applicationId": "com.americangroupllc.calmaster"
+        "applicationId": "com.americangroupllc.calcmaster"
       }
     },
     "preview": {
       "distribution": "internal",
       "ios": {
-        "bundleIdentifier": "com.americangroupllc.calmaster",
+        "bundleIdentifier": "com.americangroupllc.calcmaster",
         "simulator": false
       },
       "android": {
         "buildType": "apk",
-        "applicationId": "com.americangroupllc.calmaster"
+        "applicationId": "com.americangroupllc.calcmaster"
       }
     },
     "production": {
       "ios": {
-        "bundleIdentifier": "com.americangroupllc.calmaster"
+        "bundleIdentifier": "com.americangroupllc.calcmaster"
       },
       "android": {
         "buildType": "app-bundle",
-        "applicationId": "com.americangroupllc.calmaster"
+        "applicationId": "com.americangroupllc.calcmaster"
       }
     }
   },

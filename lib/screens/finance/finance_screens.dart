@@ -343,6 +343,7 @@ class _CurrencyCalcState extends State<CurrencyCalc> {
       subtitle: regionState.ratesLive ? 'Live rates' : 'Offline rates',
       actions: [
         IconButton(
+          tooltip: 'Refresh exchange rates',
           icon: const Icon(Icons.refresh, color: AppColors.textMuted),
           onPressed: () => context.read<RegionProvider>().refreshRates(),
         ),

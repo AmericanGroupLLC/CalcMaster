@@ -77,6 +77,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         backgroundColor: AppColors.bg,
         elevation: 0,
         leading: IconButton(
+          tooltip: 'Close',
           icon: const Icon(Icons.close, color: AppColors.text),
           onPressed: () => context.pop(),
         ),
