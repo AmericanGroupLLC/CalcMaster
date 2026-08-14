@@ -121,12 +121,26 @@ Replace before submitting to App Store / Play Store / public web hosting.
 | `supportEmail` | `contact@safecodeg.com` | A real, monitored mailbox |
 | `marketingWebsite` / `appStoreUrl` / `playStoreUrl` | `safecodeg.com` / fake bundle IDs | After buying domain + listing apps |
 
-Master switches at the top of the same file (all default `false`):
-- `adsEnabled`
-- `subscriptionsEnabled`
-- `affiliatesEnabled`
-- `analyticsEnabled`
-- `fcmEnabled`
+Master switches at the top of the same file:
+
+| Switch | Current | Note |
+|---|---|---|
+| `adsEnabled` | `true` | App IDs are real (`pub-8528784688453695`), but the **banner unit IDs are still Google's test units**, so `adsReady` is false and no ads load. Replace `admobIosBanner` + `admobAndroidBanner` and ads turn on automatically. Banner is the only format the app renders — interstitial and native unit IDs exist in config but `showInterstitial()`/`nativeUnitId()` have no call sites. |
+| `subscriptionsEnabled` | `true` | All three products exist in App Store Connect and are `READY_TO_SUBMIT`. Purchases use `in_app_purchase` (StoreKit) directly — **not** RevenueCat, so the `revenueCat*` keys below are dead config. |
+| `affiliatesEnabled` | `false` | |
+| `analyticsEnabled` | `false` | |
+| `fcmEnabled` | `false` | |
+
+`adsReady` is the single gate for ad loading and now requires the master
+switch **and** real app IDs **and** non-test unit IDs. `AdService.enabled`
+previously read `adsEnabled || _hasTestAds()`, where `_hasTestAds()` merely
+checked a unit-ID string was non-empty — always true — so ads rendered even
+with the master switch off. It now defers to `adsReady`.
+
+**Known debt:** `PremiumProvider` grants the entitlement client-side straight
+from the StoreKit callback, which is spoofable. The backend already implements
+`verifyReceipt` (`backend/src/subscriptions/subscriptions.service.ts`) and
+reads `APPLE_SHARED_SECRET`, but the app does not call it yet.
 
 Flip each to `true` per-pillar **only after you've replaced the relevant credentials**.
 
@@ -137,23 +151,61 @@ Flip each to `true` per-pillar **only after you've replaced the relevant credent
 | `~/upload-keystore.jks` | RSA 2048, 27.4-yr validity, password `calcmaster-upload` | **Rotate the password** to a long random string in 1Password before publishing. Back up keystore in 2 separate physical locations — losing it means inability to update the app on Play Store ever. |
 | `android/key.properties` | Plaintext password, gitignored | Re-create on every dev machine; never commit. |
 
+### App identity (verified — do not change)
+
+| What | Value |
+|---|---|
+| Bundle ID / package name (iOS + Android) | `com.americangroupllc.calcmaster` |
+| App Store display name | `CalcMaster: World Calc` |
+| App Store Connect app ID | `6781554668` |
+| Apple team | American Group LLC — `TLH7Z3G27A` |
+| Version | `4.0.0+1` (`pubspec.yaml`) |
+| Device family | iPhone only (`TARGETED_DEVICE_FAMILY = 1`) |
+
+The Supabase OAuth redirect scheme derives from the bundle ID — renaming it
+breaks sign-in.
+
 ### iOS signing
 
-Not in repo. Required to ship `.ipa`:
-- Apple Developer Program enrollment ($99/yr)
-- Distribution certificate
-- Provisioning profile linked to bundle ID `com.calcmaster.calcmaster`
+Prerequisites (all already in place for American Group LLC):
+- Apple Developer Program enrollment
+- Apple Distribution certificate + private key in the login keychain
+- App Store Connect API key (see below) — the provisioning profile is fetched
+  automatically, so no manual profile step
 
-Once you have those, open `ios/Runner.xcworkspace` in Xcode → Signing & Capabilities → tick "Automatically manage signing" → select your Team. Then:
+**Credentials.** Secrets are never committed. `fastlane/Fastfile` defaults the
+two non-secret identifiers; only the `.p8` private key must be supplied.
+
+| Purpose | Key ID | File | Where it goes |
+|---|---|---|---|
+| App Store Connect API (build upload, profiles, review submission) | `UV8NYF9767` | `AuthKey_UV8NYF9767.p8` | `ASC_KEY_CONTENT` (base64) |
+| In-app purchase / App Store Server API | `PX7TXTDSHP` | `SubscriptionKey_PX7TXTDSHP.p8` | backend only |
+| IAP receipt validation (legacy `verifyReceipt`) | — | shared secret | `APPLE_SHARED_SECRET` (backend env) |
+
+Issuer ID (shared by all keys, not a secret): `ec93cc91-97c2-4b03-860b-697d7ec5d1fb`
+
+**Two ways to build and ship** — see the scripts for full usage:
+
 ```bash
-flutter build ipa --release
+# A. API key (fully scripted: build → sign → upload → submit for review)
+./tools/ios_appstore_submit.sh /path/to/AuthKey_UV8NYF9767.p8
+
+# B. Xcode automatic signing (no API key; needs an Apple ID in Xcode
+#    → Settings → Accounts, plus an app-specific password to upload)
+UPLOAD=1 FASTLANE_USER='you@example.com' FASTLANE_PASSWORD='xxxx-xxxx-xxxx-xxxx' \
+  ./tools/ios_appstore_submit_xcode.sh
 ```
+
+Path B archives via `xcodebuild -allowProvisioningUpdates` and forces
+`CODE_SIGN_IDENTITY=Apple Distribution`, because the project still carries a
+legacy project-level `"iPhone Developer"` that can otherwise resolve to a
+development cert on a Release archive.
 
 ### Marketing site placeholder URLs
 
 `marketing/site/index.html` currently links to:
 - `https://apps.apple.com/app/calcmaster` (replace with real App Store URL after listing)
-- `https://play.google.com/store/apps/details?id=com.calcmaster.calcmaster` (replace after Play listing)
+- `https://play.google.com/store/apps/details?id=com.americangroupllc.calcmaster` (replace after Play listing)
 
 `marketing/site/privacy.html` and `terms.html` reference the company name "CalcMaster Inc." in section 5 — replace with your registered legal entity name.
 

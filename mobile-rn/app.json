@@ -13,14 +13,14 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.americangroupllc.calmaster"
+      "bundleIdentifier": "com.americangroupllc.calcmaster"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#37474F"
       },
-      "package": "com.americangroupllc.calmaster"
+      "package": "com.americangroupllc.calcmaster"
     },
     "web": {
       "favicon": "./assets/favicon.png",

@@ -28,7 +28,7 @@ class MonetizationConfig {
 
   /// Show paywall + accept real in-app purchases via RevenueCat.
   /// Requires real RevenueCat key + IAP products in App Store Connect / Play Console.
-  static const bool subscriptionsEnabled = false;
+  static const bool subscriptionsEnabled = true;
 
   /// Render affiliate CTA buttons inside detail screens + tag URLs.
   /// Requires real Amazon Associates (or other) tag.
@@ -51,14 +51,24 @@ class MonetizationConfig {
   // `google_mobile_ads` is wired in. Switch to your real production unit IDs
   // before public release.
   // https://developers.google.com/admob/flutter/quick-start
-  static const String admobAppIdIos = 'ca-app-pub-3940256099942544~1458002511'; // REPLACE
-  static const String admobAppIdAndroid = 'ca-app-pub-1804742004018995~3291928616'; // Real value
+  // Publisher: pub-8528784688453695 (see marketing/site/app-ads.txt).
+  // App IDs are REAL. Must match ios/Runner/Info.plist GADApplicationIdentifier
+  // and android/.../AndroidManifest.xml APPLICATION_ID, or the SDK crashes on
+  // init.
+  static const String admobAppIdIos = 'ca-app-pub-8528784688453695~9148987425';
+  static const String admobAppIdAndroid = 'ca-app-pub-8528784688453695~5377349094';
 
+  // ⚠️ STILL TEST UNITS — no revenue. The previous Android values belonged to a
+  // different publisher (pub-1804742004018995) and would not serve under the
+  // app IDs above, so they were reset to Google's official test units rather
+  // than left mismatched. Replace all six with real unit IDs from
+  // AdMob console → Apps → CalcMaster iOS/Android → Ad units.
+  // `adUnitsAreReal` below gates ad loading until that happens.
   static const String admobIosBanner = 'ca-app-pub-3940256099942544/2934735716'; // REPLACE
-  static const String admobAndroidBanner = 'ca-app-pub-1804742004018995/7853301794'; // Real value
+  static const String admobAndroidBanner = 'ca-app-pub-3940256099942544/6300978111'; // REPLACE
 
   static const String admobIosInterstitial = 'ca-app-pub-3940256099942544/4411468910'; // REPLACE
-  static const String admobAndroidInterstitial = 'ca-app-pub-1804742004018995/1563793836'; // Real value
+  static const String admobAndroidInterstitial = 'ca-app-pub-3940256099942544/1033173712'; // REPLACE
 
   static const String admobIosNative = 'ca-app-pub-3940256099942544/3986624511'; // REPLACE
   static const String admobAndroidNative = 'ca-app-pub-3940256099942544/2247696110'; // REPLACE
@@ -159,13 +169,32 @@ class MonetizationConfig {
   //  COMPUTED — used by the rest of the app, do not edit
   // ───────────────────────────────────────────────────────────────────
 
-  /// True only when both ads are enabled AND no obvious dummy value is left
-  /// in the iOS or Android app IDs. Defensive check so a half-configured
-  /// build never serves blank slots.
+  /// Google's official test publisher. Any unit ID carrying this prefix serves
+  /// "Test Ad" placeholders and earns nothing.
+  static const String _testAdPublisher = 'ca-app-pub-3940256099942544';
+
+  /// True only when the ad units the app actually renders are real (non-test)
+  /// units. Ads stay off until this is true, so a half-configured build can
+  /// never ship test ads — swapping in real banner units turns ads on with no
+  /// other code change.
+  ///
+  /// Banner is deliberately the ONLY format checked: it is the only one the app
+  /// renders (`BannerAdSlot` in `tab_scaffold.dart`). `AdService` also exposes
+  /// `preloadInterstitial`/`showInterstitial` and `nativeUnitId`, but nothing
+  /// calls them, so requiring those unit IDs here would keep ads switched off
+  /// forever. Add them back to this list if those formats are ever wired up.
+  static bool get adUnitsAreReal => ![
+        admobIosBanner,
+        admobAndroidBanner,
+      ].any((id) => id.startsWith(_testAdPublisher));
+
+  /// The single source of truth for "should this build serve ads at all".
+  /// Requires the master switch, real app IDs, AND real unit IDs.
   static bool get adsReady =>
       adsEnabled &&
           admobAppIdIos.isNotEmpty &&
-          admobAppIdAndroid.isNotEmpty;
+          admobAppIdAndroid.isNotEmpty &&
+          adUnitsAreReal;
 
   /// True only when subscriptions are enabled AND a real RevenueCat key is in
   /// place (i.e. the dummy `_DUMMY_` marker has been removed).

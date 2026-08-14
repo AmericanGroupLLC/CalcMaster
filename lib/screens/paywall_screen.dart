@@ -49,6 +49,7 @@ class _PaywallScreenState extends State<PaywallScreen> {
         backgroundColor: AppColors.bg,
         elevation: 0,
         leading: IconButton(
+          tooltip: 'Close',
           icon: const Icon(Icons.close, color: AppColors.text),
           onPressed: () => context.pop(),
         ),

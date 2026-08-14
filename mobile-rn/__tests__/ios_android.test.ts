@@ -5,7 +5,7 @@ import { Platform } from 'react-native';
 describe('CalMaster — iOS & Android', () => {
 
   describe('iOS specifics', () => {
-    test('iOS bundle ID format', () => expect('com.americangroupllc.calmaster').toMatch(/^com\.\w+\.\w+/));
+    test('iOS bundle ID format', () => expect('com.americangroupllc.calcmaster').toMatch(/^com\.\w+\.\w+/));
     test('iOS min version 15.0', () => expect(15.0).toBeGreaterThanOrEqualTo(15.0));
     test('iOS supports tablet', () => expect(true).toBe(true));
     test('iOS safe area top 44', () => expect(44).toBeGreaterThan(0));
@@ -16,7 +16,7 @@ describe('CalMaster — iOS & Android', () => {
   });
 
   describe('Android specifics', () => {
-    test('Android package format', () => expect('com.americangroupllc.calmaster').toMatch(/^com\.\w+\.\w+/));
+    test('Android package format', () => expect('com.americangroupllc.calcmaster').toMatch(/^com\.\w+\.\w+/));
     test('Android min SDK 24 (Android 7)', () => expect(24).toBeGreaterThanOrEqualTo(24));
     test('Android target SDK 34', () => expect(34).toBeGreaterThanOrEqualTo(34));
     test('Android status bar height 24', () => expect(24).toBeGreaterThan(0));

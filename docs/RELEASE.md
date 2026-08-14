@@ -50,7 +50,7 @@ cp /Users/spatchava/Master-Cal/android/key.properties ~/Backups/calcmaster-key.p
 ### Prerequisites
 
 1. **Apple Developer Program enrollment** — $99 / year at https://developer.apple.com/programs/
-2. **App ID** registered: `com.calcmaster.calcmaster` (already used as the bundle ID)
+2. **App ID** registered: `com.americangroupllc.calcmaster` (already used as the bundle ID)
 3. **Distribution certificate** — created in Apple Developer portal or via Xcode
 4. **Provisioning profile** — App Store Distribution profile linked to the App ID
 
@@ -96,10 +96,10 @@ Useful for QA on Florian / any physical phone.
 # 3. Plug in USB. Accept the RSA fingerprint prompt on the phone.
 adb devices                                # confirm device shows up
 adb install -r build/app/outputs/flutter-apk/app-release.apk
-adb shell am start -n com.calcmaster.calcmaster/.MainActivity
+adb shell am start -n com.americangroupllc.calcmaster/.MainActivity
 
 # To uninstall:
-adb uninstall com.calcmaster.calcmaster
+adb uninstall com.americangroupllc.calcmaster
 ```
 
 ## 🚀 Submission flow
@@ -117,7 +117,7 @@ adb uninstall com.calcmaster.calcmaster
 ### App Store Connect (TestFlight → App Store)
 
 1. https://appstoreconnect.apple.com → My Apps → + → New App.
-   - Bundle ID: `com.calcmaster.calcmaster`
+   - Bundle ID: `com.americangroupllc.calcmaster`
    - SKU: `calcmaster-001` (anything unique)
 2. **App Information** → fill from `marketing/listing-copy.md` § 2.
 3. **iOS App** → upload IPA via Transporter (above).
