@@ -1,23 +1,41 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:calcmaster/monetization/monetization_config.dart';
 
 void main() {
   group('MonetizationConfig — single-file dummy defaults', () {
-    test('master switches default to false (safe to ship)', () {
-      expect(MonetizationConfig.adsEnabled, isFalse);
+    test('ads are live; every other pillar is still switched off', () {
+      // Ads ship enabled with real Android unit IDs. The remaining pillars
+      // still hold dummy credentials, so they must stay false.
+      expect(MonetizationConfig.adsEnabled, isTrue);
       expect(MonetizationConfig.subscriptionsEnabled, isFalse);
       expect(MonetizationConfig.affiliatesEnabled, isFalse);
       expect(MonetizationConfig.analyticsEnabled, isFalse);
       expect(MonetizationConfig.fcmEnabled, isFalse);
     });
 
-    test('AdMob defaults are Google\'s test IDs (safe to use today)', () {
-      // Google publishes these test IDs publicly — they show test ads when
-      // the SDK is wired in. Production keys must replace these before
-      // public release.
+    test('Android AdMob units are real production IDs', () {
+      // Real publisher ID for the CalcMaster AdMob account. Google's public
+      // test publisher (3940256099942544) must NOT appear on Android now
+      // that ads are enabled — test units earn nothing.
+      const publisher = '8528784688453695';
+      expect(MonetizationConfig.admobAppIdAndroid, contains(publisher));
+      expect(MonetizationConfig.admobAndroidBanner, contains(publisher));
+      expect(MonetizationConfig.admobAndroidInterstitial, contains(publisher));
+    });
+
+    test('Android app ID matches the AndroidManifest meta-data', () {
+      // The SDK throws at startup if these drift apart.
+      final manifest =
+          File('android/app/src/main/AndroidManifest.xml').readAsStringSync();
+      expect(manifest, contains(MonetizationConfig.admobAppIdAndroid));
+    });
+
+    test('iOS AdMob units are still Google test IDs (replace before App Store)', () {
       expect(MonetizationConfig.admobIosBanner, contains('3940256099942544'));
-      expect(MonetizationConfig.admobAndroidBanner, contains('3940256099942544'));
+      expect(MonetizationConfig.admobIosInterstitial, contains('3940256099942544'));
     });
 
     test('RevenueCat keys still hold dummy markers (replace before launch)', () {
@@ -51,8 +69,8 @@ void main() {
     });
 
     test('"ready" guards correctly reject dummy values', () {
-      // adsEnabled is false → adsReady false
-      expect(MonetizationConfig.adsReady, isFalse);
+      // adsEnabled is true and both app IDs are populated → adsReady true
+      expect(MonetizationConfig.adsReady, isTrue);
       // subscriptionsEnabled is false → subscriptionsReady false
       expect(MonetizationConfig.subscriptionsReady, isFalse);
       // affiliatesEnabled is false → affiliatesReady false

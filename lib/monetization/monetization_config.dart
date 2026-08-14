@@ -51,14 +51,20 @@ class MonetizationConfig {
   // `google_mobile_ads` is wired in. Switch to your real production unit IDs
   // before public release.
   // https://developers.google.com/admob/flutter/quick-start
-  static const String admobAppIdIos = 'ca-app-pub-3940256099942544~1458002511'; // REPLACE
-  static const String admobAppIdAndroid = 'ca-app-pub-1804742004018995~3291928616'; // Real value
+  // Real AdMob app ID — keep in sync with:
+  //   android/app/src/main/AndroidManifest.xml  (APPLICATION_ID meta-data)
+  //   ios/Runner/Info.plist                     (GADApplicationIdentifier)
+  // NOTE: AdMob issues one app ID per platform. Both entries below currently
+  // use the same ID. Register a separate iOS app in the AdMob console and
+  // replace admobAppIdIos + Info.plist before shipping to the App Store.
+  static const String admobAppIdIos = 'ca-app-pub-8528784688453695~5377349094'; // REPLACE with real iOS app ID
+  static const String admobAppIdAndroid = 'ca-app-pub-8528784688453695~5377349094';
 
   static const String admobIosBanner = 'ca-app-pub-3940256099942544/2934735716'; // REPLACE
-  static const String admobAndroidBanner = 'ca-app-pub-1804742004018995/7853301794'; // Real value
+  static const String admobAndroidBanner = 'ca-app-pub-8528784688453695/7665581023'; // Real value (calcmaster-banner)
 
   static const String admobIosInterstitial = 'ca-app-pub-3940256099942544/4411468910'; // REPLACE
-  static const String admobAndroidInterstitial = 'ca-app-pub-1804742004018995/1563793836'; // Real value
+  static const String admobAndroidInterstitial = 'ca-app-pub-8528784688453695/7474009334'; // Real value (calcmaster-interstitial)
 
   static const String admobIosNative = 'ca-app-pub-3940256099942544/3986624511'; // REPLACE
   static const String admobAndroidNative = 'ca-app-pub-3940256099942544/2247696110'; // REPLACE

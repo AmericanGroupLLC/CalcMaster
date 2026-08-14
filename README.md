@@ -107,9 +107,10 @@ Replace before submitting to App Store / Play Store / public web hosting.
 
 | What | Current dummy value | Where to get the real one |
 |---|---|---|
-| `admobIosBanner` / `admobAndroidBanner` | Google's TEST IDs (`ca-app-pub-3940256099942544/...`) | AdMob console → Apps → CalcMaster → Ad units |
-| `admobIosInterstitial` / `admobAndroidInterstitial` | Google's TEST IDs | Same as above |
-| `admobIosNative` / `admobAndroidNative` | Google's TEST IDs | Same as above |
+| `admobIosBanner` | Google's TEST ID (`ca-app-pub-3940256099942544/...`) — Android is REAL | AdMob console → Apps → CalcMaster iOS → Ad units |
+| `admobIosInterstitial` | Google's TEST ID — Android is REAL | Same as above |
+| `admobIosNative` / `admobAndroidNative` | Google's TEST IDs (native ads are not implemented — no code renders them) | Same as above |
+| `admobAppIdIos` | Currently reuses the Android app ID — AdMob issues one per platform | AdMob console → register an iOS app |
 | `revenueCatIosKey` / `revenueCatAndroidKey` | `appl_DUMMY_REPLACE_BEFORE_LAUNCH` / `goog_DUMMY_...` | app.revenuecat.com → Apps → Public API key |
 | `productMonthly` / `productAnnual` / `productLifetime` | `calcmaster_pro_monthly` / `_annual` / `_lifetime` | App Store Connect IAP + Play Console subscriptions |
 | `priceMonthly` / `priceAnnual` / `priceLifetime` | `$2.99 / month` etc. | Match your store pricing |
