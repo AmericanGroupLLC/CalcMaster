@@ -200,7 +200,11 @@ platform :ios do
       api_key: asc_api_key,
       app_identifier: APP_ID,
       ipa: latest_ipa,
-      submit_for_review: true,
+      # Upload only. deliver's submit_for_review submits the VERSION alone,
+      # which would leave the three in-app purchases out of a first review.
+      # tools/ios_submit_for_review.rb bundles version + IAPs into one
+      # ReviewSubmission and submits that instead.
+      submit_for_review: false,
       automatic_release: true,
       force: true, # skip the HTML metadata preview prompt
       precheck_include_in_app_purchases: false,

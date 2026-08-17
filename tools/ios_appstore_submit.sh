@@ -63,6 +63,105 @@ fi
 echo "✓ Apple Distribution identity present"
 echo "✓ Version: $(grep -E '^version:' pubspec.yaml)"
 
+# App Store Connect rejects some non-ASCII characters in listing text, and it
+# only tells you AFTER the archive + IPA export have run (~2 min wasted). A
+# stray "xʸ" (U+02B8 MODIFIER LETTER SMALL Y) in the description cost exactly
+# that. Catch the whole class up front: modifier letters (Lm), modifier symbols
+# (Sk) and "other numbers" (No, e.g. superscript ²) are the ones that bite.
+# Em dash, bullet, middle dot, √ and arrows are all fine and stay allowed.
+python3 - <<'PY' || fail "Fix the characters above before building."
+import glob, sys, unicodedata
+bad = []
+for f in sorted(glob.glob('fastlane/metadata/**/*.txt', recursive=True)):
+    for ch in sorted(set(open(f, encoding='utf-8').read())):
+        if ord(ch) > 127 and unicodedata.category(ch) in ('Lm', 'Sk', 'No'):
+            bad.append(f"  {f}: U+{ord(ch):04X} {ch!r} "
+                       f"({unicodedata.name(ch, 'unnamed')})")
+if bad:
+    print("✗ Characters App Store Connect will reject:")
+    print("\n".join(bad))
+    sys.exit(1)
+print("✓ Store metadata has no characters App Store Connect rejects")
+PY
+
+# Apple validates the App Review contact phone and rejects placeholders, again
+# only AFTER the build. "+1 000 000 0000" failed with "The phone number must be
+# in a valid format." Require E.164-ish digits and reject all-zero bodies.
+python3 - <<'PY' || fail "Set a real App Review contact phone before building."
+import re, sys
+p = 'fastlane/metadata/review_information/phone_number.txt'
+raw = open(p, encoding='utf-8').read().strip()
+digits = re.sub(r'\D', '', raw)
+body = digits[1:] if raw.startswith('+1') else digits
+problem = None
+if not raw.startswith('+'):
+    problem = "must start with '+' followed by the country code"
+elif len(digits) < 8:
+    problem = f"only {len(digits)} digits — too short to be a real number"
+elif set(body) <= {'0'}:
+    problem = "is a placeholder (all zeros)"
+if problem:
+    print(f"✗ App Review phone {raw!r} {problem}.")
+    print(f"  Apple rejects this during metadata upload. Edit {p}")
+    print("  Example of an accepted format: +1 415 555 0142")
+    sys.exit(1)
+print(f"✓ App Review contact phone looks valid ({raw})")
+PY
+
+# altool validates CFBundleURLSchemes only during the binary upload, i.e. after
+# the archive AND a ~90s upload. A literal placeholder
+# "com.googleusercontent.apps.REVERSED_CLIENT_ID" failed there with error 90158
+# because underscores are illegal in URL schemes (RFC1738). Check locally.
+python3 - <<'PY' || fail "Fix the Info.plist URL schemes above before building."
+import plistlib, re, sys
+d = plistlib.load(open('ios/Runner/Info.plist', 'rb'))
+bad = []
+for t in d.get('CFBundleURLTypes', []):
+    for s in t.get('CFBundleURLSchemes', []):
+        if not re.fullmatch(r'[A-Za-z][A-Za-z0-9.+-]*', s):
+            bad.append(f"  {s!r} — must start with a letter and contain only "
+                       f"letters, digits, '.', '+' or '-' (RFC1738)")
+if bad:
+    print("✗ URL schemes App Store Connect will reject (error 90158):")
+    print("\n".join(bad))
+    sys.exit(1)
+print("✓ Info.plist URL schemes are valid")
+PY
+
+# App Store Connect refuses a CFBundleVersion it has already seen, but only at
+# the very end of a ~3 minute build+upload. Check first: if this build number
+# is already up there, the work is done and the next step is submission.
+ASC_KEY_PATH="${1:-}" bundle exec ruby - <<'PY' || fail "Bump the build number in pubspec.yaml, or run the submit step instead."
+require 'jwt'; require 'openssl'; require 'net/http'; require 'json'
+key = ENV['ASC_KEY_PATH'].to_s
+key = 'AuthKey_UV8NYF9767.p8' if key.empty? || !File.exist?(key)
+unless File.exist?(key)
+  puts '~ Skipping duplicate-build check (no .p8 path given)'; exit 0
+end
+now = Time.now.to_i
+tok = JWT.encode({ iss: ENV.fetch('ASC_ISSUER_ID', 'ec93cc91-97c2-4b03-860b-697d7ec5d1fb'),
+                   iat: now, exp: now + 600, aud: 'appstoreconnect-v1' },
+                 OpenSSL::PKey::EC.new(File.read(key)), 'ES256',
+                 { kid: ENV.fetch('ASC_KEY_ID', 'UV8NYF9767'), typ: 'JWT' })
+uri = URI('https://api.appstoreconnect.apple.com/v1/apps/6781554668/builds?limit=20')
+req = Net::HTTP::Get.new(uri); req['Authorization'] = "Bearer #{tok}"
+res = Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |h| h.request(req) }
+unless res.code == '200'
+  puts "~ Skipping duplicate-build check (API #{res.code})"; exit 0
+end
+uploaded = (JSON.parse(res.body)['data'] || []).map { |b| b.dig('attributes', 'version').to_i }
+local = File.read('pubspec.yaml')[/^version:\s*\S+\+(\d+)/, 1].to_i
+if uploaded.include?(local)
+  puts "✗ Build #{local} is ALREADY uploaded to App Store Connect."
+  puts '  Rebuilding cannot help — Apple rejects a duplicate CFBundleVersion.'
+  puts '  To submit what is already up there, run:'
+  puts '      bundle exec ruby tools/ios_submit_for_review.rb --submit'
+  puts "  To upload a NEW binary instead, bump pubspec.yaml to +#{uploaded.max + 1}."
+  exit 1
+end
+puts "✓ Build number #{local} is not yet uploaded (highest there: #{uploaded.max || 'none'})"
+PY
+
 section "Dependencies"
 "$FLUTTER" pub get
 (cd ios && pod install)
@@ -87,5 +186,16 @@ section "Build → sign → upload → submit for review"
 warn "This submits CalcMaster to App Review and auto-releases on approval."
 bundle exec fastlane ios release
 
-section "Done"
-echo "Track review status: https://appstoreconnect.apple.com"
+section "Uploaded — one step left"
+cat <<'NEXT'
+The binary, metadata and screenshots are uploaded, but NOT yet submitted.
+
+Apple reviews the three in-app purchases alongside the binary on a first
+release, and deliver cannot attach them. Once the build finishes processing
+(5-15 min, you get an email), submit everything together:
+
+    bundle exec ruby tools/ios_submit_for_review.rb            # dry run
+    bundle exec ruby tools/ios_submit_for_review.rb --submit   # submit
+
+Track status: https://appstoreconnect.apple.com
+NEXT

@@ -8,6 +8,7 @@ import '../../widgets/animated_gradient_background.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/glow_text.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../../services/supabase_config.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -352,30 +353,36 @@ class _LoginScreenState extends State<LoginScreen> {
                               ],
                             ),
                             const SizedBox(height: Spacing.lg),
-                            SizedBox(
-                              height: 50,
-                              child: OutlinedButton.icon(
-                                onPressed: _loading ? null : _googleSignIn,
-                                style: OutlinedButton.styleFrom(
-                                  backgroundColor:
-                                      Colors.white.withValues(alpha: 0.06),
-                                  side: const BorderSide(
-                                      color: AppColors.border),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.circular(Radii.button),
+                            // Only offered where the flow can actually
+                            // complete — on iOS that needs a real OAuth client
+                            // id. Showing a button that always errors reads as
+                            // a broken feature to App Review.
+                            if (SupabaseConfig.googleSignInAvailable) ...[
+                              SizedBox(
+                                height: 50,
+                                child: OutlinedButton.icon(
+                                  onPressed: _loading ? null : _googleSignIn,
+                                  style: OutlinedButton.styleFrom(
+                                    backgroundColor:
+                                        Colors.white.withValues(alpha: 0.06),
+                                    side: const BorderSide(
+                                        color: AppColors.border),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(Radii.button),
+                                    ),
                                   ),
+                                  icon: const Icon(Icons.g_mobiledata,
+                                      color: AppColors.text, size: 28),
+                                  label: const Text('Continue with Google',
+                                      style: TextStyle(
+                                          color: AppColors.text,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600)),
                                 ),
-                                icon: const Icon(Icons.g_mobiledata,
-                                    color: AppColors.text, size: 28),
-                                label: const Text('Continue with Google',
-                                    style: TextStyle(
-                                        color: AppColors.text,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w600)),
                               ),
-                            ),
-                            const SizedBox(height: Spacing.md),
+                              const SizedBox(height: Spacing.md),
+                            ],
                             // Sign in with Apple — native ID-token flow. Optional,
                             // just like Google; the app never requires an account.
                             SizedBox(

@@ -6,24 +6,26 @@ import 'package:calcmaster/monetization/monetization_config.dart';
 
 void main() {
   group('MonetizationConfig — single-file dummy defaults', () {
-    test('ads are live; every other pillar is still switched off', () {
-      // Ads ship enabled with real Android unit IDs. The remaining pillars
-      // still hold dummy credentials, so they must stay false.
+    test('ads and subscriptions are on; the rest stay switched off', () {
+      // Subscriptions are live: the three products exist in App Store Connect
+      // and are READY_TO_SUBMIT. Affiliates/analytics/FCM still hold dummy
+      // credentials, so they must stay false.
       expect(MonetizationConfig.adsEnabled, isTrue);
-      expect(MonetizationConfig.subscriptionsEnabled, isFalse);
+      expect(MonetizationConfig.subscriptionsEnabled, isTrue);
       expect(MonetizationConfig.affiliatesEnabled, isFalse);
       expect(MonetizationConfig.analyticsEnabled, isFalse);
       expect(MonetizationConfig.fcmEnabled, isFalse);
     });
 
-    test('Android AdMob units are real production IDs', () {
-      // Real publisher ID for the CalcMaster AdMob account. Google's public
-      // test publisher (3940256099942544) must NOT appear on Android now
-      // that ads are enabled — test units earn nothing.
+    test('AdMob app IDs are real and on the CalcMaster publisher', () {
+      // App IDs are real. Unit IDs are NOT yet — see the test below. The old
+      // Android values belonged to publisher 1804742004018995, which does not
+      // own these app IDs and could never have served.
       const publisher = '8528784688453695';
       expect(MonetizationConfig.admobAppIdAndroid, contains(publisher));
-      expect(MonetizationConfig.admobAndroidBanner, contains(publisher));
-      expect(MonetizationConfig.admobAndroidInterstitial, contains(publisher));
+      expect(MonetizationConfig.admobAppIdIos, contains(publisher));
+      expect(MonetizationConfig.admobAppIdIos,
+          isNot(equals(MonetizationConfig.admobAppIdAndroid)));
     });
 
     test('Android app ID matches the AndroidManifest meta-data', () {
@@ -69,12 +71,26 @@ void main() {
     });
 
     test('"ready" guards correctly reject dummy values', () {
-      // adsEnabled is true and both app IDs are populated → adsReady true
-      expect(MonetizationConfig.adsReady, isTrue);
-      // subscriptionsEnabled is false → subscriptionsReady false
+      // Ads must stay OFF while the banner units are Google's test units, so a
+      // release build can never ship "Test Ad" placeholders. Replacing the two
+      // banner IDs flips both of these to true with no other code change.
+      expect(MonetizationConfig.adUnitsAreReal, isFalse);
+      expect(MonetizationConfig.adsReady, isFalse);
+      // subscriptionsReady still checks the RevenueCat keys, which are dummies.
+      // That guard is vestigial: purchases go through in_app_purchase/StoreKit
+      // (see PremiumProvider), not RevenueCat, so it does not gate anything.
       expect(MonetizationConfig.subscriptionsReady, isFalse);
       // affiliatesEnabled is false → affiliatesReady false
       expect(MonetizationConfig.affiliatesReady, isFalse);
+    });
+
+    test('banner is the only rendered ad format, and gates adUnitsAreReal', () {
+      // showInterstitial()/nativeUnitId() have no call sites, so requiring
+      // real interstitial/native units would keep ads off forever.
+      const testPublisher = 'ca-app-pub-3940256099942544';
+      expect(MonetizationConfig.admobIosBanner, startsWith(testPublisher));
+      expect(MonetizationConfig.admobAndroidBanner, startsWith(testPublisher));
+      expect(MonetizationConfig.adUnitsAreReal, isFalse);
     });
   });
 }
