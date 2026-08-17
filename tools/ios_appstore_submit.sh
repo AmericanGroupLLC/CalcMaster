@@ -87,5 +87,16 @@ section "Build → sign → upload → submit for review"
 warn "This submits CalcMaster to App Review and auto-releases on approval."
 bundle exec fastlane ios release
 
-section "Done"
-echo "Track review status: https://appstoreconnect.apple.com"
+section "Uploaded — one step left"
+cat <<'NEXT'
+The binary, metadata and screenshots are uploaded, but NOT yet submitted.
+
+Apple reviews the three in-app purchases alongside the binary on a first
+release, and deliver cannot attach them. Once the build finishes processing
+(5-15 min, you get an email), submit everything together:
+
+    bundle exec ruby tools/ios_submit_for_review.rb            # dry run
+    bundle exec ruby tools/ios_submit_for_review.rb --submit   # submit
+
+Track status: https://appstoreconnect.apple.com
+NEXT
