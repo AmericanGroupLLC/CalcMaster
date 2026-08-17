@@ -56,6 +56,8 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>CalcMaster uses your location to detect your region and currency, and when you tap Use my location in the GPS Coordinates tool. Location is never tracked in the background or stored on our servers.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>CalcMaster uses your location to detect your region and currency, and when you tap Use my location in the GPS Coordinates tool.</string>
 	<key>NSUserTrackingUsageDescription</key>
