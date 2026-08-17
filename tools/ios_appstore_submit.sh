@@ -128,6 +128,40 @@ if bad:
 print("✓ Info.plist URL schemes are valid")
 PY
 
+# App Store Connect refuses a CFBundleVersion it has already seen, but only at
+# the very end of a ~3 minute build+upload. Check first: if this build number
+# is already up there, the work is done and the next step is submission.
+ASC_KEY_PATH="${1:-}" bundle exec ruby - <<'PY' || fail "Bump the build number in pubspec.yaml, or run the submit step instead."
+require 'jwt'; require 'openssl'; require 'net/http'; require 'json'
+key = ENV['ASC_KEY_PATH'].to_s
+key = 'AuthKey_UV8NYF9767.p8' if key.empty? || !File.exist?(key)
+unless File.exist?(key)
+  puts '~ Skipping duplicate-build check (no .p8 path given)'; exit 0
+end
+now = Time.now.to_i
+tok = JWT.encode({ iss: ENV.fetch('ASC_ISSUER_ID', 'ec93cc91-97c2-4b03-860b-697d7ec5d1fb'),
+                   iat: now, exp: now + 600, aud: 'appstoreconnect-v1' },
+                 OpenSSL::PKey::EC.new(File.read(key)), 'ES256',
+                 { kid: ENV.fetch('ASC_KEY_ID', 'UV8NYF9767'), typ: 'JWT' })
+uri = URI('https://api.appstoreconnect.apple.com/v1/apps/6781554668/builds?limit=20')
+req = Net::HTTP::Get.new(uri); req['Authorization'] = "Bearer #{tok}"
+res = Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |h| h.request(req) }
+unless res.code == '200'
+  puts "~ Skipping duplicate-build check (API #{res.code})"; exit 0
+end
+uploaded = (JSON.parse(res.body)['data'] || []).map { |b| b.dig('attributes', 'version').to_i }
+local = File.read('pubspec.yaml')[/^version:\s*\S+\+(\d+)/, 1].to_i
+if uploaded.include?(local)
+  puts "✗ Build #{local} is ALREADY uploaded to App Store Connect."
+  puts '  Rebuilding cannot help — Apple rejects a duplicate CFBundleVersion.'
+  puts '  To submit what is already up there, run:'
+  puts '      bundle exec ruby tools/ios_submit_for_review.rb --submit'
+  puts "  To upload a NEW binary instead, bump pubspec.yaml to +#{uploaded.max + 1}."
+  exit 1
+end
+puts "✓ Build number #{local} is not yet uploaded (highest there: #{uploaded.max || 'none'})"
+PY
+
 section "Dependencies"
 "$FLUTTER" pub get
 (cd ios && pod install)
