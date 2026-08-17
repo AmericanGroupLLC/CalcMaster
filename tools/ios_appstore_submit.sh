@@ -108,6 +108,26 @@ if problem:
 print(f"✓ App Review contact phone looks valid ({raw})")
 PY
 
+# altool validates CFBundleURLSchemes only during the binary upload, i.e. after
+# the archive AND a ~90s upload. A literal placeholder
+# "com.googleusercontent.apps.REVERSED_CLIENT_ID" failed there with error 90158
+# because underscores are illegal in URL schemes (RFC1738). Check locally.
+python3 - <<'PY' || fail "Fix the Info.plist URL schemes above before building."
+import plistlib, re, sys
+d = plistlib.load(open('ios/Runner/Info.plist', 'rb'))
+bad = []
+for t in d.get('CFBundleURLTypes', []):
+    for s in t.get('CFBundleURLSchemes', []):
+        if not re.fullmatch(r'[A-Za-z][A-Za-z0-9.+-]*', s):
+            bad.append(f"  {s!r} — must start with a letter and contain only "
+                       f"letters, digits, '.', '+' or '-' (RFC1738)")
+if bad:
+    print("✗ URL schemes App Store Connect will reject (error 90158):")
+    print("\n".join(bad))
+    sys.exit(1)
+print("✓ Info.plist URL schemes are valid")
+PY
+
 section "Dependencies"
 "$FLUTTER" pub get
 (cd ios && pod install)

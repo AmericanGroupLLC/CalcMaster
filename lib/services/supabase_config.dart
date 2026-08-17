@@ -1,3 +1,7 @@
+import 'dart:io' show Platform;
+
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 /// Supabase connection settings.
 ///
 /// The URL and publishable (anon) key are safe to ship in a mobile binary —
@@ -59,6 +63,25 @@ class SupabaseConfig {
     'GOOGLE_IOS_CLIENT_ID',
     defaultValue: '',
   );
+
+  /// Whether the native Google Sign-In flow can actually complete here.
+  ///
+  /// iOS needs a real OAuth client id. The reversed-client-id URL scheme that
+  /// used to stand in for one was never filled in — it shipped literally as
+  /// `com.googleusercontent.apps.REVERSED_CLIENT_ID`, and App Store Connect
+  /// rejects the upload over it (error 90158: underscores are illegal in URL
+  /// schemes), so it was removed from Info.plist. Until a real
+  /// GoogleService-Info.plist / GOOGLE_IOS_CLIENT_ID is supplied, Google
+  /// sign-in cannot work on iOS and the button is hidden rather than shown
+  /// broken. Android and web only need the server client id.
+  ///
+  /// Hiding it does not create a Guideline 4.8 problem: Sign in with Apple,
+  /// email/password and guest mode all remain available.
+  static bool get googleSignInAvailable {
+    if (kIsWeb) return googleServerClientId.isNotEmpty;
+    if (Platform.isIOS) return googleIosClientId.isNotEmpty;
+    return googleServerClientId.isNotEmpty;
+  }
 
   /// Apple Services ID (bundle/service identifier) and Developer Team ID used
   /// for "Sign in with Apple". The Services ID must be registered as the Apple
