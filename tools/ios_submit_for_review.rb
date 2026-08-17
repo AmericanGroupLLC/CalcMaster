@@ -67,8 +67,24 @@ state = version.dig('attributes', 'appStoreState') || version.dig('attributes', 
 puts "Version #{version.dig('attributes', 'versionString')} — #{state}"
 
 build = version.dig('relationships', 'build', 'data')
+# Don't stop at "a build is attached" — after a rebuild the version can still
+# point at the OLD binary, which is how build 3 stayed attached once build 4
+# had uploaded. Always reconcile against the newest VALID build.
 if build
-  puts "Build already attached: #{build['id']}"
+  code, blist = api(:get, "/v1/apps/#{APP_ID}/builds?limit=20")
+  usable = (blist['data'] || [])
+           .select { |b| b.dig('attributes', 'processingState') == 'VALID' }
+           .reject { |b| b.dig('attributes', 'expired') }
+  newest = usable.max_by { |b| b.dig('attributes', 'version').to_i }
+  if newest && newest['id'] != build['id']
+    puts "Attached build is stale — switching to build #{newest.dig('attributes', 'version')}..."
+    code, body = api(:patch, "/v1/appStoreVersions/#{version['id']}/relationships/build",
+                     { data: { type: 'builds', id: newest['id'] } })
+    abort "✗ Could not switch build (HTTP #{code})\n    #{errors(body)}" unless ok?(code)
+    puts "✓ Build #{newest.dig('attributes', 'version')} attached"
+  else
+    puts "Build already attached: #{build['id']}"
+  end
 else
   # deliver uploads the binary but does not attach it to the version — that is
   # a separate relationship, and App Store Connect leaves it unset until the
