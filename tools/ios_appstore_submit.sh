@@ -84,6 +84,30 @@ if bad:
 print("✓ Store metadata has no characters App Store Connect rejects")
 PY
 
+# Apple validates the App Review contact phone and rejects placeholders, again
+# only AFTER the build. "+1 000 000 0000" failed with "The phone number must be
+# in a valid format." Require E.164-ish digits and reject all-zero bodies.
+python3 - <<'PY' || fail "Set a real App Review contact phone before building."
+import re, sys
+p = 'fastlane/metadata/review_information/phone_number.txt'
+raw = open(p, encoding='utf-8').read().strip()
+digits = re.sub(r'\D', '', raw)
+body = digits[1:] if raw.startswith('+1') else digits
+problem = None
+if not raw.startswith('+'):
+    problem = "must start with '+' followed by the country code"
+elif len(digits) < 8:
+    problem = f"only {len(digits)} digits — too short to be a real number"
+elif set(body) <= {'0'}:
+    problem = "is a placeholder (all zeros)"
+if problem:
+    print(f"✗ App Review phone {raw!r} {problem}.")
+    print(f"  Apple rejects this during metadata upload. Edit {p}")
+    print("  Example of an accepted format: +1 415 555 0142")
+    sys.exit(1)
+print(f"✓ App Review contact phone looks valid ({raw})")
+PY
+
 section "Dependencies"
 "$FLUTTER" pub get
 (cd ios && pod install)
