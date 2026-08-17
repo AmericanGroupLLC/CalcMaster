@@ -63,6 +63,27 @@ fi
 echo "✓ Apple Distribution identity present"
 echo "✓ Version: $(grep -E '^version:' pubspec.yaml)"
 
+# App Store Connect rejects some non-ASCII characters in listing text, and it
+# only tells you AFTER the archive + IPA export have run (~2 min wasted). A
+# stray "xʸ" (U+02B8 MODIFIER LETTER SMALL Y) in the description cost exactly
+# that. Catch the whole class up front: modifier letters (Lm), modifier symbols
+# (Sk) and "other numbers" (No, e.g. superscript ²) are the ones that bite.
+# Em dash, bullet, middle dot, √ and arrows are all fine and stay allowed.
+python3 - <<'PY' || fail "Fix the characters above before building."
+import glob, sys, unicodedata
+bad = []
+for f in sorted(glob.glob('fastlane/metadata/**/*.txt', recursive=True)):
+    for ch in sorted(set(open(f, encoding='utf-8').read())):
+        if ord(ch) > 127 and unicodedata.category(ch) in ('Lm', 'Sk', 'No'):
+            bad.append(f"  {f}: U+{ord(ch):04X} {ch!r} "
+                       f"({unicodedata.name(ch, 'unnamed')})")
+if bad:
+    print("✗ Characters App Store Connect will reject:")
+    print("\n".join(bad))
+    sys.exit(1)
+print("✓ Store metadata has no characters App Store Connect rejects")
+PY
+
 section "Dependencies"
 "$FLUTTER" pub get
 (cd ios && pod install)

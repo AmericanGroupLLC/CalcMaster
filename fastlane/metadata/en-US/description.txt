@@ -6,7 +6,7 @@ CONVERT (10 categories)
 Distance · Volume · Weight · Temperature · Speed · Area · Data Size · Fuel Economy · Pressure · Energy. Tap any category, type a value, and instantly see every other unit. Big accent-tinted result + a complete cross-reference list.
 
 CALCULATE (5 modes)
-Standard four-function · Scientific (sin / cos / tan / log / ln / √ / xʸ / n!) · Percentage (X% of Y, % change, increase/decrease) · Base converter (binary / octal / decimal / hex) · Fraction (add, subtract, multiply, divide, simplify, mixed numbers).
+Standard four-function · Scientific (sin / cos / tan / log / ln / √ / x^y / n!) · Percentage (X% of Y, % change, increase/decrease) · Base converter (binary / octal / decimal / hex) · Fraction (add, subtract, multiply, divide, simplify, mixed numbers).
 
 FINANCE (7 tools)
 Income tax with real 2025–2026 brackets for US, UK, EU, Canada, Australia, India, and Japan — including filing-status differences and standard deductions · Sales tax / VAT · Tip & split · Discount · Compound interest with optional monthly contributions · EMI / loan amortization · Live currency rates from the European Central Bank with offline fallback · Unit-price comparison.
