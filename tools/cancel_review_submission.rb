@@ -3,11 +3,15 @@
 #
 # Pull a version back out of review.
 #
-#   bundle exec ruby tools/cancel_review_submission.rb            # list
-#   bundle exec ruby tools/cancel_review_submission.rb --cancel
+#   bundle exec ruby tools/cancel_review_submission.rb              # list only
+#   bundle exec ruby tools/cancel_review_submission.rb --cancel ID  # one target
 #
 # Equivalent of "Remove from Review" in App Store Connect. Needed when a
 # version was submitted without its in-app purchases attached.
+#
+# The submission ID is REQUIRED. An earlier version of this script cancelled
+# every cancellable submission it found, which pulled a live WAITING_FOR_REVIEW
+# submission out of review while trying to clear an unrelated stale one.
 
 require 'jwt'
 require 'openssl'
@@ -18,6 +22,11 @@ KEY = File.expand_path('../AuthKey_UV8NYF9767.p8', __dir__)
 APP = '6781554668'
 PK  = OpenSSL::PKey::EC.new(File.read(KEY))
 DO_CANCEL = ARGV.include?('--cancel')
+TARGET_ID = ARGV[ARGV.index('--cancel') + 1] if DO_CANCEL
+if DO_CANCEL && (TARGET_ID.nil? || TARGET_ID.start_with?('--'))
+  abort "✗ --cancel requires a submission id: --cancel <reviewSubmission-id>\n" \
+        '  Run without arguments to list them.'
+end
 
 def token
   now = Time.now.to_i
@@ -49,8 +58,12 @@ subs.each { |s| puts "  #{s['id']} state=#{s.dig('attributes', 'state')}" }
 exit 0 unless DO_CANCEL
 
 subs.each do |s|
+  next unless s['id'] == TARGET_ID # only ever touch the one asked for
+
   state = s.dig('attributes', 'state')
-  next unless %w[WAITING_FOR_REVIEW IN_REVIEW READY_FOR_REVIEW].include?(state)
+  unless %w[WAITING_FOR_REVIEW IN_REVIEW READY_FOR_REVIEW].include?(state)
+    abort "✗ #{s['id']} is #{state} — not cancellable"
+  end
 
   # Preferred: mark the submission canceled.
   code, resp = api(:patch, "/v1/reviewSubmissions/#{s['id']}",
