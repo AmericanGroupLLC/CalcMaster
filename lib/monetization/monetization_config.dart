@@ -139,11 +139,18 @@ class MonetizationConfig {
   // ───────────────────────────────────────────────────────────────────
   //  LEGAL / SUPPORT
   // ───────────────────────────────────────────────────────────────────
-  // Safe Code G (American Group LLC) — live pages on safecodeg.com.
-  static const String privacyPolicyUrl = 'https://safecodeg.com/privacy-policy';
-  static const String termsOfServiceUrl = 'https://safecodeg.com/terms';
+  // Served from marketing/site/ by .github/workflows/pages.yml. These MUST be
+  // real pages: safecodeg.com is a catch-all SPA that returns the American
+  // Group corporate homepage for every path, so the old /privacy-policy and
+  // /terms links resolved 200 with the wrong content — an automatic App Store
+  // rejection under Guideline 5.1.1.
+  static const String privacyPolicyUrl =
+      'https://americangroupllc.github.io/CalcMaster/privacy.html';
+  static const String termsOfServiceUrl =
+      'https://americangroupllc.github.io/CalcMaster/terms.html';
   static const String supportEmail = 'contact@safecodeg.com';
-  static const String marketingWebsite = 'https://safecodeg.com';
+  static const String marketingWebsite =
+      'https://americangroupllc.github.io/CalcMaster/';
   static const String appStoreUrl =
       'https://apps.apple.com/app/calcmaster/id0000000000'; // REPLACE after listing
   static const String playStoreUrl =
