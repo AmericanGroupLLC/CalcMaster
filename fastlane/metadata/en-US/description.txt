@@ -27,7 +27,7 @@ Save calculations, formulas, and reminders. Search, edit, delete. Stays on your 
 
 • Offline ready. Convert, calculate, and budget without a signal. Currency rates cache locally and refresh when you reconnect.
 
-• Cross-platform. Same calculations, same answers on iPhone and iPad — and on Android too if you switch.
+• Consistent and precise. The same calculations and the same answers every time, on every device you sign in from.
 
 —— CalcMaster Pro ——
 

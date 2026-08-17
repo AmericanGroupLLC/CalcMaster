@@ -67,11 +67,31 @@ state = version.dig('attributes', 'appStoreState') || version.dig('attributes', 
 puts "Version #{version.dig('attributes', 'versionString')} — #{state}"
 
 build = version.dig('relationships', 'build', 'data')
-unless build
-  abort "✗ No build attached to this version yet.\n" \
-        "  Run tools/ios_appstore_submit.sh first and wait for processing to finish."
+if build
+  puts "Build already attached: #{build['id']}"
+else
+  # deliver uploads the binary but does not attach it to the version — that is
+  # a separate relationship, and App Store Connect leaves it unset until the
+  # build finishes processing. Attach the newest VALID build ourselves.
+  code, body = api(:get, "/v1/apps/#{APP_ID}/builds?limit=20")
+  builds = (body['data'] || [])
+  if builds.empty?
+    abort "✗ No builds uploaded. Run tools/ios_appstore_submit.sh first."
+  end
+  valid = builds.select { |b| b.dig('attributes', 'processingState') == 'VALID' }
+                .reject { |b| b.dig('attributes', 'expired') }
+  if valid.empty?
+    states = builds.map { |b| "#{b.dig('attributes', 'version')}=#{b.dig('attributes', 'processingState')}" }
+    abort "✗ No VALID build yet (#{states.join(', ')}).\n" \
+          "  Processing usually takes 5-15 minutes; re-run when it reports VALID."
+  end
+  newest = valid.max_by { |b| b.dig('attributes', 'version').to_i }
+  puts "Attaching build #{newest.dig('attributes', 'version')} (#{newest['id']})..."
+  code, body = api(:patch, "/v1/appStoreVersions/#{version['id']}/relationships/build",
+                   { data: { type: 'builds', id: newest['id'] } })
+  abort "✗ Could not attach build (HTTP #{code})\n    #{errors(body)}" unless ok?(code)
+  puts "✓ Build attached"
 end
-puts "Build attached: #{build['id']}"
 
 # --- 2. Collect the in-app purchases ---------------------------------------
 items = [{ appStoreVersion: version['id'] }]
