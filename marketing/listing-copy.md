@@ -254,7 +254,7 @@ Test instructions:
 
 Privacy:
 • Location: requested only when the user explicitly taps "Use my location" in the GPS Coordinates tool. Not transmitted.
-• Network: a single GET to api.frankfurter.app for European Central Bank currency rates, used by the Currency converter. Offline fallback is built in.
+• Network: a single GET to api.frankfurter.dev for European Central Bank currency rates, used by the Currency converter. Offline fallback is built in.
 • Tracking: No App Tracking Transparency prompt is required because we don't track users across apps or websites.
 
 If you need a demo subscription account or any other access, please email contact@safecodeg.com and we'll respond within one business day.

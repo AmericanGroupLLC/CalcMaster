@@ -40,7 +40,7 @@ Services (services/, monetization/*Service)  Supabase, HTTP FX, AdMob, RevenueCa
 - **Session (Supabase / GoTrue):** authentication + session refresh handled by the SDK;
   `AuthProvider` mirrors status into the UI. A **demo mode** lets users browse without an account.
 - **No app-owned database.** Currency rates come from the free Frankfurter/ECB API
-  (`api.frankfurter.app`), falling back to bundled `staticRates` when offline.
+  (`api.frankfurter.dev`), falling back to bundled `staticRates` when offline.
 - **API gateway** (`services/api_client.dart`, `API_BASE_URL` dart-define) is used only for
   profile + AI chat, authorized with the current Supabase JWT as a bearer token.
 

@@ -67,10 +67,15 @@ class RatesResult {
   const RatesResult({required this.rates, required this.fetchedAt, required this.live});
 }
 
+// Frankfurter moved to api.frankfurter.dev/v1; the old api.frankfurter.app host
+// only 301s here now, so call the current one directly rather than relying on
+// the redirect surviving.
+const String kRatesEndpoint = 'https://api.frankfurter.dev/v1/latest?from=USD';
+
 Future<RatesResult> fetchLatestRates() async {
   try {
     final res = await http
-        .get(Uri.parse('https://api.frankfurter.app/latest?from=USD'))
+        .get(Uri.parse(kRatesEndpoint))
         .timeout(const Duration(seconds: 8));
     if (res.statusCode != 200) throw Exception('Status ${res.statusCode}');
     final json = jsonDecode(res.body) as Map<String, dynamic>;
