@@ -18,6 +18,16 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
 ### Security
 -
 
+## [4.0.2] - August 18, 2026
+
+### Added
+- Tappable Terms of Use and privacy policy links on the paywall, localized in
+  all 12 locales (App Store Guideline 3.1.2).
+
+### Changed
+- Version bumped to 4.0.2 (build 5) for a fresh App Store submission after the
+  Guideline 2.1 information request on 4.0.1 (4).
+
 ## [0.1.0] - May 26, 2026
 
 ### Added
