@@ -604,6 +604,12 @@ abstract class AppLocalizations {
   /// **'By continuing you agree to our Terms and Privacy Policy.'**
   String get paywallTermsFooter;
 
+  /// No description provided for @paywallTermsOfUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Use'**
+  String get paywallTermsOfUse;
+
   /// No description provided for @paywallSubscriptionsDisabled.
   ///
   /// In en, this message translates to:

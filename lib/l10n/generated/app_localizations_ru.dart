@@ -261,6 +261,9 @@ class AppLocalizationsRu extends AppLocalizations {
       'Продолжая, вы соглашаетесь с нашими Условиями и Политикой конфиденциальности.';
 
   @override
+  String get paywallTermsOfUse => 'Условия использования';
+
+  @override
   String get paywallSubscriptionsDisabled =>
       'Подписки ещё не включены в этой сборке.';
 

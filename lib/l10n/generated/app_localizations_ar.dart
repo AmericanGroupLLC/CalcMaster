@@ -258,6 +258,9 @@ class AppLocalizationsAr extends AppLocalizations {
       'بالمتابعة، فأنت توافق على شروطنا وسياسة الخصوصية.';
 
   @override
+  String get paywallTermsOfUse => 'شروط الاستخدام';
+
+  @override
   String get paywallSubscriptionsDisabled =>
       'الاشتراكات غير مفعّلة في هذا الإصدار.';
 

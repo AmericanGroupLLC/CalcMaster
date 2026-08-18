@@ -261,6 +261,9 @@ class AppLocalizationsDe extends AppLocalizations {
       'Mit Fortfahren akzeptierst du unsere AGB und Datenschutzbestimmungen.';
 
   @override
+  String get paywallTermsOfUse => 'Nutzungsbedingungen';
+
+  @override
   String get paywallSubscriptionsDisabled =>
       'Abos sind in dieser Version noch nicht aktiviert.';
 

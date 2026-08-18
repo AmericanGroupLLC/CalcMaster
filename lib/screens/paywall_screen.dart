@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../l10n/generated/app_localizations.dart';
 import '../monetization/monetization_config.dart';
@@ -150,8 +151,56 @@ class _PaywallScreenState extends State<PaywallScreen> {
                   style: const TextStyle(color: AppColors.textDim, fontSize: 11),
                 ),
               ),
+              // Guideline 3.1.2 requires the Terms of Use and privacy policy to
+              // be reachable from the paywall itself, not just from Settings.
+              Center(
+                child: Wrap(
+                  alignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    _LegalLink(
+                      label: loc.paywallTermsOfUse,
+                      url: MonetizationConfig.termsOfServiceUrl,
+                    ),
+                    const Text('·',
+                        style: TextStyle(color: AppColors.textDim, fontSize: 11)),
+                    _LegalLink(
+                      label: loc.settingsPrivacyPolicy,
+                      url: MonetizationConfig.privacyPolicyUrl,
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LegalLink extends StatelessWidget {
+  final String label;
+  final String url;
+  const _LegalLink({required this.label, required this.url});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        minimumSize: Size.zero,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+      onPressed: () => launchUrl(Uri.parse(url),
+          mode: LaunchMode.externalApplication),
+      child: Text(
+        label,
+        style: const TextStyle(
+          color: AppColors.textMuted,
+          fontSize: 11,
+          decoration: TextDecoration.underline,
+          decorationColor: AppColors.textMuted,
         ),
       ),
     );

@@ -259,6 +259,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'By continuing you agree to our Terms and Privacy Policy.';
 
   @override
+  String get paywallTermsOfUse => 'Terms of Use';
+
+  @override
   String get paywallSubscriptionsDisabled =>
       'Subscriptions are not yet enabled in this build.';
 

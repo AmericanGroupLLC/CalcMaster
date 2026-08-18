@@ -255,6 +255,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get paywallTermsFooter => '继续即表示您同意我们的条款和隐私政策。';
 
   @override
+  String get paywallTermsOfUse => '使用条款';
+
+  @override
   String get paywallSubscriptionsDisabled => '此版本尚未启用订阅。';
 
   @override

@@ -260,6 +260,9 @@ class AppLocalizationsEs extends AppLocalizations {
       'Al continuar aceptas nuestros Términos y Política de privacidad.';
 
   @override
+  String get paywallTermsOfUse => 'Términos de uso';
+
+  @override
   String get paywallSubscriptionsDisabled =>
       'Las suscripciones aún no están habilitadas en esta versión.';
 

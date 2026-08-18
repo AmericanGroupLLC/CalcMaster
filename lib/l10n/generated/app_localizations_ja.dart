@@ -255,6 +255,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get paywallTermsFooter => '続行することで、利用規約とプライバシーポリシーに同意したものとみなされます。';
 
   @override
+  String get paywallTermsOfUse => '利用規約';
+
+  @override
   String get paywallSubscriptionsDisabled => 'このビルドではサブスクリプションがまだ有効になっていません。';
 
   @override

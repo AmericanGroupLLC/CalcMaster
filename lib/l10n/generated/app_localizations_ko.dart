@@ -255,6 +255,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get paywallTermsFooter => '계속하면 약관 및 개인정보 처리방침에 동의하는 것입니다.';
 
   @override
+  String get paywallTermsOfUse => '이용약관';
+
+  @override
   String get paywallSubscriptionsDisabled => '이 빌드에서는 구독이 아직 활성화되지 않았습니다.';
 
   @override

@@ -260,6 +260,9 @@ class AppLocalizationsHi extends AppLocalizations {
       'जारी रखकर आप हमारी शर्तों और गोपनीयता नीति से सहमत हैं।';
 
   @override
+  String get paywallTermsOfUse => 'उपयोग की शर्तें';
+
+  @override
   String get paywallSubscriptionsDisabled =>
       'इस संस्करण में सदस्यताएँ अभी सक्षम नहीं हैं।';
 
