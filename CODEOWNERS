@@ -5,7 +5,6 @@
 *.swift @AmericanGroupLLC
 *.kt @AmericanGroupLLC
 *.dart @AmericanGroupLLC
-*.ts *.tsx @AmericanGroupLLC
 
 # Docs
 docs/** @AmericanGroupLLC

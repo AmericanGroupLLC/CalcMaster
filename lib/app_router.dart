@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'screens/about_screen.dart';
+import 'screens/diagnostics_screen.dart';
 import 'screens/ai/ai_chat_screen.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/calculate/calculate_home.dart';
@@ -118,6 +119,7 @@ final appRouter = GoRouter(
     GoRoute(path: '/paywall', builder: (_, __) => const PaywallScreen()),
     GoRoute(path: '/privacy', builder: (_, __) => const PrivacyPolicyScreen()),
     GoRoute(path: '/about', builder: (_, __) => const AboutScreen()),
+    GoRoute(path: '/diagnostics', builder: (_, __) => const DiagnosticsScreen()),
     GoRoute(path: '/login', builder: (_, __) => const LoginScreen()),
     GoRoute(path: '/ai-chat', builder: (_, __) => const AiChatScreen()),
   ],

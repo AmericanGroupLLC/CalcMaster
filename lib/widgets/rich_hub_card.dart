@@ -29,72 +29,73 @@ class RichHubCard extends StatelessWidget {
       onTap: onTap,
       padding: const EdgeInsets.fromLTRB(Spacing.md, Spacing.md, Spacing.md, Spacing.md),
       glowRim: false,
-      child: Stack(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Left accent stripe with rim glow
-          Positioned(
-            left: -Spacing.md + 2,
-            top: 4,
-            bottom: 4,
-            child: Container(
-              width: 3,
-              decoration: BoxDecoration(
-                color: accent,
-                borderRadius: BorderRadius.circular(2),
-                boxShadow: [
-                  BoxShadow(
-                    color: accent.withValues(alpha: 0.6),
-                    blurRadius: 8,
-                    spreadRadius: -1,
-                  ),
-                ],
-              ),
+          // The accent stripe used to be Positioned at left:-10 — outside the
+          // card's clip, so it never rendered. It is now a real element in the
+          // layout, which is also what makes each category readable at a glance.
+          Container(
+            width: 3,
+            height: 40,
+            margin: const EdgeInsets.only(right: Spacing.md, top: 2),
+            decoration: BoxDecoration(
+              color: accent,
+              borderRadius: BorderRadius.circular(2),
+              boxShadow: [
+                BoxShadow(
+                  color: accent.withValues(alpha: 0.55),
+                  blurRadius: 8,
+                  spreadRadius: -1,
+                ),
+              ],
             ),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: accent.withValues(alpha: 0.18),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: accent.withValues(alpha: 0.5)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: accent.withValues(alpha: 0.2),
-                      blurRadius: 10,
-                      spreadRadius: -2,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: accent.withValues(alpha: 0.20),
+                    borderRadius: BorderRadius.circular(Radii.cardThumb - 6),
+                    border: Border.all(color: accent.withValues(alpha: 0.55)),
+                  ),
+                  child: Center(
+                    child: SvgPicture.asset(
+                      svgPath,
+                      width: 22,
+                      height: 22,
+                      colorFilter: ColorFilter.mode(accent, BlendMode.srcIn),
                     ),
-                  ],
-                ),
-                child: Center(
-                  child: SvgPicture.asset(
-                    svgPath,
-                    width: 18,
-                    height: 18,
-                    colorFilter: ColorFilter.mode(accent, BlendMode.srcIn),
                   ),
                 ),
-              ),
-              const SizedBox(height: Spacing.sm),
-              Text(
-                title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(color: AppColors.text, fontSize: 15, fontWeight: FontWeight.w700),
-              ),
-              const SizedBox(height: 2),
-              Flexible(
-                child: Text(
-                  subtitle,
-                  maxLines: 2,
+                const SizedBox(height: Spacing.sm),
+                Text(
+                  title,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(color: AppColors.textMuted, fontSize: 11),
+                  style: const TextStyle(
+                    color: AppColors.text,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: -0.2,
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 2),
+                Flexible(
+                  child: Text(
+                    subtitle,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                        color: AppColors.textMuted, fontSize: 12, height: 1.25),
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),

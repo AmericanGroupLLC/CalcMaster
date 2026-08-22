@@ -180,6 +180,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get toolAspectRatio => '宽高比';
 
   @override
+  String get toolCalendar => 'Calendar';
+
+  @override
   String get settingsTitle => '设置';
 
   @override

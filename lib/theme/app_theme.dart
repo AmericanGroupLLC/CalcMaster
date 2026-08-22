@@ -19,12 +19,85 @@ ThemeData buildAppTheme() {
     colorScheme: base,
     scaffoldBackgroundColor: AppColors.bg,
     fontFamily: 'Inter',
+    splashFactory: InkSparkle.splashFactory,
+
+    // ── Component themes ───────────────────────────────────────────────
+    // Previously unset, so buttons, inputs and sheets fell back to Material
+    // defaults that ignored the design tokens — inconsistent radii and the
+    // wrong greys next to the app's own surfaces.
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(
+        backgroundColor: AppColors.accentPrimary,
+        foregroundColor: Colors.white,
+        minimumSize: const Size(0, 48), // 48dp tap target
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.xl),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Radii.button)),
+        textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+      ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        foregroundColor: AppColors.text,
+        minimumSize: const Size(0, 48),
+        side: const BorderSide(color: AppColors.borderStrong),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Radii.button)),
+        textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: AppColors.accentText,
+        minimumSize: const Size(0, 48),
+        textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+      ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: AppColors.surfaceCard,
+      contentPadding: const EdgeInsets.symmetric(
+          horizontal: Spacing.lg, vertical: Spacing.md),
+      hintStyle: const TextStyle(color: AppColors.textDim),
+      labelStyle: const TextStyle(color: AppColors.textMuted),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(Radii.input),
+        borderSide: const BorderSide(color: AppColors.border),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(Radii.input),
+        borderSide: const BorderSide(color: AppColors.border),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(Radii.input),
+        borderSide: const BorderSide(color: AppColors.accentText, width: 1.5),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(Radii.input),
+        borderSide: const BorderSide(color: AppColors.danger),
+      ),
+    ),
+    snackBarTheme: SnackBarThemeData(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: AppColors.surfaceElevated,
+      contentTextStyle: const TextStyle(color: AppColors.text, fontSize: 14),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Radii.button)),
+    ),
+    bottomSheetTheme: const BottomSheetThemeData(
+      backgroundColor: AppColors.surface,
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+    ),
+    dividerTheme: const DividerThemeData(color: AppColors.border, thickness: 1),
+    iconTheme: const IconThemeData(color: AppColors.text),
+
     textTheme: const TextTheme(
       displayLarge: TextStyle(
-        fontSize: 32,
-        fontWeight: FontWeight.w700,
+        fontSize: 34,
+        fontWeight: FontWeight.w800,
         color: AppColors.text,
-        letterSpacing: -0.5,
+        letterSpacing: -0.8,
+        height: 1.1,
       ),
       headlineLarge: TextStyle(
         fontSize: 28,

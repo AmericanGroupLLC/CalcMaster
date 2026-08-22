@@ -29,7 +29,22 @@ class ConvertHome extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(loc.appTitle, style: Theme.of(context).textTheme.displayLarge),
+                        // The brand name shares this row with the region pill
+                        // and the settings button, so its available width is
+                        // narrow. Scale it down to fit rather than let it wrap
+                        // mid-word ("CalcMaste / r") — which is what happened
+                        // with a wide font, a long locale string, or an
+                        // enlarged system font size.
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            loc.appTitle,
+                            maxLines: 1,
+                            softWrap: false,
+                            style: Theme.of(context).textTheme.displayLarge,
+                          ),
+                        ),
                         const SizedBox(height: 2),
                         Text(
                           loc.appTagline,
@@ -69,9 +84,9 @@ class ConvertHome extends StatelessWidget {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: categories.length,
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                   maxCrossAxisExtent: 240,
-                  childAspectRatio: 1.4,
+                  childAspectRatio: hubCardAspectRatio(context, 1.4),
                   crossAxisSpacing: Spacing.md,
                   mainAxisSpacing: Spacing.md,
                 ),

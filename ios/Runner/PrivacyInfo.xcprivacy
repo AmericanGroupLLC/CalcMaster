@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- App Store privacy manifest for the CalcMaster app target.
+	     Bundled SDKs (shared_preferences, geolocator, in_app_purchase,
+	     google_mobile_ads, …) ship their own PrivacyInfo.xcprivacy files; this
+	     manifest covers only the app target itself.
+
+	     NOTE: this file is NOT the App Store Connect privacy questionnaire.
+	     The questionnaire must still declare the email address collected by the
+	     optional Supabase sign-in and the advertising data collected by AdMob. -->
+
+	<!-- true: the app requests App Tracking Transparency authorization and
+	     bundles AdMob for advertising. -->
+	<key>NSPrivacyTracking</key>
+	<true/>
+
+	<!-- Empty: CalcMaster operates no tracking domains of its own. AdMob's SDK
+	     declares its own domains in its bundled manifest, and first-party
+	     analytics forwarding is disabled (MonetizationConfig.analyticsEnabled). -->
+	<key>NSPrivacyTrackingDomains</key>
+	<array/>
+
+	<!-- Empty: the app target itself collects no data. Optional sign-in sends an
+	     email address to Supabase and AdMob collects advertising identifiers —
+	     both are declared by their SDKs and in App Store Connect. -->
+	<key>NSPrivacyCollectedDataTypes</key>
+	<array/>
+
+	<key>NSPrivacyAccessedAPITypes</key>
+	<array>
+		<dict>
+			<!-- Region choice, notes, guest-mode flag and the Pro entitlement are
+			     stored via shared_preferences (NSUserDefaults). 1C8F.1 = access
+			     limited to data the app itself wrote. -->
+			<key>NSPrivacyAccessedAPIType</key>
+			<string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+			<key>NSPrivacyAccessedAPITypeReasons</key>
+			<array>
+				<string>1C8F.1</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>

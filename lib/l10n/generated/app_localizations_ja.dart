@@ -180,6 +180,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get toolAspectRatio => 'アスペクト比';
 
   @override
+  String get toolCalendar => 'Calendar';
+
+  @override
   String get settingsTitle => '設定';
 
   @override

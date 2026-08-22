@@ -98,6 +98,48 @@ class ApiClient {
     }
   }
 
+  // ─── Store receipt verification ───
+
+  /// Validate a store receipt server-side and report whether the entitlement
+  /// is genuinely active.
+  ///
+  /// [path] is the gateway route configured via
+  /// `MonetizationConfig.receiptVerificationPath`. The endpoint must accept
+  /// `{productId, receipt, source}` and return a JSON object whose `active`
+  /// field is `true` for a valid entitlement.
+  ///
+  /// Fails closed: a network error, a non-2xx response, or any body that does
+  /// not explicitly say `active: true` returns `false`, so a verification
+  /// failure can never grant a paid entitlement.
+  ///
+  /// Example:
+  /// ```dart
+  /// final ok = await ApiClient.instance.verifyReceipt(
+  ///   path: MonetizationConfig.receiptVerificationPath,
+  ///   productId: 'calcmaster_pro_annual',
+  ///   receipt: purchase.verificationData.serverVerificationData,
+  ///   source: purchase.verificationData.source,
+  /// );
+  /// ```
+  Future<bool> verifyReceipt({
+    required String path,
+    required String productId,
+    required String receipt,
+    required String source,
+  }) async {
+    if (path.isEmpty) return false;
+    try {
+      final data = await _post(path, {
+        'productId': productId,
+        'receipt': receipt,
+        'source': source,
+      });
+      return data is Map && data['active'] == true;
+    } catch (_) {
+      return false;
+    }
+  }
+
   // ─── Analytics ───
 
   Future<void> trackEvent(String event, {Map<String, dynamic>? properties}) {

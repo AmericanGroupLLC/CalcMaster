@@ -85,15 +85,14 @@ Master-Cal/
 │   ├── gen_icon.dart                     Generate app icon from CalcMaster logo
 │   ├── gen_feature_graphic.dart          Generate Play Store 1024×500
 │   ├── capture_marketing_shots.sh        Drive simctl + adb to capture all screens
-│   └── release_all.sh                    Build APK + AAB + IPA + Web in one command
+│   └── release_all.sh                    Build APK + AAB + IPA in one command
 ├── docs/
 │   ├── MONETIZATION.md                   Strategy doc + integration map
 │   ├── RELEASE.md                        Submission step-by-step for both stores
 │   └── WORLDWIDE_LAUNCH_STATUS.md
-├── firebase.json                         Two-target hosting config
+├── firebase.json                         Marketing-site hosting config
 ├── pubspec.yaml                          Flutter package manifest
-├── l10n.yaml                             gen-l10n config
-└── legacy-react-native/                  Original RN attempt (archived, not built)
+└── l10n.yaml                             gen-l10n config
 ```
 
 ---
@@ -107,10 +106,13 @@ Replace before submitting to App Store / Play Store / public web hosting.
 
 | What | Current dummy value | Where to get the real one |
 |---|---|---|
-| `admobIosBanner` / `admobAndroidBanner` | Google's TEST IDs (`ca-app-pub-3940256099942544/...`) | AdMob console → Apps → CalcMaster → Ad units |
-| `admobIosInterstitial` / `admobAndroidInterstitial` | Google's TEST IDs | Same as above |
-| `admobIosNative` / `admobAndroidNative` | Google's TEST IDs | Same as above |
-| `revenueCatIosKey` / `revenueCatAndroidKey` | `appl_DUMMY_REPLACE_BEFORE_LAUNCH` / `goog_DUMMY_...` | app.revenuecat.com → Apps → Public API key |
+| **All** `admobIos*` unit + app IDs | ⛔ Google's TEST IDs (`ca-app-pub-3940256099942544/...`) | AdMob → Apps → CalcMaster **iOS** (under `pub-8528784688453695`) → Ad units |
+| **All** `admobAndroid*` unit + app IDs | ⛔ belong to a **different publisher** (`ca-app-pub-1804742004018995/...`) — would earn into that account | AdMob → Apps → CalcMaster **Android** (under `pub-8528784688453695`) → Ad units |
+| `GADApplicationIdentifier` in `ios/Runner/Info.plist` | ⛔ Google's TEST app ID | AdMob → Apps → CalcMaster iOS → App ID (`~` form) |
+| `APPLICATION_ID` in `android/app/src/main/AndroidManifest.xml` | ⛔ other publisher's app ID | AdMob → Apps → CalcMaster Android → App ID (`~` form) |
+| `marketing/site/app-ads.txt` | ✅ declares `pub-8528784688453695` | Confirm it matches the line AdMob shows, and deploy it to `https://safecodeg.com/app-ads.txt` |
+| `revenueCatIosKey` / `revenueCatAndroidKey` | **unused** — purchases run through `in_app_purchase`, not RevenueCat | n/a (leave as-is) |
+| `RECEIPT_VERIFICATION_PATH` dart-define | empty → purchases **fail closed** and never grant Pro | Your backend's receipt-validation route |
 | `productMonthly` / `productAnnual` / `productLifetime` | `calcmaster_pro_monthly` / `_annual` / `_lifetime` | App Store Connect IAP + Play Console subscriptions |
 | `priceMonthly` / `priceAnnual` / `priceLifetime` | `$2.99 / month` etc. | Match your store pricing |
 | `firebaseProjectId` / `firebaseSenderId` | `calcmaster-DUMMY-12345` / `0123456789` | console.firebase.google.com → Project Settings |
@@ -159,23 +161,31 @@ flutter build ipa --release
 
 ### Firebase Hosting
 
-`firebase.json` defines two hosting targets (`marketing` + `webapp`). Before deploy:
+`firebase.json` defines one hosting target, `marketing` (the Privacy Policy /
+Terms / Support pages both app stores require). Before deploy:
 ```bash
 npm install -g firebase-tools
 firebase login
 firebase init hosting:targets       # Pick your Firebase project
-firebase deploy --only hosting:marketing,hosting:webapp
+firebase deploy --only hosting:marketing
 ```
 
 ### Backend
 
-**There is NO custom backend.** All "server" interactions are:
-- Currency rates: `api.frankfurter.app` (free public ECB API, no key needed)
-- Subscriptions: Apple StoreKit + Google Play Billing via RevenueCat (managed)
-- Analytics: Firebase Analytics (managed)
-- Push notifications: Firebase Cloud Messaging (managed)
+**No backend source lives in this repository** — the NestJS service that used to
+sit in `backend/` was removed (see [TRIAGE.md](TRIAGE.md)). The app still talks to
+these services at runtime:
 
-If you ever need a custom backend (e.g., cross-device notes sync), the recommended path is Firebase Functions or Cloudflare Workers — both keep marginal cost per active user under $0.001.
+- **API gateway** — `api.safecodeg.com` via `lib/services/api_client.dart`
+  (AI chat, profile, subscriptions). Deployed and maintained elsewhere; the app
+  degrades gracefully when it is unreachable.
+- **Auth** — Supabase (`lib/services/supabase_config.dart`). Optional: the app is
+  guest-first and never forces sign-in.
+- **Currency rates** — `api.frankfurter.app` (free public ECB API, no key), with
+  static fallback rates baked in for offline use.
+- **Subscriptions** — Apple StoreKit + Google Play Billing directly via the
+  `in_app_purchase` plugin. RevenueCat is **not** used.
+- **Analytics / push** — Firebase, both currently disabled by feature flag.
 
 ---
 
@@ -187,8 +197,7 @@ If you ever need a custom backend (e.g., cross-device notes sync), the recommend
 | iOS Device (signed) | `flutter build ipa --release` | `build/ios/ipa/calcmaster.ipa` | ~20 MB |
 | iOS Device (unsigned, internal QA) | `flutter build ios --release --no-codesign` | `build/ios/iphoneos/Runner.app` | 18 MB |
 | Android APK (release) | `flutter build apk --release` | `build/app/outputs/flutter-apk/app-release.apk` | 53 MB |
-| Android App Bundle (Play Store) | `flutter build appbundle --release` | `build/app/outputs/bundle/release/app-release.aab` | 43 MB |
-| Flutter Web | `flutter build web --release` | `build/web/` | 36 MB |
+| Android App Bundle (Play Store) | `flutter build appbundle --release` | `build/app/outputs/bundle/release/app-release.aab` | 63 MB |
 
 `./tools/release_all.sh` runs all of these and stages results in `dist/`.
 

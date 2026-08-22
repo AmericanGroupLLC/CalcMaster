@@ -1,48 +1,50 @@
-# Master-Cal — Triage
+# CalcMaster — Triage
 
-## Status: 🟡 Suspicious (not as broken as initially feared)
+## Status: ✅ Resolved — repository is Flutter (iOS + Android) only
 
-## Problems found
+## What was here
 
-### 1. On-disk build artifacts (NOT tracked in git)
-`ios/Pods/`, `ios/build/`, `build/` exist on disk but are correctly gitignored — `git ls-files build/` returns 0 tracked files. **No git surgery needed**, just clean working tree.
+The repo carried five parallel implementations and a server alongside the
+shipping Flutter app, which inflated the dependency surface and made it
+ambiguous what actually gets released.
 
-### 2. Legacy code coexisting
-`legacy-react-native/` directory contains old RN implementation alongside the current Flutter app. This isn't broken per se, but increases cognitive load and dependency surface.
+## Resolution
 
-## Fix
+Removed with `git rm` (recoverable from history), by explicit decision:
 
-```bash
-cd /Users/spatchava/agl/Master-Cal
+| Removed | What it was |
+|---|---|
+| `legacy-react-native/` | Original React Native implementation |
+| `mobile-rn/` | Second, Expo-based React Native client |
+| `extension/` | Browser extension (manifest, popup, content scripts) |
+| `desktop/` | Electron wrapper |
+| `backend/` | NestJS API server + Dockerfile |
+| `web/` | Flutter web platform target |
+| `src/`, `tests_suite/` | Stray TypeScript file + TS/Jest suite for the above |
+| `package.json`, `package-lock.json`, `pnpm-lock.yaml`, `tsconfig.json`, `jest.config.js` | Node/TS tooling |
+| `app.json`, `eas.json` | Expo / EAS build config |
+| `docker-compose.yml`, `.env.example` | Backend runtime config |
 
-# 1. Clean disk artifacts (no git changes)
-flutter clean
-rm -rf ios/Pods ios/build build/ .dart_tool
+**Note:** `backend/` was the API the Flutter client calls at runtime
+(`ApiClient` → `api.safecodeg.com`: `/ai/chat`, `/users/me`,
+`/subscriptions/active`). It was removed on the understanding that it is
+deployed and maintained from a different repository. The Flutter app still
+depends on that service being reachable — removing the code did not remove the
+dependency.
 
-# 2. Reinstall
-flutter pub get
-cd ios && pod install --repo-update && cd ..
+## Kept deliberately
 
-# 3. Smoke build
-flutter build ios --debug --no-codesign
-flutter build apk --debug
+- `fastlane/` + `Gemfile` — iOS/Android deployment lanes.
+- `marketing/` + `firebase.json` (`marketing` target) + `.github/workflows/pages.yml` —
+  publishes the Privacy Policy / Terms / Support pages. **Both app stores reject
+  submissions without a reachable Privacy Policy URL**, so this is load-bearing.
+- `kIsWeb` guards in `lib/` — harmless defensive code; stripping them would be a
+  wide, risky refactor for no runtime benefit.
 
-# 4. Decide what to do with legacy-react-native/
-# Option A: archive it (move to a separate branch)
-git checkout -b archive/legacy-rn
-git rm -r legacy-react-native
-git commit -m "chore: archive legacy RN implementation"
-git checkout master  # legacy-rn still exists on archive branch
-# Option B: delete it
-rm -rf legacy-react-native
-```
+## Follow-ups not done here
 
-## Templates applied
-- 14 new files
-- 4 `.tmpl.new`
-
-## Next steps
-1. Clean + smoke build
-2. Decide on `legacy-react-native/`
-3. Run `bash tool/coverage.sh` and bring coverage to ≥90/85
-4. Replace placeholders in template files
+- Template leftovers remain at the repo root: `.gitignore.tmpl.new`,
+  `README.md.tmpl.new`, `analysis_options.yaml.tmpl.new`,
+  `pubspec.dev_dependencies.yaml`.
+- Release blockers (Android signing key, real iOS AdMob IDs) are tracked in
+  [PRODUCTION.md](PRODUCTION.md), not here.

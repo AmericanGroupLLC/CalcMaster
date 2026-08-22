@@ -55,6 +55,21 @@ android {
             signingConfig = if (hasReleaseKey) {
                 signingConfigs.getByName("release")
             } else {
+                // Falling back to the debug keystore keeps CI (which has no
+                // secrets) building, but the resulting artifact is signed
+                // "CN=Android Debug" and Play Console will reject it. Say so
+                // loudly — this used to be silent, so a debug-signed bundle
+                // looked exactly like a shippable one.
+                logger.warn(
+                    "\n" +
+                    "**************************************************************\n" +
+                    "WARNING: release build is using the DEBUG signing key.\n" +
+                    "android/key.properties was not found, so this artifact is\n" +
+                    "signed 'CN=Android Debug' and CANNOT be uploaded to Google\n" +
+                    "Play. Create android/key.properties (storeFile, storePassword,\n" +
+                    "keyAlias, keyPassword) to produce an uploadable bundle.\n" +
+                    "**************************************************************\n"
+                )
                 signingConfigs.getByName("debug")
             }
             isMinifyEnabled = true

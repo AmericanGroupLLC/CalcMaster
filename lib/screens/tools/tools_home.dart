@@ -24,15 +24,15 @@ class ToolsHome extends StatelessWidget {
               PillBadge(label: loc.pillUtilityTools, color: accent),
               const SizedBox(height: Spacing.md),
               Text(loc.toolsHubHeading, style: Theme.of(context).textTheme.displayLarge),
-              const SizedBox(height: 4),
-              Text(loc.toolsHubSubheading,
-                  style: const TextStyle(color: AppColors.textMuted, fontSize: 14)),
+              // Subheading intentionally omitted: it enumerated the very cards
+              // rendered below, so it was pure duplication that also drifted out
+              // of sync (Tools listed 8 of 9 tools). The grid is the label.
               const SizedBox(height: Spacing.xl),
               GridView.extent(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 maxCrossAxisExtent: 240,
-                childAspectRatio: 1.6,
+                childAspectRatio: hubCardAspectRatio(context, 1.6),
                 crossAxisSpacing: Spacing.md,
                 mainAxisSpacing: Spacing.md,
                 children: [
@@ -44,7 +44,7 @@ class ToolsHome extends StatelessWidget {
                   RichHubCard(title: loc.toolAdcDac, subtitle: 'Analog ↔ Digital conversion', svgPath: 'assets/icons/adc_dac.svg', accent: accent, onTap: () => context.push('/tools/adc-dac')),
                   RichHubCard(title: loc.toolAge, subtitle: 'Exact age calculator', svgPath: 'assets/icons/age.svg', accent: accent, onTap: () => context.push('/tools/age')),
                   RichHubCard(title: loc.toolAspectRatio, subtitle: 'Screen & image ratios', svgPath: 'assets/icons/aspect_ratio.svg', accent: accent, onTap: () => context.push('/tools/aspect-ratio')),
-                  RichHubCard(title: 'Calendar', subtitle: 'Month view & date facts', svgPath: 'assets/icons/calendar.svg', accent: accent, onTap: () => context.push('/tools/calendar')),
+                  RichHubCard(title: loc.toolCalendar, subtitle: 'Month view & date facts', svgPath: 'assets/icons/calendar.svg', accent: accent, onTap: () => context.push('/tools/calendar')),
                 ],
               ),
             ],

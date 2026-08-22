@@ -13,14 +13,22 @@ class _Tok {
   _Tok(this.type, this.value);
 }
 
+/// Binary operator precedence. Unary minus is NOT here — it is a separate
+/// prefix operator (`_unaryMinus`) so that it binds looser than `^`
+/// (`-2^2 == -4`) while still applying to an exponent (`2^-3 == 0.125`).
 const Map<String, ({int prec, bool right})> _ops = {
   '+': (prec: 1, right: false),
   '-': (prec: 1, right: false),
   '*': (prec: 2, right: false),
   '/': (prec: 2, right: false),
   '%': (prec: 2, right: false),
-  '^': (prec: 3, right: true),
+  '^': (prec: 4, right: true),
 };
+
+/// Token value for prefix negation. Sits between `*` (2) and `^` (4) so that
+/// `-2^2` parses as `-(2^2)` and `-2*3` as `(-2)*3`.
+const String _unaryMinus = 'u-';
+const int _unaryMinusPrec = 3;
 
 double _apply(String op, double a, double b) {
   switch (op) {
@@ -76,8 +84,15 @@ double _fn(String name, double a) {
   }
 }
 
+/// Largest n whose factorial still fits in a double — 171! overflows to
+/// infinity, so looping beyond this only burns CPU without changing the answer.
+const int _maxFactorial = 170;
+
 double _factorial(double n) {
-  if (n < 0 || n != n.toInt()) return double.nan;
+  if (n.isNaN || n < 0 || n != n.truncateToDouble()) return double.nan;
+  // Bail out before the loop: without this, an input like 1e15 spins the
+  // (single-threaded) UI isolate for hours to produce the same Infinity.
+  if (n > _maxFactorial) return double.infinity;
   double f = 1;
   for (int k = 2; k <= n.toInt(); k++) {
     f *= k;
@@ -96,7 +111,14 @@ List<_Tok> _tokenize(String input) {
       while (j < src.length && RegExp(r'[0-9.]').hasMatch(src[j])) {
         j++;
       }
-      tokens.add(_Tok('num', double.parse(src.substring(i, j))));
+      final text = src.substring(i, j);
+      final value = double.tryParse(text);
+      if (value == null) {
+        // e.g. "1.2.3" — surface the library's own error type rather than
+        // letting a FormatException escape to callers that catch CalcError.
+        throw CalcError('Invalid number "$text"');
+      }
+      tokens.add(_Tok('num', value));
       i = j;
       continue;
     }
@@ -133,10 +155,20 @@ List<_Tok> _tokenize(String input) {
     }
     if (_ops.containsKey(c)) {
       final last = tokens.isEmpty ? null : tokens.last;
-      // Unary minus -> insert (-1)*
-      if (c == '-' && (last == null || (last.type != 'num' && last.type != 'rparen'))) {
-        tokens.add(_Tok('num', -1.0));
-        tokens.add(_Tok('op', '*'));
+      // A +/- is *prefix* (sign) rather than binary whenever it does not
+      // follow a value — i.e. at the start, or after another operator or '('.
+      // A postfix '!' yields a value, so "3!+1" is a binary '+'.
+      final followsValue = last != null &&
+          (last.type == 'num' || last.type == 'rparen' || (last.type == 'op' && last.value == '!'));
+      final isPrefix = !followsValue;
+      if (c == '-' && isPrefix) {
+        tokens.add(_Tok('uop', _unaryMinus));
+        i++;
+        continue;
+      }
+      if (c == '+' && isPrefix) {
+        // Unary plus is a no-op ("+5" == "5"); drop it rather than treating it
+        // as a binary '+' with a missing left operand.
         i++;
         continue;
       }
@@ -168,23 +200,28 @@ double evaluate(String input) {
         out.add(_Tok('num', _factorial(n)));
         continue;
       }
-      while (ops.isNotEmpty) {
+      final opCur = _ops[tok.value];
+      while (ops.isNotEmpty && opCur != null) {
         final top = ops.last;
         if (top.type == 'fn') {
           out.add(ops.removeLast());
           continue;
         }
-        if (top.type == 'op') {
-          final opTop = _ops[top.value];
-          final opCur = _ops[tok.value];
-          if (opTop == null || opCur == null) break;
-          if ((!opCur.right && opCur.prec <= opTop.prec) || (opCur.right && opCur.prec < opTop.prec)) {
-            out.add(ops.removeLast());
-            continue;
-          }
+        // A pending prefix negation participates in precedence just like a
+        // binary operator, so `-2*3` pops it but `2^-3` does not.
+        final int? topPrec =
+            top.type == 'uop' ? _unaryMinusPrec : (top.type == 'op' ? _ops[top.value]?.prec : null);
+        if (topPrec == null) break;
+        if ((!opCur.right && opCur.prec <= topPrec) || (opCur.right && opCur.prec < topPrec)) {
+          out.add(ops.removeLast());
+          continue;
         }
         break;
       }
+      ops.add(tok);
+    } else if (tok.type == 'uop') {
+      // Prefix operator: binds to the operand that follows, so it never pops
+      // anything already on the stack.
       ops.add(tok);
     } else if (tok.type == 'lparen') {
       ops.add(tok);
@@ -216,6 +253,9 @@ double evaluate(String input) {
       final b = stack.removeLast();
       final a = stack.removeLast();
       stack.add(_apply(tok.value as String, a, b));
+    } else if (tok.type == 'uop') {
+      if (stack.isEmpty) throw CalcError('Bad expr');
+      stack.add(-stack.removeLast());
     } else if (tok.type == 'fn') {
       if (stack.isEmpty) throw CalcError('Bad expr');
       final a = stack.removeLast();

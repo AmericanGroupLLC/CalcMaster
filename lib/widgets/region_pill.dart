@@ -15,36 +15,40 @@ class RegionPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final region = context.watch<RegionProvider>().region;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: Spacing.md, vertical: 8),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(Radii.pill),
-          border: Border.all(color: AppColors.border),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.location_on_outlined, size: 14, color: AppColors.text),
-            const SizedBox(width: 6),
-            Text(region.flag, style: const TextStyle(fontSize: 16)),
-            const SizedBox(width: 6),
-            Text(region.label,
-                style: const TextStyle(
-                    color: AppColors.text,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14)),
-            const SizedBox(width: 4),
-            const Text('·', style: TextStyle(color: AppColors.textMuted)),
-            const SizedBox(width: 4),
-            Text(region.symbol,
-                style: const TextStyle(
-                    color: AppColors.text,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14)),
-          ],
+    return Semantics(
+      button: true,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          // 8px of vertical padding left this at 41dp tall, under the 48dp
+          // minimum tap target (androidTapTargetGuideline). The pill keeps its
+          // slim look; only the touch area grows.
+          constraints: const BoxConstraints(minHeight: 48),
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(horizontal: Spacing.md, vertical: 8),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(Radii.pill),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.location_on_outlined, size: 14, color: AppColors.text),
+              const SizedBox(width: 6),
+              Text(region.flag, style: const TextStyle(fontSize: 16)),
+              const SizedBox(width: 6),
+              Text(region.label,
+                  style: const TextStyle(
+                      color: AppColors.text, fontWeight: FontWeight.w600, fontSize: 14)),
+              const SizedBox(width: 4),
+              const Text('·', style: TextStyle(color: AppColors.textMuted)),
+              const SizedBox(width: 4),
+              Text(region.symbol,
+                  style: const TextStyle(
+                      color: AppColors.text, fontWeight: FontWeight.w600, fontSize: 14)),
+            ],
+          ),
         ),
       ),
     );
@@ -81,9 +85,7 @@ class RegionPickerSheet extends StatelessWidget {
           ),
           Text(loc.regionPickerTitle,
               style: const TextStyle(
-                  color: AppColors.text,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700)),
+                  color: AppColors.text, fontSize: 18, fontWeight: FontWeight.w700)),
           const SizedBox(height: Spacing.md),
           const _DetectLocationButton(),
           const SizedBox(height: Spacing.sm),
@@ -114,13 +116,11 @@ class RegionPickerSheet extends StatelessWidget {
                                   fontWeight: FontWeight.w600,
                                   fontSize: 16)),
                           Text('${r.currency} · ${r.symbol}',
-                              style: const TextStyle(
-                                  color: AppColors.textMuted, fontSize: 13)),
+                              style: const TextStyle(color: AppColors.textMuted, fontSize: 13)),
                         ],
                       ),
                     ),
-                    if (r.id == current)
-                      const Icon(Icons.check, color: AppColors.success),
+                    if (r.id == current) const Icon(Icons.check, color: AppColors.success),
                   ],
                 ),
               ),
@@ -149,9 +149,7 @@ class _DetectLocationButton extends StatelessWidget {
             : () async {
                 final messenger = ScaffoldMessenger.of(context);
                 final navigator = Navigator.of(context);
-                final result = await context
-                    .read<RegionProvider>()
-                    .detectRegionFromLocation();
+                final result = await context.read<RegionProvider>().detectRegionFromLocation();
                 if (result == DetectResult.success) {
                   navigator.pop();
                 }
@@ -162,19 +160,16 @@ class _DetectLocationButton extends StatelessWidget {
                     DetectResult.success => 'Region set from your location',
                     DetectResult.permissionDenied =>
                       'Location permission denied — pick a region below',
-                    DetectResult.noMatch =>
-                      'No matching region for your location — pick one below',
-                    DetectResult.unavailable =>
-                      "Couldn't detect location — pick a region below",
+                    DetectResult.noMatch => 'No matching region for your location — pick one below',
+                    DetectResult.unavailable => "Couldn't detect location — pick a region below",
                   }),
                 ));
               },
         child: Container(
-          padding: const EdgeInsets.symmetric(
-              horizontal: Spacing.md, vertical: Spacing.md),
+          constraints: const BoxConstraints(minHeight: 48), // 48dp tap target
+          padding: const EdgeInsets.symmetric(horizontal: Spacing.md, vertical: Spacing.md),
           decoration: BoxDecoration(
-            border: Border.all(
-                color: AppColors.accentPrimary.withValues(alpha: 0.4)),
+            border: Border.all(color: AppColors.accentPrimary.withValues(alpha: 0.4)),
             borderRadius: BorderRadius.circular(Radii.button),
           ),
           child: Row(
@@ -183,19 +178,15 @@ class _DetectLocationButton extends StatelessWidget {
                 const SizedBox(
                   width: 18,
                   height: 18,
-                  child: CircularProgressIndicator(
-                      strokeWidth: 2, color: AppColors.accentPrimary),
+                  child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.accentPrimary),
                 )
               else
-                const Icon(Icons.my_location,
-                    size: 18, color: AppColors.accentPrimary),
+                const Icon(Icons.my_location, size: 18, color: AppColors.accentPrimary),
               const SizedBox(width: Spacing.md),
               Text(
                 detecting ? 'Detecting…' : 'Detect my location',
                 style: const TextStyle(
-                    color: AppColors.text,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 15),
+                    color: AppColors.text, fontWeight: FontWeight.w600, fontSize: 15),
               ),
             ],
           ),

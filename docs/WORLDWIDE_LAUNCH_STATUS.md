@@ -1,5 +1,12 @@
 # CalcMaster · Worldwide Launch Status
 
+> **Historical record.** This captures a point-in-time pass and is kept for
+> reference. Since it was written the repository became **Flutter, iOS +
+> Android only**: the Flutter web target and the `webapp` Firebase hosting
+> target were removed, so the web build steps and the `hosting:webapp` deploy
+> commands below no longer apply. Only the `marketing` hosting target remains.
+> See [TRIAGE.md](../TRIAGE.md) and [PRODUCTION.md](../PRODUCTION.md).
+
 ## What landed in this pass
 
 ### 1. Internationalization — 12 locales

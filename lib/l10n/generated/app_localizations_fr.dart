@@ -183,6 +183,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get toolAspectRatio => 'Format d\'image';
 
   @override
+  String get toolCalendar => 'Calendar';
+
+  @override
   String get settingsTitle => 'Paramètres';
 
   @override

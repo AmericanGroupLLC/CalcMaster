@@ -77,12 +77,9 @@ shasum -a 256 -c SHA256SUMS.txt
 5. Upload via Apple's Transporter app or `xcrun altool --upload-app`
 6. TestFlight first; Apple review typically 1–3 days
 
-### Web hosting
+### Marketing site hosting
 ```bash
-tar -xzf CalcMaster-v4.0.0-web.tar.gz
-firebase deploy --only hosting:webapp
-# or
-netlify deploy --dir=web --prod
+firebase deploy --only hosting:marketing
 ```
 
 ---
@@ -111,7 +108,6 @@ flutter test        →  35 / 35 pass
                        (units · calc · tax · swap · 5 tabs · 12 locales · RTL · paywall · monetization config · premium provider)
 flutter build apk --release        →  55 MB
 flutter build appbundle --release  →  47 MB
-flutter build web --release        →  Hermes WASM, 36 MB unpacked
 flutter build ios --release        →  30 MB (unsigned, pre-codesign)
 ```
 

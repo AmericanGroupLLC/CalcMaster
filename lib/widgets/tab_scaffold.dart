@@ -120,7 +120,9 @@ class _BottomNav extends StatelessWidget {
         // Translucent so the gradient bleeds through.
         backgroundColor: AppColors.surface.withValues(alpha: 0.92),
         // Accent the active tab so the current section reads at a glance.
-        selectedItemColor: AppColors.accentPrimary,
+        // accentText, not accentPrimary: these are 12px labels, and the brand
+        // fill only reaches 3.97:1 on this surface (below WCAG AA).
+        selectedItemColor: AppColors.accentText,
         unselectedItemColor: AppColors.textDim,
         selectedLabelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
         unselectedLabelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
@@ -162,11 +164,13 @@ class _SideRail extends StatelessWidget {
         selectedIndex: currentIndex,
         onDestinationSelected: onSelect,
         groupAlignment: -0.85,
+        // Indicator is a fill, so it keeps the brand purple; the icon and label
+        // drawn on top are foregrounds and use the AA-compliant accentText.
         indicatorColor: AppColors.accentPrimary.withValues(alpha: 0.18),
-        selectedIconTheme: const IconThemeData(color: AppColors.accentPrimary),
+        selectedIconTheme: const IconThemeData(color: AppColors.accentText),
         unselectedIconTheme: const IconThemeData(color: AppColors.textDim),
         selectedLabelTextStyle: const TextStyle(
-          color: AppColors.accentPrimary,
+          color: AppColors.accentText,
           fontWeight: FontWeight.w700,
           fontSize: 14,
         ),

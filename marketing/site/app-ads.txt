@@ -1,0 +1,18 @@
+# app-ads.txt — authorized digital sellers for CalcMaster
+# AMERICAN GROUP LLC
+#
+# Served from the root of the developer website declared in the Play Console
+# and App Store Connect listings, i.e. https://safecodeg.com/app-ads.txt
+# (this directory is the `marketing` Firebase Hosting target — see firebase.json).
+#
+# AdMob crawls this file to confirm that this publisher account is authorized to
+# sell CalcMaster's ad inventory. Until it is live and matching, inventory is
+# treated as unauthorized and demand — and therefore revenue — is reduced.
+#
+# VERIFY BEFORE RELYING ON IT: AdMob shows the exact line to paste at
+# AdMob → Apps → View all apps → app-ads.txt. Confirm the line below matches it
+# character for character, and confirm the developer website in BOTH store
+# listings points at this domain, or the file will never be found.
+#
+# Format: <ad system domain>, <publisher id>, <DIRECT|RESELLER>, <certification authority id>
+google.com, pub-8528784688453695, DIRECT, f08c47fec0942fa0

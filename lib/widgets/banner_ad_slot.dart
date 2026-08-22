@@ -37,7 +37,11 @@ class _BannerAdSlotState extends State<BannerAdSlot> {
     }
   }
 
-  void _loadAd() {
+  Future<void> _loadAd() async {
+    // Ask for iOS tracking consent before the first ad request so AdMob can
+    // serve personalised ads when the user allows it.
+    await AdService.instance.ensureTrackingConsent();
+    if (!mounted) return;
     final ad = AdService.instance.createBannerAd(
       onAdLoaded: (_) {
         if (mounted) setState(() => _loaded = true);

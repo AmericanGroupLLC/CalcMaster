@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../services/api_client.dart';
 import 'analytics_service.dart';
 import 'monetization_config.dart';
 
@@ -33,16 +34,26 @@ extension SubscriptionTierProductId on SubscriptionTier {
 /// no StoreKit products) the store either reports unavailable or returns no
 /// products, and both methods honestly return `false`.
 ///
-/// TODO(monetization): SERVER-SIDE RECEIPT VERIFICATION IS REQUIRED BEFORE
-/// RELEASE. The entitlement below is granted client-side directly from the
-/// store callback, which is spoofable. Before shipping, forward
-/// `PurchaseDetails.verificationData.serverVerificationData` to a trusted
-/// backend that validates the receipt with Apple / Google and returns the
-/// authoritative entitlement; grant Pro only on that server response.
+/// Receipt verification: a store callback can be forged on a compromised
+/// device, so an entitlement is only trustworthy once a server has validated
+/// the receipt with Apple / Google. This provider therefore **fails closed** —
+/// when [MonetizationConfig.receiptVerificationConfigured] is false, a
+/// completed purchase does NOT grant Pro and [lastError] explains why. Wiring a
+/// backend means setting `RECEIPT_VERIFICATION_PATH` and forwarding
+/// `PurchaseDetails.verificationData.serverVerificationData` to it.
 class PremiumProvider extends ChangeNotifier {
   static const _kIsPro = '@calcmaster/is_pro';
 
-  final InAppPurchase _iap = InAppPurchase.instance;
+  /// Resolved lazily: touching `InAppPurchase.instance` registers the platform
+  /// implementation, which immediately opens a Play Billing / StoreKit
+  /// connection. Doing that from a field initializer connected to the store
+  /// even when [MonetizationConfig.subscriptionsEnabled] is false, and threw an
+  /// unhandled PlatformException under `flutter test` (no platform channels).
+  /// Every caller below is already gated on `subscriptionsEnabled`, so this
+  /// stays untouched while subscriptions are off.
+  InAppPurchase? _iapInstance;
+  InAppPurchase get _iap => _iapInstance ??= InAppPurchase.instance;
+
   StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
   final Map<String, ProductDetails> _products = {};
 
@@ -216,17 +227,10 @@ class PremiumProvider extends ChangeNotifier {
         case PurchaseStatus.pending:
           break;
         case PurchaseStatus.purchased:
-          // TODO(monetization): verify purchase.verificationData server-side
-          // BEFORE granting (see class doc). Client grant is a pre-release stub.
-          _grantPro();
-          AnalyticsService.instance.logPurchaseCompleted(purchase.productID);
-          _completePurchase(true);
+          _grantVerified(purchase).then(_completePurchase);
           break;
         case PurchaseStatus.restored:
-          // TODO(monetization): verify server-side before granting (see above).
-          _grantPro();
-          AnalyticsService.instance.logPurchaseCompleted(purchase.productID);
-          _completeRestore(true);
+          _grantVerified(purchase).then(_completeRestore);
           break;
         case PurchaseStatus.error:
           _lastError = purchase.error?.message ?? 'The purchase failed.';
@@ -258,6 +262,39 @@ class PremiumProvider extends ChangeNotifier {
       _restoreCompleter!.complete(ok);
     }
     _restoreCompleter = null;
+  }
+
+  /// Grant Pro only if a trusted backend confirms the receipt. Returns whether
+  /// the entitlement was granted.
+  ///
+  /// With no verification endpoint configured this always returns `false`: the
+  /// alternative — trusting the client-side store callback — hands Pro to
+  /// anyone who can forge one.
+  Future<bool> _grantVerified(PurchaseDetails purchase) async {
+    const unverified = 'This purchase could not be verified. '
+        'If you were charged, contact support and it will be restored.';
+
+    if (!MonetizationConfig.receiptVerificationConfigured) {
+      _lastError = unverified;
+      notifyListeners();
+      return false;
+    }
+
+    final verified = await ApiClient.instance.verifyReceipt(
+      path: MonetizationConfig.receiptVerificationPath,
+      productId: purchase.productID,
+      receipt: purchase.verificationData.serverVerificationData,
+      source: purchase.verificationData.source,
+    );
+    if (!verified) {
+      _lastError = unverified;
+      notifyListeners();
+      return false;
+    }
+
+    await _grantPro();
+    AnalyticsService.instance.logPurchaseCompleted(purchase.productID);
+    return true;
   }
 
   Future<void> _grantPro() async {

@@ -1,17 +1,16 @@
-import 'dart:ui';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../theme/tokens.dart';
 
-/// Frosted-glass surface with translucent fill, 1 dp inner border, and an
-/// optional accent rim glow. Replaces solid `AppColors.surface` cards across
-/// the app for the futuristic AI look.
+/// Raised card surface: a solid fill carrying a faint accent wash, a hairline
+/// border, and a real drop shadow.
 ///
-/// On web we skip the BackdropFilter (CanvasKit blur is expensive) and fall
-/// back to a slightly more opaque translucent fill that approximates the look.
+/// Previously this painted white at 6% alpha behind a `BackdropFilter`. Over a
+/// near-black background that produced almost no separation — cards read as
+/// barely-there rectangles — while a full-screen blur per card is one of the
+/// most expensive things Flutter can draw. Solid fill + shadow reads as depth
+/// and costs a fraction as much, which matters on low-end devices.
 class GlassCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry padding;
@@ -33,53 +32,65 @@ class GlassCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accentColor = accent ?? AppColors.accentPrimary;
-    final fillAlpha = kIsWeb ? 0.12 : 0.06;
-    final inner = Container(
-      padding: padding,
+    final radius = BorderRadius.circular(borderRadius);
+
+    final surface = DecoratedBox(
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: fillAlpha),
-        borderRadius: BorderRadius.circular(borderRadius),
+        // A faint accent wash from the top-left, where the icon sits, so each
+        // category is recognisable at a glance instead of every card being an
+        // identical grey slab.
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color.alphaBlend(accentColor.withValues(alpha: 0.10), AppColors.surfaceCard),
+            AppColors.surfaceCard,
+          ],
+          stops: const [0.0, 0.65],
+        ),
+        borderRadius: radius,
         border: Border.all(
           color: glowRim
-              ? accentColor.withValues(alpha: 0.5)
-              : Colors.white.withValues(alpha: 0.08),
+              ? accentColor.withValues(alpha: 0.55)
+              : AppColors.border,
           width: glowRim ? 1.5 : 1,
         ),
         boxShadow: glowRim
             ? [
+                ...AppColors.shadowElevated,
                 BoxShadow(
-                  color: accentColor.withValues(alpha: 0.18),
+                  color: accentColor.withValues(alpha: 0.22),
                   blurRadius: 24,
                   spreadRadius: -4,
                 ),
               ]
-            : null,
+            : AppColors.shadowElevated,
       ),
-      child: child,
+      child: Padding(padding: padding, child: child),
     );
 
-    final blurred = kIsWeb
-        ? inner
-        : ClipRRect(
-            borderRadius: BorderRadius.circular(borderRadius),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-              child: inner,
+    if (onTap == null) return surface;
+    // Material sits *inside* the decoration so the ink ripple is clipped to the
+    // rounded corners without a ClipRRect around the shadow (which would clip
+    // the shadow itself away).
+    return Stack(
+      children: [
+        surface,
+        Positioned.fill(
+          child: Material(
+            color: Colors.transparent,
+            borderRadius: radius,
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              borderRadius: radius,
+              onTap: () {
+                HapticFeedback.selectionClick();
+                onTap!();
+              },
             ),
-          );
-
-    if (onTap == null) return blurred;
-    return Material(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(borderRadius),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(borderRadius),
-        onTap: () {
-          HapticFeedback.selectionClick();
-          onTap!();
-        },
-        child: blurred,
-      ),
+          ),
+        ),
+      ],
     );
   }
 }

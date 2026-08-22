@@ -46,19 +46,32 @@ class MonetizationConfig {
   //  ADMOB · in-app advertising
   // ───────────────────────────────────────────────────────────────────
   // REPLACE: AdMob console → Apps → CalcMaster iOS / Android → Ad units
-  // Google's official TEST ad unit IDs are used as defaults — these will
-  // serve test ads (not earning) when `adsEnabled` is true and
-  // `google_mobile_ads` is wired in. Switch to your real production unit IDs
-  // before public release.
+  //
+  // ⚠ NONE of the IDs below belong to [admobPublisherId] (pub-8528784688453695,
+  // AMERICAN GROUP LLC) yet, so no ads serve in release builds on either
+  // platform. That is deliberate — see [_isOwnedAdId].
+  //
+  //   • `3940256099942544` is Google's public SAMPLE account: serves test ads,
+  //     earns nothing, and breaches policy if shown to real users.
+  //   • `1804742004018995` is a DIFFERENT, superseded publisher account. Its
+  //     units would earn into that account, not AMERICAN GROUP LLC's.
+  //
+  // TO GO LIVE: create the app in AdMob under pub-8528784688453695, then paste
+  // its app ID (`~` form) and unit IDs (`/` form) below, plus the app IDs into
+  // android/app/src/main/AndroidManifest.xml and ios/Runner/Info.plist.
   // https://developers.google.com/admob/flutter/quick-start
-  static const String admobAppIdIos = 'ca-app-pub-3940256099942544~1458002511'; // REPLACE
-  static const String admobAppIdAndroid = 'ca-app-pub-1804742004018995~3291928616'; // Real value
+  static const String admobAppIdIos = 'ca-app-pub-3940256099942544~1458002511'; // REPLACE: sample
+  static const String admobAppIdAndroid =
+      'ca-app-pub-1804742004018995~3291928616'; // REPLACE: other publisher
 
-  static const String admobIosBanner = 'ca-app-pub-3940256099942544/2934735716'; // REPLACE
-  static const String admobAndroidBanner = 'ca-app-pub-1804742004018995/7853301794'; // Real value
+  static const String admobIosBanner = 'ca-app-pub-3940256099942544/2934735716'; // REPLACE: sample
+  static const String admobAndroidBanner =
+      'ca-app-pub-1804742004018995/7853301794'; // REPLACE: other publisher
 
-  static const String admobIosInterstitial = 'ca-app-pub-3940256099942544/4411468910'; // REPLACE
-  static const String admobAndroidInterstitial = 'ca-app-pub-1804742004018995/1563793836'; // Real value
+  static const String admobIosInterstitial =
+      'ca-app-pub-3940256099942544/4411468910'; // REPLACE: sample
+  static const String admobAndroidInterstitial =
+      'ca-app-pub-1804742004018995/1563793836'; // REPLACE: other publisher
 
   static const String admobIosNative = 'ca-app-pub-3940256099942544/3986624511'; // REPLACE
   static const String admobAndroidNative = 'ca-app-pub-3940256099942544/2247696110'; // REPLACE
@@ -66,10 +79,13 @@ class MonetizationConfig {
   // ───────────────────────────────────────────────────────────────────
   //  REVENUECAT · subscriptions
   // ───────────────────────────────────────────────────────────────────
-  // REPLACE: app.revenuecat.com → Project → Apps → Public API key
-  // Use the platform-specific key — RevenueCat's Flutter SDK requires both.
-  static const String revenueCatIosKey = 'appl_DUMMY_REPLACE_BEFORE_LAUNCH'; // REPLACE
-  static const String revenueCatAndroidKey = 'goog_DUMMY_REPLACE_BEFORE_LAUNCH'; // REPLACE
+  // NOT IN USE. Purchases run through the `in_app_purchase` plugin (StoreKit /
+  // Play Billing) in `premium_provider.dart`; the RevenueCat SDK is not a
+  // dependency of this app. These keys are retained only so an existing
+  // RevenueCat project can be adopted later — configuring them today changes
+  // nothing. The live subscription gate is [subscriptionsReady].
+  static const String revenueCatIosKey = 'appl_DUMMY_REPLACE_BEFORE_LAUNCH'; // unused
+  static const String revenueCatAndroidKey = 'goog_DUMMY_REPLACE_BEFORE_LAUNCH'; // unused
 
   // REPLACE: App Store Connect → My Apps → CalcMaster → In-App Purchases  AND
   //          Google Play Console → CalcMaster → Monetize → Products → Subscriptions
@@ -159,20 +175,64 @@ class MonetizationConfig {
   //  COMPUTED — used by the rest of the app, do not edit
   // ───────────────────────────────────────────────────────────────────
 
-  /// True only when both ads are enabled AND no obvious dummy value is left
-  /// in the iOS or Android app IDs. Defensive check so a half-configured
-  /// build never serves blank slots.
-  static bool get adsReady =>
-      adsEnabled &&
-          admobAppIdIos.isNotEmpty &&
-          admobAppIdAndroid.isNotEmpty;
+  /// Publisher prefix of Google's public sample AdMob account. Any unit ID
+  /// containing this is test inventory: it serves sample ads and earns nothing,
+  /// and showing it to real users breaches AdMob policy.
+  static const String googleTestPublisherId = '3940256099942544';
 
-  /// True only when subscriptions are enabled AND a real RevenueCat key is in
-  /// place (i.e. the dummy `_DUMMY_` marker has been removed).
+  /// The AdMob/AdSense publisher account that owns CalcMaster's inventory —
+  /// AMERICAN GROUP LLC, `pub-8528784688453695`. Declared to AdMob by
+  /// `marketing/site/app-ads.txt`, which must stay in sync with this value.
+  ///
+  /// Every real ad unit must belong to this account. Ad IDs from any other
+  /// publisher earn into someone else's account, so [_isOwnedAdId] rejects
+  /// them and the affected platform simply serves no ads.
+  static const String admobPublisherId = '8528784688453695';
+
+  static bool _isTestAdId(String id) => id.contains(googleTestPublisherId);
+
+  /// Whether an ad ID is real inventory belonging to [admobPublisherId].
+  static bool _isOwnedAdId(String id) =>
+      id.contains(admobPublisherId) && !_isTestAdId(id);
+
+  /// Whether the iOS ad slots hold real unit IDs owned by [admobPublisherId].
+  static bool get iosAdIdsAreReal =>
+      _isOwnedAdId(admobAppIdIos) &&
+          _isOwnedAdId(admobIosBanner) &&
+          _isOwnedAdId(admobIosInterstitial);
+
+  /// Whether the Android ad slots hold real unit IDs owned by
+  /// [admobPublisherId].
+  static bool get androidAdIdsAreReal =>
+      _isOwnedAdId(admobAppIdAndroid) &&
+          _isOwnedAdId(admobAndroidBanner) &&
+          _isOwnedAdId(admobAndroidInterstitial);
+
+  /// True when ads are switched on AND at least one platform holds real unit
+  /// IDs. Per-platform enforcement lives in `AdService.enabled`, which refuses
+  /// to serve test inventory from a release build.
+  static bool get adsReady => adsEnabled && (iosAdIdsAreReal || androidAdIdsAreReal);
+
+  /// Whether a trusted backend is configured to validate store receipts.
+  ///
+  /// Store callbacks are spoofable on a compromised device, so an entitlement
+  /// must be granted on a server's verdict, not the client's. Until a
+  /// verification endpoint exists, [PremiumProvider] fails closed and never
+  /// grants Pro. Set the gateway route via
+  /// `--dart-define=RECEIPT_VERIFICATION_PATH=/subscriptions/verify` (the
+  /// route must match the backend actually deployed).
+  static const String receiptVerificationPath = String.fromEnvironment(
+    'RECEIPT_VERIFICATION_PATH',
+    defaultValue: '',
+  );
+
+  static bool get receiptVerificationConfigured => receiptVerificationPath.isNotEmpty;
+
+  /// True only when subscriptions are switched on AND receipts can be verified
+  /// server-side. Selling an entitlement the app cannot verify is not shippable,
+  /// so this stays false until a verification endpoint is configured.
   static bool get subscriptionsReady =>
-      subscriptionsEnabled &&
-          !revenueCatIosKey.contains('DUMMY') &&
-          !revenueCatAndroidKey.contains('DUMMY');
+      subscriptionsEnabled && receiptVerificationConfigured;
 
   /// True when at least one affiliate tag has been replaced from the dummy.
   static bool get affiliatesReady =>

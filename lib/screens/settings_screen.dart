@@ -182,6 +182,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: loc.settingsAbout,
             onTap: () => context.push('/about'),
           ),
+          // Lets a tester export a crash from a device that is not plugged in.
+          _Tile(
+            icon: Icons.bug_report_outlined,
+            iconColor: AppColors.text,
+            title: 'Diagnostics',
+            subtitle: 'View and copy captured error logs',
+            onTap: () => context.push('/diagnostics'),
+          ),
         ],
       ),
     );

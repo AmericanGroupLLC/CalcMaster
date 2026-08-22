@@ -183,6 +183,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get toolAspectRatio => 'Proporzioni';
 
   @override
+  String get toolCalendar => 'Calendar';
+
+  @override
   String get settingsTitle => 'Impostazioni';
 
   @override

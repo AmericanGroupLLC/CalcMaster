@@ -8,7 +8,6 @@
 #    ./tools/release_all.sh           # build all
 #    ./tools/release_all.sh --android # only Android
 #    ./tools/release_all.sh --ios     # only iOS
-#    ./tools/release_all.sh --web     # only web build
 #    ./tools/release_all.sh --site    # only marketing site
 #    ./tools/release_all.sh --check   # only run analyze + tests
 #
@@ -27,7 +26,7 @@ warn() { echo -e "${YELLOW}!! $1${NC}"; }
 ALL=true; ONLY_CHECK=false
 for arg in "$@"; do
   case $arg in
-    --android|--ios|--web|--site) ALL=false;;
+    --android|--ios|--site) ALL=false;;
     --check) ALL=false; ONLY_CHECK=true;;
   esac
 done
@@ -45,7 +44,7 @@ do_run() {
 }
 
 cd "$ROOT"
-mkdir -p "$DIST/android" "$DIST/ios" "$DIST/web" "$DIST/site"
+mkdir -p "$DIST/android" "$DIST/ios" "$DIST/site"
 
 section "1. Sanity: pub get + analyze + test"
 flutter pub get | tail -3
@@ -86,16 +85,9 @@ if $ALL || [[ "$*" == *"--ios"* ]]; then
   fi
 fi
 
-# ────────────────── Web ──────────────────
-if $ALL || [[ "$*" == *"--web"* ]]; then
-  section "4. Flutter Web — release"
-  flutter build web --release | tail -3
-  cp -R build/web/. "$DIST/web/"
-fi
-
 # ────────────────── Marketing site ──────────────────
 if $ALL || [[ "$*" == *"--site"* ]]; then
-  section "5. Marketing site (4 static pages)"
+  section "4. Marketing site (4 static pages)"
   cp -R marketing/site/. "$DIST/site/"
 fi
 
@@ -106,8 +98,7 @@ echo ""
 echo "Next steps:"
 echo "  • Android: drop dist/android/CalcMaster-release.aab into Play Console"
 echo "  • iOS:     upload dist/ios/CalcMaster-release.ipa via Transporter"
-echo "  • Web:     deploy dist/web/ to Firebase Hosting (target: webapp)"
 echo "  • Site:    deploy dist/site/ to Firebase Hosting (target: marketing)"
 echo ""
 echo "Or:"
-echo "  firebase deploy --only hosting:marketing,hosting:webapp"
+echo "  firebase deploy --only hosting:marketing"

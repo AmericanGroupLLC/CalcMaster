@@ -454,6 +454,12 @@ abstract class AppLocalizations {
   /// **'Aspect Ratio'**
   String get toolAspectRatio;
 
+  /// No description provided for @toolCalendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar'**
+  String get toolCalendar;
+
   /// No description provided for @settingsTitle.
   ///
   /// In en, this message translates to:

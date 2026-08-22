@@ -53,7 +53,43 @@ void main() {
     test('factorial in expression', () => expect(evaluate('3!+1'), 7.0));
   });
 
+  group('evaluate — signed operands and exponents (regression)', () {
+    // Regression: unary minus used to be desugared to "(-1) *", which gave it
+    // multiplication precedence — so "2^-3" evaluated as "2^(-1)*3" = 1.5.
+    test('negative exponent', () => expect(evaluate('2^-3'), closeTo(0.125, 1e-12)));
+    test('negative exponent, unit base', () => expect(evaluate('2^-1'), 0.5));
+    test('negative exponent in expression',
+        () => expect(evaluate('10*2^-2'), closeTo(2.5, 1e-12)));
+    // -2^2 is -(2^2) by convention, NOT (-2)^2.
+    test('unary minus binds looser than ^', () => expect(evaluate('-2^2'), -4.0));
+    test('parenthesised negative base', () => expect(evaluate('(-2)^2'), 4.0));
+    test('unary minus binds tighter than *', () => expect(evaluate('-2*3'), -6.0));
+    test('negative right operand', () => expect(evaluate('2*-3'), -6.0));
+    test('double negation', () => expect(evaluate('--5'), 5.0));
+    test('negative inside function', () => expect(evaluate('abs(-7)'), 7.0));
+    test('unary plus is a no-op', () => expect(evaluate('+5'), 5.0));
+    test('unary plus in expression', () => expect(evaluate('3*+4'), 12.0));
+  });
+
   group('evaluate — edge cases', () {
+    // Regression: malformed numbers escaped as FormatException, which callers
+    // catching CalcError could not handle.
+    test('malformed number throws CalcError',
+        () => expect(() => evaluate('1.2.3'), throwsA(isA<CalcError>())));
+    // Regression: _factorial looped to n even after overflowing to infinity,
+    // freezing the UI isolate on large input.
+    test('factorial beyond double range returns infinity quickly', () {
+      final sw = Stopwatch()..start();
+      expect(evaluate('1000000000!'), double.infinity);
+      sw.stop();
+      expect(sw.elapsedMilliseconds, lessThan(1000));
+    });
+    // Postfix '!' binds tighter than prefix '-', so -3! is -(3!).
+    test('factorial binds tighter than unary minus', () => expect(evaluate('-3!'), -6.0));
+    test('factorial after a binary operator', () => expect(evaluate('3!-1'), 5.0));
+    test('factorial of a non-integer is NaN', () => expect(evaluate('2.5!').isNaN, isTrue));
+    test('170! is finite', () => expect(evaluate('170!').isFinite, isTrue));
+
     test('division by zero returns infinity', () => expect(evaluate('1/0'), double.infinity));
     test('zero divided by zero returns NaN', () => expect(evaluate('0/0').isNaN, isTrue));
     test('empty string throws', () => expect(() => evaluate(''), throwsA(isA<CalcError>())));

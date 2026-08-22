@@ -5,12 +5,14 @@ import 'package:flutter/widgets.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'monetization_config.dart';
+import 'tracking_service.dart';
 
 /// AdMob wrapper using the real google_mobile_ads SDK.
 ///
-/// The default credentials in MonetizationConfig are Google's official TEST
-/// ad unit IDs — these serve safe test ads without requiring a real AdMob
-/// account. Replace with production unit IDs before public release.
+/// Unit IDs come from [MonetizationConfig]. Android currently holds real
+/// production IDs; iOS still holds Google's public TEST IDs, so iOS release
+/// builds serve no ads until real ones are pasted in (see [enabled]). Debug
+/// builds still show test ads so the slots can be verified during development.
 ///
 /// On web and in widget tests, every method gracefully no-ops.
 class AdService {
@@ -21,19 +23,48 @@ class AdService {
   int _interstitialCounter = 0;
   InterstitialAd? _cachedInterstitial;
   bool _loadingInterstitial = false;
+  bool _consentRequested = false;
 
-  bool get enabled {
-    if (kIsWeb) return false;
-    return MonetizationConfig.adsEnabled || _hasTestAds();
+  /// Ask for iOS tracking permission once, immediately before the first ad
+  /// request.
+  ///
+  /// Without ATT authorization AdMob may only serve non-personalised ads, which
+  /// earn materially less. [TrackingService] existed but was never called from
+  /// anywhere, so the prompt never appeared. Triggering it here — on the first
+  /// ad, not at cold launch — matches the deferral that TrackingService
+  /// documents and that App Review expects. No-ops on Android and web.
+  Future<void> ensureTrackingConsent() async {
+    if (kIsWeb || _consentRequested || _isInTest()) return;
+    _consentRequested = true;
+    try {
+      await TrackingService.instance.requestIfNeeded();
+    } catch (e) {
+      debugPrint('[AdService] Tracking consent request failed: $e');
+    }
   }
 
-  /// Even when adsEnabled is false, our MonetizationConfig ships TEST IDs by
-  /// default — so we can still surface test ads in dev builds. Production
-  /// builds should keep adsEnabled = false until real unit IDs land.
-  bool _hasTestAds() {
+  /// Whether ads may be served on this platform right now.
+  ///
+  /// Previously this was `adsEnabled || _hasTestAds()`, where the fallback only
+  /// checked that a unit ID string was non-empty — always true. That made the
+  /// `adsEnabled` master switch inoperative on mobile: ads could not be turned
+  /// off. The switch is now authoritative, and release builds additionally
+  /// refuse to serve Google's test inventory (which earns nothing and breaches
+  /// AdMob policy when shown to real users), so a platform still holding test
+  /// IDs simply shows no ads instead of shipping sample ads to production.
+  bool get enabled {
     if (kIsWeb) return false;
-    if (Platform.isIOS) return MonetizationConfig.admobIosBanner.isNotEmpty;
-    if (Platform.isAndroid) return MonetizationConfig.admobAndroidBanner.isNotEmpty;
+    if (!MonetizationConfig.adsEnabled) return false;
+    if (kReleaseMode && !_platformAdIdsAreReal()) return false;
+    return true;
+  }
+
+  /// Whether *this* platform's unit IDs are real (non-test) production IDs.
+  bool _platformAdIdsAreReal() {
+    try {
+      if (Platform.isIOS) return MonetizationConfig.iosAdIdsAreReal;
+      if (Platform.isAndroid) return MonetizationConfig.androidAdIdsAreReal;
+    } catch (_) {}
     return false;
   }
 
@@ -103,6 +134,7 @@ class AdService {
     if (_cachedInterstitial != null || _loadingInterstitial) return;
     final unitId = interstitialUnitId();
     if (unitId == null) return;
+    await ensureTrackingConsent();
     _loadingInterstitial = true;
     await InterstitialAd.load(
       adUnitId: unitId,
@@ -154,9 +186,14 @@ class AdService {
 
   static bool _isInTest() {
     try {
+      // Matches AutomatedTestWidgetsFlutterBinding (`flutter test`) *and*
+      // IntegrationTestWidgetsFlutterBinding (`integration_test`). Only the
+      // former was matched before, so integration tests hit real ad platform
+      // channels. Production uses plain WidgetsFlutterBinding, which does not
+      // contain this substring.
       return WidgetsBinding.instance.runtimeType
           .toString()
-          .contains('AutomatedTestWidgetsFlutterBinding');
+          .contains('TestWidgetsFlutterBinding');
     } catch (_) {
       return false;
     }

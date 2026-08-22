@@ -217,12 +217,17 @@ class _StandardCalcState extends State<StandardCalc> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      if (liveResult.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 6),
-                          child: Text('= $liveResult',
-                              style: const TextStyle(color: AppColors.textMuted, fontSize: 20)),
-                        ),
+                      // Always rendered — blank when there is no result — so
+                      // the keypad below keeps a fixed position. Showing it
+                      // conditionally made the whole keypad jump as the
+                      // expression became valid/invalid mid-entry, which
+                      // causes mis-taps (and on a calculator a mis-tap is a
+                      // wrong answer).
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 6),
+                        child: Text(liveResult.isEmpty ? '' : '= $liveResult',
+                            style: const TextStyle(color: AppColors.textMuted, fontSize: 20)),
+                      ),
                       FittedBox(
                         alignment: Alignment.centerRight,
                         fit: BoxFit.scaleDown,
@@ -380,11 +385,13 @@ class _ScientificCalcState extends State<ScientificCalc> {
                   fit: BoxFit.scaleDown,
                   child: Text(expr.isEmpty ? '0' : expr, style: const TextStyle(color: AppColors.text, fontSize: 30, fontWeight: FontWeight.w600)),
                 ),
-                if (liveResult.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(top: Spacing.sm),
-                    child: Text('= $liveResult', style: const TextStyle(color: AppColors.textMuted, fontSize: 18)),
-                  ),
+                // Reserved unconditionally so the keypad never shifts — see
+                // the note on the standard calculator's display.
+                Padding(
+                  padding: const EdgeInsets.only(top: Spacing.sm),
+                  child: Text(liveResult.isEmpty ? '' : '= $liveResult',
+                      style: const TextStyle(color: AppColors.textMuted, fontSize: 18)),
+                ),
               ],
             ),
           ),

@@ -34,22 +34,26 @@
 				<string>com.americangroupllc.calcmaster</string>
 			</array>
 		</dict>
-		<!-- URL scheme the Google sign-in callback returns into. REQUIRED for
-		     Google Sign-In: replace REVERSED_CLIENT_ID below with the value of the
-		     REVERSED_CLIENT_ID key from the app's GoogleService-Info.plist (it
-		     looks like com.googleusercontent.apps.NNNNNNNN-xxxx). Without the real
-		     value the Google sign-in callback will not return to the app. -->
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.googleusercontent.apps.REVERSED_CLIENT_ID</string>
-			</array>
-		</dict>
+		<!-- Google Sign-In callback scheme is intentionally ABSENT.
+		     Registering it requires the REVERSED_CLIENT_ID from the app's
+		     GoogleService-Info.plist (form: com.googleusercontent.apps.NNNN-xxxx),
+		     which this repo does not ship. A literal "REVERSED_CLIENT_ID"
+		     placeholder used to be registered here — an invalid scheme that
+		     could never receive a callback. Google Sign-In on iOS therefore
+		     fails gracefully (AuthProvider.signInWithGoogle catches and reports
+		     it); email/password, Apple Sign-In and guest mode are unaffected.
+		     TO ENABLE: add GoogleService-Info.plist to ios/Runner/, then add a
+		     dict here whose CFBundleURLSchemes is that REVERSED_CLIENT_ID. -->
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<!-- Google's PUBLIC SAMPLE AdMob app ID, not CalcMaster's.
+	     google_mobile_ads crashes at launch if this key is missing or malformed,
+	     so a valid placeholder must stay here. Because it is sample inventory,
+	     AdService refuses to serve ads on iOS in release builds (see
+	     MonetizationConfig.iosAdIdsAreReal) — iOS ships ad-free until the real
+	     ID lands. TO ENABLE iOS ads: paste the real iOS app ID here AND the real
+	     iOS unit IDs into MonetizationConfig, then add SKAdNetworkItems. -->
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-3940256099942544~1458002511</string>
 	<key>ITSAppUsesNonExemptEncryption</key>

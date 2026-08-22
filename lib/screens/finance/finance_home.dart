@@ -24,15 +24,15 @@ class FinanceHome extends StatelessWidget {
               PillBadge(label: loc.pillFinanceTools, color: accent),
               const SizedBox(height: Spacing.md),
               Text(loc.financeHubHeading, style: Theme.of(context).textTheme.displayLarge),
-              const SizedBox(height: 4),
-              Text(loc.financeHubSubheading,
-                  style: const TextStyle(color: AppColors.textMuted, fontSize: 14)),
+              // Subheading intentionally omitted: it enumerated the very cards
+              // rendered below, so it was pure duplication that also drifted out
+              // of sync (Tools listed 8 of 9 tools). The grid is the label.
               const SizedBox(height: Spacing.xl),
               GridView.extent(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 maxCrossAxisExtent: 240,
-                childAspectRatio: 1.6,
+                childAspectRatio: hubCardAspectRatio(context, 1.6),
                 crossAxisSpacing: Spacing.md,
                 mainAxisSpacing: Spacing.md,
                 children: [

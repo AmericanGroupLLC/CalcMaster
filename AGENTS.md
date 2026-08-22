@@ -15,7 +15,7 @@ dart run tools/gen_icon.dart      # regenerate icon/splash masters
 Optional dart-defines: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `API_BASE_URL`.
 
 ## Architecture
-Single Flutter client (iOS/Android/Web). Provider (ChangeNotifier) state + go_router nav; pure-Dart calc/convert libs run offline; thin external services (Supabase auth, Frankfurter FX, AdMob/RevenueCat/Firebase all flag-gated).
+Single Flutter client targeting **iOS and Android only**. Provider (ChangeNotifier) state + go_router nav; pure-Dart calc/convert libs run offline; thin external services (Supabase auth, Frankfurter FX, AdMob/Firebase all flag-gated).
 
 ## File map
 | Path | Responsibility |
@@ -70,11 +70,14 @@ Provider / ChangeNotifier via `MultiProvider` in `main.dart`: `RegionProvider`, 
 - **Pinned Flutter SDK** at `/Users/spatchava/agl/.flutter-sdk/bin/flutter` — use it, not a global `flutter`.
 - **`archive` pinned to ^3.6.1** via `dependency_overrides` (image pkg needs it for icon/splash tooling).
 - **CocoaPods forced** (`enable-swift-package-manager: false`) — google_mobile_ads vs SPM collision.
-- **Monetization flags default `false`**; services no-op and defaults are Google TEST ad IDs / dummy keys — safe to ship, replace before production (see README "TEMPORARY VALUES").
+- **Monetization**: `adsEnabled` is **true**; the other four flags are `false` and those services no-op. Android carries real AdMob unit IDs; **iOS still carries Google's public TEST IDs**, so `AdService.enabled` refuses to serve ads on iOS in *release* builds (debug still shows test ads). Paste real iOS IDs into `monetization_config.dart` + `ios/Runner/Info.plist` to switch iOS ads on.
+- **Subscriptions fail closed.** `PremiumProvider` grants Pro only when a backend confirms the store receipt (`RECEIPT_VERIFICATION_PATH`). With no endpoint configured, a completed purchase does **not** grant Pro — this is deliberate; a client-side grant is forgeable. `subscriptionsEnabled` stays `false` until that endpoint exists.
+- **`InAppPurchase.instance` is resolved lazily** in `premium_provider.dart` — touching it eagerly opened a Play Billing connection even with subscriptions off, and threw under `flutter test`.
+- **Unary minus is a real prefix operator** in `lib_calc.dart` (precedence 3, between `*` and `^`), not `(-1)*` desugaring — that older trick made `2^-3` evaluate to `1.5`.
 - **RegionId enum values are UPPERCASE** (`US`, `UK`…) and persisted by `.name` in SharedPreferences — do NOT rename (the `constant_identifier_names` lint here is intentional/ignore).
 - **`flutter analyze` reports ~info-level lints** (enum names, curly braces) that are pre-existing and intentional; only the previously-unreferenced `_white` warning was cleaned up.
 - **Bundle/app id** is `com.americangroupllc.calcmaster` (Supabase OAuth redirect scheme depends on it) — leave it.
-- **Web** uses a desktop layout above 840px width (side rail, max content 1120px) in `tab_scaffold.dart`.
+- **Mobile-only repo.** The `web/` platform dir and the React Native / Expo / Electron / browser-extension / NestJS-backend trees were removed — this repo builds iOS and Android and nothing else. `kIsWeb` guards remain in `lib/` as harmless defensive code, as does the >840px wide layout in `tab_scaffold.dart` (it still applies to tablets).
 - Generated l10n (`lib/l10n/generated/`) is committed but regenerable — edit ARB, not the generated files.
 
 ## Authentication (login is OPTIONAL)

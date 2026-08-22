@@ -180,6 +180,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get toolAspectRatio => '화면 비율';
 
   @override
+  String get toolCalendar => 'Calendar';
+
+  @override
   String get settingsTitle => '설정';
 
   @override

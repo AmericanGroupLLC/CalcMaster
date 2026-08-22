@@ -183,6 +183,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get toolAspectRatio => 'Соотношение сторон';
 
   @override
+  String get toolCalendar => 'Calendar';
+
+  @override
   String get settingsTitle => 'Настройки';
 
   @override

@@ -16,8 +16,6 @@ jobs:
             os: ubuntu-latest
           - platform: ios
             os: macos-14
-          - platform: web
-            os: ubuntu-latest
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -44,12 +42,6 @@ jobs:
         run: |
           flutter build ios --release --no-codesign
           cd build/ios/iphoneos && tar czf ../../../CalcMaster-${{ github.ref_name }}-ios-unsigned.tar.gz Runner.app
-
-      - name: Build Web
-        if: matrix.platform == 'web'
-        run: |
-          flutter build web --release --wasm
-          cd build/web && tar czf ../../CalcMaster-${{ github.ref_name }}-web.tar.gz .
 
       - uses: actions/upload-artifact@v4
         with:
@@ -78,13 +70,3 @@ jobs:
           files: |
             artifacts/CalcMaster-*
             artifacts/SHA256SUMS.txt
-
-  build-backend-image:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build and tag backend
-        working-directory: backend
-        run: |
-          docker build -t calcmaster-api:${{ github.ref_name }} .
-          docker build -t calcmaster-api:latest .
